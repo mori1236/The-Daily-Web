@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root{
+  --primary-color: #0056b3;
+  --secondary-color: #f8f9fa;
+  --text-color: #333333;
+  --border-color: #dee2e6;
+  --bg-color: #f4f6f8;
+  --bg-color-2: #ffffff;
+  --font-family: Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  font-family: 'Arimo';
+  display: flex;
+  height: 78px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 58px;
+  background: var(--bg-color-2);
+  border-bottom: #D7DAD6 1px solid;
+}
+
+logo p{
+  margin: 0px;
+}
+
+logo .red-circle{
+  width: 6px;           
+  height: 6px;          
+  background-color: red;
+  border-radius: 50%;    
+  display: inline-block; 
+}
+
+logo .text-logo{
+  font-family: 'inter';
+  color: #111312;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+logo .sub-text-logo{
+  font-family: 'Arimo';
+  color: #7C837E;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+nav{
+  display: flex;
+  gap: 28px;
+}
+
+nav a::after {
+  content: attr(data-text); /* שואב את הטקסט מתוך ה-data-text שכתבנו ב-HTML */
+  content: attr(data-text) / ""; /* תמיכה נגישה */
+  font-weight: bold;
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
+nav a{
+  color: #555B57;
+  font-size: 14px;
+  margin: 2px;
+  text-decoration: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+nav a:hover{
+  font-weight: bold;
+
+}
+
+nav a:visited{
+  color: #555B57;
+}

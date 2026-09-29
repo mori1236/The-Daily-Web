@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Daily Web</title>
+  <!-- קישור לעיצוב CSS כללי -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- תפריט ניווט עליון -->
+  <header>
+    <logo>
+      <p class="text-logo">The Daily Web</p>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <div class="red-circle"></div>
+        <p class="sub-text-logo">החדשות החמות ברשת</p>      
+      </div>
+    </logo>
+    <nav>
+      <a href="/" data-text="ראשי">ראשי</a>
+      <a href="/" data-text="פוליטי">פוליטי</a>
+      <a href="/" data-text="כלכלה">כלכלה</a>
+      <a href="/" data-text="טכנולוגיה">טכנולוגיה</a>
+      <a href="/" data-text="תרבות">תרבות</a>
+      <a href="/" data-text="ספורט">ספורט</a>
+    </nav>
+    
+    <div>
+      <a href="/">חיפוש</a>
+      <a href="/login">התחברות לכתבים/עורכים</a>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- אזור הסינון והחיפוש (צד לקוח שיעבוד עם AJAX בהמשך) -->
+    <aside class="filters-sidebar">
+      <h3>סינון וחיפוש</h3>
+      <input type="text" id="searchInput" placeholder="חיפוש לפי כותרת...">
+      
+      <select id="categorySelect">
+        <option value="">כל הקטגוריות</option>
+        <option value="tech">טכנולוגיה</option>
+        <option value="sport">ספורט</option>
+        <option value="news">חדשות כלליות</option>
+      </select>
+    </aside>
+
+    <!-- פיד הכתבות הראשי -->
+    <main class="feed-section">
+      <h2>כתבות אחרונות</h2>
+      
+      <div id="articlesContainer">
+        <!-- לולאה שרצה על מערך הכתבות שהגיע מהשרת -->
+        <% if (articles && articles.length > 0) { %>
+          <% articles.forEach(article => { %>
+            <article class="article-card">
+              <% if (article.imageUrl) { %>
+                <img src="<%= article.imageUrl %>" alt="<%= article.title %>">
+              <% } %>
+              <div class="article-content">
+                <span class="category"><%= article.category %></span>
+                <h3>
+                  <a href="/articles/<%= article._id %>"><%= article.title %></a>
+                </h3>
+                <p class="summary"><%= article.summary %></p>
+                <div class="meta">
+                  <span>כתב: <%= article.author ? article.author.username : 'מערכת' %></span> | 
+                  <span>פורסם ב: <%= new Date(article.publishedAt).toLocaleDateString('he-IL') %></span>
+                </div>
+              </div>
+            </article>
+          <% }) %>
+        <% } else { %>
+            <p>אין כתבות להצגה כרגע.</p>
+        <% } %>
+      </div>
+
+      <!-- אלמנט עוגן עבור גלילה אינסופית (Infinite Scroll) -->
+      <div id="loadingIndicator" style="display: none;">טוען כתבות נוספות...</div>
+    </main>
+
+    <!-- סיידבר הכולל למשל את ווידג'ט מזג האוויר -->
+    <aside class="right-sidebar">
+      <div id="weatherWidget">
+        <h3>מזג אוויר</h3>
+        <p>טוען נתוני מזג אוויר...</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- סקריפט צד לקוח לטיפול בחיפוש, סינון וגלילה אינסופית ב-AJAX -->
+  <script src="/js/feed.js"></script>
+</body>
+</html>
