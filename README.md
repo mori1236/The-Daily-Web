@@ -2,14 +2,23 @@
 
 ## Setup
 
-Install  
+### Install
+
 Node js (see version at [.nvmrc](.nvmrc))
 [MongoDB Community](https://www.mongodb.com/try/download/community-kubernetes-operator)  
 
-### Recommended too
+**Recommended too**  
 
-VScode and the recommended extentions at [.vscode/extensions.json](.vscode/extensions.json)
+VScode and the recommended extentions at [.vscode/extensions.json](.vscode/extensions.json)  
+And utilize our configured tasks and debugger configs  
 
+### Setup Mongo
+
+Only in addministrator make sure the service is running
+
+```cmd
+net start MongoDB
+```
 
 ## Tools
 
