@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const config = require('./server/config'); // טוען ומאמת את משתני הסביבה מקובץ .env
+const { loadUser } = require('./server/middleware/auth');
+const authRoutes = require('./server/routes/auth');
 
 const app = express();
 const PORT = config.port;
@@ -10,6 +12,13 @@ const PORT = config.port;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// קריאת גוף הבקשה מטפסים (POST) ומ-JSON (Ajax)
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+// זיהוי המשתמש המחובר לפי עוגיית ה-session (req.user)
+app.use(loadUser);
 
 // הגדרת תיקייה לקבצים סטטיים (כמו CSS, תמונות וכו')
 
@@ -29,6 +38,9 @@ app.get('/', async (req, res) => {
         res.status(500).send('שגיאת שרת פנימית');
     }
 });
+
+// התחברות / התנתקות
+app.use(authRoutes);
 
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {
