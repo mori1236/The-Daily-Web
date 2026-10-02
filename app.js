@@ -4,6 +4,7 @@ const path = require('path');
 const config = require('./server/config'); // טוען ומאמת את משתני הסביבה מקובץ .env
 const { loadUser } = require('./server/middleware/auth');
 const authRoutes = require('./server/routes/auth');
+const { seedDemoData } = require('./server/seed');
 
 const app = express();
 const PORT = config.port;
@@ -24,7 +25,11 @@ app.use(loadUser);
 
 // חיבור למסד הנתונים MongoDB (תוודא שקובץ ה-.env שלך מוגדר עם MONGO_URI)
 mongoose.connect(config.mongoUri)
-    .then(() => console.log('Connected to MongoDB successfully!'))
+    .then(async () => {
+        console.log('Connected to MongoDB successfully!');
+        // מילוי נתוני דמו כשהדגל SEED_DEMO_DATA=true מוגדר ב-.env
+        if (config.seedDemoData) await seedDemoData();
+    })
     .catch(err => console.error('MongoDB connection error:', err));
 
 // נתיב לדף הבית (הפיד)
