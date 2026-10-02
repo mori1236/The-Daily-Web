@@ -1,37 +1,7 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Daily Web</title>
-  <!-- קישור לעיצוב CSS כללי -->
-  <link rel="stylesheet" href="/css/style.css">
-</head>
+<%- include('partials/head', { title: '' }) %>
 <body>
 
-  <!-- תפריט ניווט עליון -->
-  <header>
-    <logo>
-      <p class="text-logo">The Daily Web</p>
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <div class="red-circle"></div>
-        <p class="sub-text-logo">החדשות החמות ברשת</p>      
-      </div>
-    </logo>
-    <nav>
-      <a href="/" data-text="ראשי">ראשי</a>
-      <a href="/" data-text="פוליטי">פוליטי</a>
-      <a href="/" data-text="כלכלה">כלכלה</a>
-      <a href="/" data-text="טכנולוגיה">טכנולוגיה</a>
-      <a href="/" data-text="תרבות">תרבות</a>
-      <a href="/" data-text="ספורט">ספורט</a>
-    </nav>
-    
-    <div>
-      <a href="/">חיפוש</a>
-      <a href="/login">התחברות לכתבים/עורכים</a>
-    </div>
-  </header>
+  <%- include('partials/site-header') %>
 
   <div class="main-container">
     <!-- אזור הסינון והחיפוש (צד לקוח שיעבוד עם AJAX בהמשך) -->
