@@ -1,3 +1,7 @@
 node_modules/
 דרישות פרויקט מסכם - סמסטר קיץ.pdf
 .env
+# Mongo runtime files (the data files in DB/ are committed)
+DB/mongod.lock
+DB/diagnostic.data/
+DB/_tmp/
