@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "start",
+      "label": "npm: start",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": { "regexp": "^never-matches$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*$",
+          "endsPattern": "Server is running"
+        }
+      }
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "label": "npm: dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": { "regexp": "^never-matches$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "\\[nodemon\\] starting",
+          "endsPattern": "Server is running"
+        }
+      }
+    }
+  ]
+}
