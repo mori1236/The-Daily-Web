@@ -25,12 +25,24 @@
       "name": "Launch Chrome",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/public"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome (browser-sync)",
+      "url": "http://localhost:3001",
+      "webRoot": "${workspaceFolder}/public"
     }
   ],
   "compounds": [
     {
-      "name": "nodemon + Chrome",
-      "configurations": ["Debug: dev (nodemon)", "Launch Chrome"]
+      "name": "node + Chrome",
+      "configurations": ["Debug: start", "Launch Chrome"]
+    },
+    {
+      "name": "Live reload (nodemon + browser-sync + Chrome)",
+      "configurations": ["Debug: dev (nodemon)", "Launch Chrome (browser-sync)"],
+      "preLaunchTask": "npm: dev:sync"
     }
   ]
 }

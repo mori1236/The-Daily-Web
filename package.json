@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node --inspect app.js",
-    "dev": "nodemon --inspect app.js"
+    "dev": "nodemon --inspect app.js",
+    "dev:sync": "browser-sync start --proxy localhost:3000 --files \"public/**/*.css, public/**/*.js, views/**/*.ejs\" --no-open",
+    "dev:live": "concurrently -n nodemon,sync -c green,cyan \"npm:dev\" \"npm:dev:sync\""
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +16,9 @@
     "express": "^5.2.1",
     "mongoose": "^9.10.3",
     "nodemon": "^3.1.14"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "concurrently": "^10.0.5"
   }
 }
