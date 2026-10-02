@@ -1,6 +1,13 @@
 {
     "recommendations": [
         "anthropic.claude-code",
-        "tomoki1207.pdf"
+        "tomoki1207.pdf",
+        "barnim.markdown-code-copy-button",
+        "bierner.github-markdown-preview",
+        "bierner.markdown-preview-github-styles",
+        "davidanson.vscode-markdownlint",
+        "fabiospampinato.vscode-markdown-todo",
+        "takumii.markdowntable",
+        "yzhang.markdown-all-in-one"
     ]
 }
