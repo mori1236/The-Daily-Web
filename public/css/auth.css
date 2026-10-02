@@ -41,13 +41,6 @@
   font-weight: bold;
 }
 
-.live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-accent);
-}
-
 .auth-message {
   display: flex;
   flex-direction: column;
