@@ -1,0 +1,46 @@
+<%# ספריית האייקונים של האתר (SVG). שימוש: include('partials/icon', { name: 'mail' })
+    הצבע נלקח מצבע הטקסט של האלמנט העוטף (currentColor) %>
+<% if (name === 'arrow-left') { %>
+<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+  <path d="M7 2.91626L2.9162 7.00006L7 11.0839M2.9162 7.00006H11.0838" stroke="currentColor" stroke-linecap="round"/>
+</svg>
+<% } else if (name === 'mail') { %>
+<svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+  <path d="M15.5839 4.95877L9.21477 9.01499C8.99864 9.1405 8.75314 9.20662 8.5032 9.20662C8.25325 9.20662 8.00775 9.1405 7.79162 9.01499L1.41611 4.95877M2.83289 2.83398H14.1671C14.9496 2.83398 15.5839 3.46818 15.5839 4.25051V12.7497C15.5839 13.532 14.9496 14.1662 14.1671 14.1662H2.83289C2.05042 14.1662 1.41611 13.532 1.41611 12.7497V4.25051C1.41611 3.46818 2.05042 2.83398 2.83289 2.83398Z" stroke="currentColor" stroke-linecap="round"/>
+</svg>
+<% } else if (name === 'lock') { %>
+<svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+  <path d="M4.95833 7.79153V4.95797C4.95833 4.01858 5.33147 3.11767 5.99566 2.45343C6.65985 1.78918 7.56069 1.41602 8.5 1.41602C9.43931 1.41602 10.3401 1.78918 11.0043 2.45343C11.6685 3.11767 12.0417 4.01858 12.0417 4.95797V7.79153M3.54167 7.79153H13.4583C14.2407 7.79153 14.875 8.42584 14.875 9.20831V14.167C14.875 14.9495 14.2407 15.5838 13.4583 15.5838H3.54167C2.75926 15.5838 2.125 14.9495 2.125 14.167V9.20831C2.125 8.42584 2.75926 7.79153 3.54167 7.79153Z" stroke="currentColor" stroke-linecap="round"/>
+</svg>
+<% } else if (name === 'lock-check') { %>
+<svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+  <path d="M4.95833 7.79153V4.95797C4.95833 4.01858 5.33147 3.11767 5.99566 2.45343C6.65985 1.78918 7.56069 1.41602 8.5 1.41602C9.43931 1.41602 10.3401 1.78918 11.0043 2.45343C11.6685 3.11767 12.0417 4.01858 12.0417 4.95797V7.79153M3.54167 7.79153H13.4583C14.2407 7.79153 14.875 8.42584 14.875 9.20831V14.167C14.875 14.9495 14.2407 15.5838 13.4583 15.5838H3.54167C2.75926 15.5838 2.125 14.9495 2.125 14.167V9.20831C2.125 8.42584 2.75926 7.79153 3.54167 7.79153Z" stroke="currentColor" stroke-linecap="round"/>
+  <path d="M6.5 11.5L8 13L10.5 10.25" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<% } else if (name === 'user') { %>
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+  <circle cx="12" cy="7" r="4"/>
+</svg>
+<% } else if (name === 'log-in') { %>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <path d="M6.66667 4.66667L10 8L6.66667 11.3333M10 8H2M10 2H12.6667C13.0203 2 13.3594 2.14048 13.6095 2.39052C13.8595 2.64057 14 2.97971 14 3.33333V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H10" stroke="currentColor" stroke-linecap="round"/>
+</svg>
+<% } else if (name === 'user-plus') { %>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+  <circle cx="9" cy="7" r="4"/>
+  <path d="M19 8v6M22 11h-6"/>
+</svg>
+<% } else if (name === 'pen') { %>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M12 20h9"/>
+  <path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.64a2 2 0 0 1-.86.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.86z"/>
+</svg>
+<% } else if (name === 'file-check') { %>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/>
+  <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+  <path d="m9 15 2 2 4-4"/>
+</svg>
+<% } %>
