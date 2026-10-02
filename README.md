@@ -20,6 +20,26 @@ Only in addministrator make sure the service is running
 net start MongoDB
 ```
 
+#### Demo data
+
+To start with demo data, add this to `.env`:
+
+```env
+SEED_DEMO_DATA=true
+```
+
+On startup the server adds the demo users below, but only if the database has no users yet. To get a fresh copy, delete the `users` collection and restart the server.
+
+| Role   | Email                   | Password |
+|--------|-------------------------|----------|
+| editor | `editor@dailyweb.test`  | `123456` |
+| editor | `editor2@dailyweb.test` | `123456` |
+| writer | `writer@dailyweb.test`  | `123456` |
+| writer | `writer2@dailyweb.test` | `123456` |
+| writer | `writer3@dailyweb.test` | `123456` |
+
+The demo data lives in [server/seed.js](server/seed.js).
+
 ## Tools
 
 Trello board - https://trello.com/b/SOPFGVuz/the-daily-web  
