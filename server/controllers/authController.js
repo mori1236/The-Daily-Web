@@ -34,6 +34,15 @@ function showLogin(req, res) {
 
 // POST /login
 async function login(req, res) {
+    try {
+        await tryLogin(req, res);
+    } catch (err) {
+        console.error('Login error:', err);
+        res.redirect('/login/error');
+    }
+}
+
+async function tryLogin(req, res) {
     const email = String(req.body.email || '').trim().toLowerCase();
     const password = String(req.body.password || '');
 
@@ -57,6 +66,15 @@ function showRegister(req, res) {
 
 // POST /register
 async function register(req, res) {
+    try {
+        await tryRegister(req, res);
+    } catch (err) {
+        console.error('Register error:', err);
+        res.redirect('/register/error');
+    }
+}
+
+async function tryRegister(req, res) {
     const name = String(req.body.name || '').trim();
     const email = String(req.body.email || '').trim().toLowerCase();
     const password = String(req.body.password || '');
@@ -82,6 +100,15 @@ async function register(req, res) {
     res.redirect(homeFor(user));
 }
 
+// GET /login/error and /register/error — a general message, the real error is only in the log.
+function showLoginError(req, res) {
+    res.status(500).render('auth-error', { message: 'אירעה שגיאה בהתחברות', retryUrl: '/login' });
+}
+
+function showRegisterError(req, res) {
+    res.status(500).render('auth-error', { message: 'אירעה שגיאה בהרשמה', retryUrl: '/register' });
+}
+
 // POST /logout
 async function logout(req, res) {
     const token = getCookie(req, COOKIE_NAME);
@@ -90,4 +117,4 @@ async function logout(req, res) {
     res.redirect('/');
 }
 
-module.exports = { showLogin, login, showRegister, register, logout };
+module.exports = { showLogin, login, showLoginError, showRegister, register, showRegisterError, logout };
