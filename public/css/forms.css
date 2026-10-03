@@ -1,0 +1,164 @@
+/* רכיבי טופס כלליים — שדות, תוויות, כפתורים. לשימוש בכל הטפסים באתר */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field-label {
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.field-help {
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+/* מעטפת לשדה קלט — מאפשרת להציב אייקון לצד השדה */
+.input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  transition: border-color 0.15s;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--color-ink);
+}
+
+.input-wrap input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  color: var(--color-ink);
+}
+
+.input-wrap input::placeholder {
+  color: var(--color-text);
+}
+
+.input-wrap svg {
+  flex-shrink: 0;
+}
+
+/* תיבת סימון עם תווית */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--color-ink);
+  cursor: pointer;
+}
+
+/* לשוניות בחירה (Segmented control) — מבוססות על כפתורי רדיו, בלי JS */
+.role-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 4px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+
+.role-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+/* מסתירים את עיגול הרדיו, אבל משאירים אותו נגיש למקלדת ולקורא מסך */
+.role-tab input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.role-tab:hover {
+  color: var(--color-ink);
+}
+
+.role-tab:has(input:checked) {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-card);
+}
+
+.role-tab:has(input:focus-visible) {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+}
+
+/* הודעת שגיאה כללית לטופס */
+.form-error {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: #fdecea;
+  color: var(--color-accent);
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* כפתורים */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.88;
+}
+
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-surface);
+}
+
+.btn-block {
+  width: 100%;
+}

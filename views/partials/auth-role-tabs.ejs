@@ -1,0 +1,18 @@
+<%# בחירת תפקיד — כפתורי רדיו שמעוצבים כלשוניות. השרת בודק את התפקיד בעצמו.
+    פרמטר אופציונלי: role — התפקיד הנבחר (ברירת מחדל: כתב) %>
+<% const selectedRole = locals.role === 'editor' ? 'editor' : 'writer'; %>
+<fieldset class="role-tabs">
+  <legend class="visually-hidden">סוג משתמש</legend> 
+
+  <label class="role-tab">
+    <input type="radio" name="role" value="writer" <%= selectedRole === 'writer' ? 'checked' : '' %>>
+    <%- include('icon', { name: 'pen' }) %>
+    כתב/ת
+  </label>
+
+  <label class="role-tab">
+    <input type="radio" name="role" value="editor" <%= selectedRole === 'editor' ? 'checked' : '' %>>
+    <%- include('icon', { name: 'file-check' }) %>
+    עורך/ת
+  </label>
+</fieldset>

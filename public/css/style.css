@@ -1,31 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('tokens.css');
 
-:root{
-  --primary-color: #0056b3;
-  --secondary-color: #f8f9fa;
-  --text-color: #333333;
-  --border-color: #dee2e6;
-  --bg-color: #f4f6f8;
-  --bg-color-2: #ffffff;
-  --font-family: Arial, sans-serif;
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* מוסתר מהעין אבל נקרא ע"י קורא מסך */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 body {
-  font-family: var(--font-family);
-  color: var(--text-color);
-  background-color: var(--bg-color);
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
   margin: 0;
   padding: 0;
 }
 
-header {
+.site-header {
   font-family: 'Arimo';
   display: flex;
   height: 78px;
   align-items: center;
   justify-content: space-between;
   padding: 0px 58px;
-  background: var(--bg-color-2);
+  background: var(--color-surface);
   border-bottom: #D7DAD6 1px solid;
 }
 
@@ -33,12 +38,42 @@ logo p{
   margin: 0px;
 }
 
-logo .red-circle{
-  width: 6px;           
-  height: 6px;          
-  background-color: red;
-  border-radius: 50%;    
-  display: inline-block; 
+/* נקודת "שידור חי" אדומה עם הבהוב — גל שמתרחב ונעלם סביב הנקודה */
+.live-dot {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: live-pulse 1.6s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* משתמשים שביקשו פחות תנועה במערכת ההפעלה — בלי אנימציה */
+@media (prefers-reduced-motion: reduce) {
+  .live-dot::after {
+    animation: none;
+  }
 }
 
 logo .text-logo{
@@ -89,4 +124,23 @@ nav a:hover{
 
 nav a:visited{
   color: #555B57;
+}
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.site-header-logout {
+  margin: 0;
+}
+
+.site-header-logout button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: #555B57;
+  cursor: pointer;
 }

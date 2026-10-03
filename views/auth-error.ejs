@@ -1,0 +1,23 @@
+<%- include('partials/head', { title: 'שגיאה', styles: ['forms', 'auth'] }) %>
+<body class="auth-page">
+
+  <%- include('partials/auth-story') %>
+
+  <main class="auth-main">
+    <a href="/" class="auth-back">
+      חזרה לאתר החדשות
+      <%- include('partials/icon', { name: 'arrow-left' }) %>
+    </a>
+
+    <section class="auth-card">
+      <div class="auth-card-header">
+        <h1><%= message %></h1>
+        <p>משהו השתבש מצדנו. נסו שוב בעוד כמה רגעים.</p>
+      </div>
+
+      <a href="<%= retryUrl %>" class="btn btn-primary btn-block">נסו שוב</a>
+    </section>
+  </main>
+
+</body>
+</html>

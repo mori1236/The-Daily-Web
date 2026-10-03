@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const config = require('./server/config'); // טוען ומאמת את משתני הסביבה מקובץ .env
+const { loadUser } = require('./server/middleware/auth');
+const authRoutes = require('./server/routes/auth');
+const { seedDemoData } = require('./server/seed');
 
 const app = express();
 const PORT = config.port;
@@ -11,11 +14,22 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// קריאת גוף הבקשה מטפסים (POST) ומ-JSON (Ajax)
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+// זיהוי המשתמש המחובר לפי עוגיית ה-session (req.user)
+app.use(loadUser);
+
 // הגדרת תיקייה לקבצים סטטיים (כמו CSS, תמונות וכו')
 
 // חיבור למסד הנתונים MongoDB (תוודא שקובץ ה-.env שלך מוגדר עם MONGO_URI)
 mongoose.connect(config.mongoUri)
-    .then(() => console.log('Connected to MongoDB successfully!'))
+    .then(async () => {
+        console.log('Connected to MongoDB successfully!');
+        // מילוי נתוני דמו כשהדגל SEED_DEMO_DATA=true מוגדר ב-.env
+        if (config.seedDemoData) await seedDemoData();
+    })
     .catch(err => console.error('MongoDB connection error:', err));
 
 // נתיב לדף הבית (הפיד)
@@ -29,6 +43,9 @@ app.get('/', async (req, res) => {
         res.status(500).send('שגיאת שרת פנימית');
     }
 });
+
+// התחברות / התנתקות
+app.use(authRoutes);
 
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {

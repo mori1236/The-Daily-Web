@@ -1,0 +1,60 @@
+<%- include('partials/head', { title: 'הרשמה למערכת', styles: ['forms', 'auth'] }) %>
+<body class="auth-page">
+
+  <%- include('partials/auth-story') %>
+
+  <main class="auth-main">
+    <a href="/" class="auth-back">
+      חזרה לאתר החדשות
+      <%- include('partials/icon', { name: 'arrow-left' }) %>
+    </a>
+
+    <section class="auth-card">
+      <div class="auth-card-header">
+        <h1>הצטרפות לצוות</h1>
+        <p>יצירת חשבון כתב או עורך ב-The Daily Web.</p>
+      </div>
+
+      <%- include('partials/form-error', { error: locals.error }) %>
+
+      <form class="auth-form" action="/register" method="POST">
+        <%- include('partials/auth-role-tabs', { role: locals.values && values.role }) %>
+
+        <%- include('partials/form-field', {
+          id: 'name', label: 'שם מלא', type: 'text', icon: 'user',
+          placeholder: 'ישראל ישראלי', autocomplete: 'name',
+          value: locals.values && values.name
+        }) %>
+
+        <%- include('partials/form-field', {
+          id: 'email', label: 'כתובת דוא״ל', type: 'email', icon: 'mail',
+          placeholder: 'name@dailyweb.co.il', autocomplete: 'email',
+          value: locals.values && values.email
+        }) %>
+
+        <%- include('partials/form-field', {
+          id: 'password', label: 'סיסמה', type: 'password', icon: 'lock',
+          placeholder: '••••••••••••', autocomplete: 'new-password',
+          minlength: 8, help: 'לפחות 8 תווים'
+        }) %>
+
+        <%- include('partials/form-field', {
+          id: 'confirmPassword', label: 'אימות סיסמה', type: 'password', icon: 'lock-check',
+          placeholder: '••••••••••••', autocomplete: 'new-password', minlength: 8
+        }) %>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          יצירת חשבון
+          <%- include('partials/icon', { name: 'user-plus' }) %>
+        </button>
+      </form>
+
+      <p class="auth-switch">כבר רשומים? <a href="/login">התחברו כאן</a></p>
+    </section>
+
+    <p class="auth-support">בעיה בהרשמה? תמיכת דסק הדיגיטל זמינה בטלפון 03-5550190</p>
+  </main>
+
+  <script src="/js/register.js"></script>
+</body>
+</html>
