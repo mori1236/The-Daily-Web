@@ -1,21 +1,99 @@
-<%- include('partials/head', { title: '' }) %>
+<%- include('partials/head', { title: '',styles: ['index']  }) %>
 <body>
 
   <%- include('partials/site-header') %>
 
   <div class="main-container">
     <!-- אזור הסינון והחיפוש (צד לקוח שיעבוד עם AJAX בהמשך) -->
-    <aside class="filters-sidebar">
-      <h3>סינון וחיפוש</h3>
-      <input type="text" id="searchInput" placeholder="חיפוש לפי כותרת...">
+    <div class="upper-section">
+      <div class="article-carousel">
+        <article class="main-article">
+          <div class="main-article-content">
+            <h2>
+              הממשלה אישרה את תוכנית השיקום לצפון
+            </h2>
+            <p>
+              המועצות יקבלו תקציב מיידי לתשתיות, חינוך ועסקים. ראשי הרשויות מברכים — אך דורשים לוח זמנים מחייב.
+            </p>
+            <a class="article-button">
+              <span>
+                לכתבה המלאה
+              </span>
+              <%- include('partials/icon', { name: 'arrow-left' }) %>
+            </a>
+          </div>
+          <img src="/img/login-newsroom.jpg" alt="">
+        </article>
+      </div>
+
+      <aside>
+        <div id="weatherWidget">
+          <h3>מזג אוויר</h3>
+          <p>טוען נתוני מזג אוויר...</p>
+        </div>
+      </aside>
+    </div>
+    
+    <div class="filter-bar">
+      <!-- קטגוריות (צ'יפים / תגיות סינון) -->
+      <div class="categories-group">
+        <!-- קטגוריה 1: הכל (נבחרת כברירת מחדל) -->
+        <label class="category-chip active">
+          <input type="radio" name="category" value="all" checked>
+          <span class="label">הכל</span>
+        </label>
+        
+        <!-- קטגוריות נוספות -->
+        <label class="category-chip">
+          <input type="radio" name="category" value="news">
+          <span class="label">חדשות</span>
+        </label>
+        
+        <label class="category-chip">
+          <input type="radio" name="category" value="tech">
+          <span class="label">טכנולוגיה</span>
+        </label>
+        
+        <label class="category-chip">
+          <input type="radio" name="category" value="sports">
+          <span class="label">ספורט</span>
+        </label>
+        
+        <label class="category-chip">
+          <input type="radio" name="category" value="economy">
+          <span class="label">כלכלה</span>
+        </label>
+        
+        <label class="category-chip">
+          <input type="radio" name="category" value="culture">
+          <span class="label">תרבות</span>
+        </label>
+      </div>
       
-      <select id="categorySelect">
-        <option value="">כל הקטגוריות</option>
-        <option value="tech">טכנולוגיה</option>
-        <option value="sport">ספורט</option>
-        <option value="news">חדשות כלליות</option>
-      </select>
-    </aside>
+      <div class="search-sort-group">
+        <!-- חיפוש -->
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="חיפוש כתבות..." />
+          <div class="icon-wrapper">
+            <!-- אייקון חיפוש (או SVG) -->
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6" stroke="#7C837E" stroke-width="1.5"/><path d="M12.5 12.5L16 16" stroke="#7C837E" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        
+        <!-- מיון -->
+        <div class="sort-box">
+          <select id="sort-select">
+            <option value="" disabled selected>מיון לפי</option>
+            <option value="date">תאריך פרסום</option>
+            <option value="popularity">פופולריות</option>
+          </select>
+          <div class="icon-wrapper">
+            <!-- אייקון חצים -->
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M4 6L7.5 2.5L11 6" stroke="#555B57" stroke-width="1.2" stroke-linecap="round"/><path d="M11 9L7.5 12.5L4 9" stroke="#555B57" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- פיד הכתבות הראשי -->
     <main class="feed-section">
@@ -50,14 +128,6 @@
       <!-- אלמנט עוגן עבור גלילה אינסופית (Infinite Scroll) -->
       <div id="loadingIndicator" style="display: none;">טוען כתבות נוספות...</div>
     </main>
-
-    <!-- סיידבר הכולל למשל את ווידג'ט מזג האוויר -->
-    <aside class="right-sidebar">
-      <div id="weatherWidget">
-        <h3>מזג אוויר</h3>
-        <p>טוען נתוני מזג אוויר...</p>
-      </div>
-    </aside>
   </div>
 
   <!-- סקריפט צד לקוח לטיפול בחיפוש, סינון וגלילה אינסופית ב-AJAX -->
