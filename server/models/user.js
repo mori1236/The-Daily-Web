@@ -25,4 +25,9 @@ userSchema.set('toJSON', {
     },
 });
 
+
+/** 
+ * @typedef {import('mongoose').InferSchemaType<typeof userSchema>} UserType
+ * @typedef {import('mongoose').HydratedDocument<UserType>} UserDocument
+ */
 module.exports = mongoose.model('User', userSchema);
