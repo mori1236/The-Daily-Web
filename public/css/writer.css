@@ -323,6 +323,16 @@
   font-size: 13px;
 }
 
+/* "display: flex" above would otherwise win over the hidden attribute */
+.writer-pagination[hidden] {
+  display: none;
+}
+
+/* the list is dimmed while writer.js loads new results */
+.articles-table-wrap[aria-busy='true'] {
+  opacity: 0.6;
+}
+
 .writer-pagination a {
   color: var(--color-ink);
   font-weight: bold;
