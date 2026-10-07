@@ -1,30 +1,37 @@
 <%# כותרת האתר העליונה — לוגו, ניווט וקישורים %>
-<header class="site-header">
-  <logo>
-    <p class="text-logo">The Daily Web</p>
-    <div style="display: flex; align-items: center; gap: 6px;">
-      <span class="live-dot"></span>
-      <p class="sub-text-logo">החדשות החמות ברשת</p>
-    </div>
-  </logo>
-  <nav>
-    <a href="/" data-text="ראשי">ראשי</a>
-    <a href="/" data-text="פוליטי">פוליטי</a>
-    <a href="/" data-text="כלכלה">כלכלה</a>
-    <a href="/" data-text="טכנולוגיה">טכנולוגיה</a>
-    <a href="/" data-text="תרבות">תרבות</a>
-    <a href="/" data-text="ספורט">ספורט</a>
-  </nav>
+  <header class="site-header">
+    <logo>
+      <p class="text-logo">The Daily Web</p>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span class="live-dot"></span>
+        <p class="sub-text-logo">החדשות החמות ברשת</p>
+      </div>
+    </logo>
+    <nav>
+      <a href="/" class="<%= (!locals.currentCategory || currentCategory === 'all') ? 'active' : '' %>"
+        data-text="ראשי">ראשי</a>
+      <a href="/?category=politics" class="<%= (locals.currentCategory === 'politics') ? 'active' : '' %>"
+        data-text="פוליטי">פוליטי</a>
+      <a href="/?category=economy" class="<%= (locals.currentCategory === 'economy') ? 'active' : '' %>"
+        data-text="כלכלה">כלכלה</a>
+      <a href="/?category=tech" class="<%= (locals.currentCategory === 'tech') ? 'active' : '' %>"
+        data-text="טכנולוגיה">טכנולוגיה</a>
+      <a href="/?category=culture" class="<%= (locals.currentCategory === 'culture') ? 'active' : '' %>"
+        data-text="תרבות">תרבות</a>
+      <a href="/?category=sports" class="<%= (locals.currentCategory === 'sports') ? 'active' : '' %>"
+        data-text="ספורט">ספורט</a>
+    </nav>
 
-  <div class="site-header-actions">
-    <a href="/">חיפוש</a>
-    <% if (locals.user) { %>
-    <a href="<%= user.role === 'editor' ? '/editor' : '/writer' %>"><%= user.name %></a>
-    <form action="/logout" method="POST" class="site-header-logout">
-      <button type="submit">התנתקות</button>
-    </form>
-    <% } else { %>
-    <a href="/login">התחברות לכתבים/עורכים</a>
-    <% } %>
-  </div>
-</header>
+    <div class="site-header-actions">
+      <% if (locals.user) { %>
+        <a href="<%= user.role === 'editor' ? '/editor' : '/writer' %>">
+          <%= user.name %>
+        </a>
+        <form action="/logout" method="POST" class="site-header-logout">
+          <button type="submit">התנתקות</button>
+        </form>
+        <% } else { %>
+          <a href="/login">התחברות לכתבים/עורכים</a>
+          <% } %>
+    </div>
+  </header>

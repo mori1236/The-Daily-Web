@@ -1,7 +1,7 @@
 // Helpers that turn articles into what the UI shows (labels, notes, table rows).
 
 const Article = require('../models/article');
-const { formatUpdated, formatCount } = require('./format');
+const { formatUpdated, formatCount, formatRelativeTime, estimateReadingTime } = require('./format');
 
 /**
  * How each article state looks in the UI.
@@ -42,4 +42,28 @@ function toArticleRow(article, now) {
     };
 }
 
-module.exports = { STATE_VIEW, noteFor, toArticleRow };
+// Transforms a published article into the data needed by the feed cards.
+function toFeedArticle(article, now = new Date()) {
+    const pub = article.published || article;
+    const writerName = article.writer && article.writer.name ? article.writer.name : 'מערכת';
+    const category = pub.category || 'news';
+    const categoryLabel = Article.CATEGORY_LABELS[category] || 'כללי';
+    const publishedAt = pub.publishedAt || article.createdAt || new Date();
+
+    return {
+        id: article._id.toString(),
+        title: pub.title || 'כתבה ללא כותרת',
+        summary: pub.summary || '',
+        imageUrl: pub.imageUrl || '/img/login-newsroom.jpg',
+        category,
+        categoryLabel,
+        writer: writerName,
+        publishedAt,
+        publishedAtFormatted: formatRelativeTime(publishedAt, now),
+        viewCount: article.viewCount || 0,
+        url: `/articles/${article._id}`,
+        readingTime: estimateReadingTime(pub.content || pub.summary),
+    };
+}
+
+module.exports = { STATE_VIEW, noteFor, toArticleRow, toFeedArticle };

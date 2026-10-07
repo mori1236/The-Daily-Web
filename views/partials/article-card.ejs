@@ -1,0 +1,44 @@
+<%# תבנית כרטיס כתבה בפיד %>
+<article class="feed-card" data-article-id="<%= article.id %>">
+  <a href="<%= article.url %>" class="feed-card-link" aria-label="<%= article.title %>">
+    <div class="feed-card-media">
+      <img 
+        src="<%= article.imageUrl || '/img/login-newsroom.jpg' %>" 
+        alt="<%= article.title %>" 
+        loading="lazy"
+        onerror="this.onerror=null; this.src='/img/login-newsroom.jpg';"
+      />
+    </div>
+    
+    <div class="feed-card-content">
+      <div class="feed-card-meta">
+        <div class="meta-right">
+          <span class="feed-card-category category-<%= article.category %>">
+            <%= article.categoryLabel %>
+          </span>
+          <span class="meta-dot">·</span>
+          <span class="feed-card-time"><%= article.publishedAtFormatted %></span>
+        </div>
+        
+        <div class="meta-left">
+          <span class="read-indicator" data-read-id="<%= article.id %>">
+            <span class="read-badge unread">
+              <span class="read-dot"></span>
+              <span class="read-text">טרם נצפה</span>
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <h3 class="feed-card-title"><%= article.title %></h3>
+      
+      <% if (article.summary) { %>
+        <p class="feed-card-summary"><%= article.summary %></p>
+      <% } %>
+
+      <div class="feed-card-footer">
+        <span class="feed-card-author">מאת <%= article.writer %></span>
+      </div>
+    </div>
+  </a>
+</article>

@@ -8,6 +8,7 @@ const { contentSecurityPolicy } = require('./server/middleware/csp');
 const authRoutes = require('./server/routes/auth');
 const writerRoutes = require('./server/routes/writer');
 const writerApiRoutes = require('./server/API/writer/routes');
+const articleRoutes = require('./server/routes/articles');
 const { seedDemoData } = require('./server/seed');
 
 const app = express();
@@ -40,17 +41,8 @@ mongoose.connect(config.mongoUri)
     })
     .catch(err => console.error('MongoDB connection error:', err));
 
-// נתיב לדף הבית (הפיד)
-app.get('/', async (req, res) => {
-    try {
-        // כרגע נשלח מערך ריק, בהמשך נשלח לכאן את הכתבות מ-MongoDB
-        const articles = []; 
-        res.render('index', { articles });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('שגיאת שרת פנימית');
-    }
-});
+// פיד הכתבות הראשי ודפי הכתבות
+app.use(articleRoutes);
 
 // התחברות / התנתקות
 app.use(authRoutes);

@@ -120,11 +120,19 @@ logo .sub-text-logo{
 
 .site-header nav a:hover{
   font-weight: bold;
+}
 
+.site-header nav a.active {
+  color: var(--color-accent, #e53935);
+  font-weight: bold;
 }
 
 .site-header nav a:visited{
   color: #555B57;
+}
+
+.site-header nav a.active:visited {
+  color: var(--color-accent, #e53935);
 }
 
 .site-header-actions {

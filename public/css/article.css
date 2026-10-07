@@ -1,0 +1,226 @@
+/* עיצוב עמוד הכתבה המלאה */
+.article-page-container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px 80px 24px;
+}
+
+.article-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--color-muted);
+  margin-bottom: 28px;
+}
+
+.article-breadcrumb a.back-link {
+  color: var(--color-ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.article-breadcrumb a.back-link:hover {
+  color: var(--color-accent);
+}
+
+.breadcrumb-sep {
+  color: var(--color-border-strong);
+}
+
+.breadcrumb-category {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.article-single {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  box-shadow: var(--shadow-card);
+}
+
+.article-header {
+  margin-bottom: 32px;
+}
+
+.article-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.article-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 700;
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.article-tag.category-economy { background: #e0f2fe; color: #0369a1; }
+.article-tag.category-tech { background: #f3e8ff; color: #7e22ce; }
+.article-tag.category-culture { background: #fef3c7; color: #b45309; }
+.article-tag.category-sports { background: #dcfce7; color: #15803d; }
+.article-tag.category-politics { background: #fee2e2; color: #b91c1c; }
+
+.article-read-time {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.article-page-title {
+  font-size: 42px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: var(--color-ink);
+  margin: 0 0 16px 0;
+}
+
+.article-page-lead {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 0 0 24px 0;
+  font-weight: 500;
+}
+
+.article-byline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface-alt);
+  font-size: 18px;
+}
+
+.author-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-ink);
+}
+
+.publish-date {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.article-stats .views-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.article-featured-media {
+  margin: 32px 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  max-height: 520px;
+  background: #eee;
+}
+
+.article-featured-media img {
+  width: 100%;
+  height: 100%;
+  max-height: 520px;
+  object-fit: cover;
+  display: block;
+}
+
+.article-body {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #222623;
+  margin-bottom: 48px;
+}
+
+.article-body p {
+  margin: 0 0 24px 0;
+}
+
+.article-page-footer {
+  padding-top: 32px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.back-home-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-ink);
+  color: var(--color-on-dark);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.back-home-button:hover {
+  background: #2b302d;
+}
+
+.related-articles-section {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 2px solid var(--color-border);
+}
+
+.related-heading {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: var(--color-ink);
+}
+
+@media (max-width: 768px) {
+  .article-single {
+    padding: 24px;
+  }
+  .article-page-title {
+    font-size: 28px;
+  }
+  .article-page-lead {
+    font-size: 16px;
+  }
+  .article-byline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
