@@ -3,7 +3,7 @@ const Article = require('./models/article');
 
 // Demo data for local development. Enabled with SEED_DEMO_DATA=true in .env.
 // Every demo user has the password "123456".
-const demoPassword = '123456';
+const demoPassword = '12345678';
 
 const demoUsers = [
     { name: 'Dana Cohen', email: 'editor@dailyweb.test', role: 'editor' },
