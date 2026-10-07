@@ -4,6 +4,7 @@ const path = require('path');
 const config = require('./server/config'); // טוען ומאמת את משתני הסביבה מקובץ .env
 const { loadUser } = require('./server/middleware/auth');
 const authRoutes = require('./server/routes/auth');
+const writerRoutes = require('./server/routes/writer');
 const { seedDemoData } = require('./server/seed');
 
 const app = express();
@@ -46,6 +47,9 @@ app.get('/', async (req, res) => {
 
 // התחברות / התנתקות
 app.use(authRoutes);
+
+// אזור הכתב — ניהול הכתבות האישיות
+app.use(writerRoutes);
 
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {
