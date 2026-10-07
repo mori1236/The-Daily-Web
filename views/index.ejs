@@ -1,5 +1,4 @@
-<%- include('partials/head', { title: '' }) %>
-<body>
+<%- include('partials/header', { title: '', container: 'home-page' }) %>
 
   <%- include('partials/site-header') %>
 
@@ -61,6 +60,4 @@
   </div>
 
   <!-- סקריפט צד לקוח לטיפול בחיפוש, סינון וגלילה אינסופית ב-AJAX -->
-  <script src="/js/feed.js"></script>
-</body>
-</html>
+<%- include('partials/footer', { script: '/js/feed.js' }) %>

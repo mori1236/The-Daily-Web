@@ -1,5 +1,4 @@
-<%- include('partials/head', { title: 'שגיאה', styles: ['forms', 'auth'] }) %>
-<body class="auth-page">
+<%- include('partials/header', { title: 'שגיאה', styles: ['forms', 'auth'], container: 'auth-page' }) %>
 
   <%- include('partials/auth-story') %>
 
@@ -19,5 +18,4 @@
     </section>
   </main>
 
-</body>
-</html>
+<%- include('partials/footer') %>
