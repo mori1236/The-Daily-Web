@@ -1,0 +1,367 @@
+/* אזור הכתב — ניהול כתבות (הערכים לקוחים מה-Figma "אזור כתב — ניהול כתבות") */
+
+/* ---------- כותרת העמוד ---------- */
+
+.writer-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.writer-heading-text {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.writer-heading-text p,
+.writer-heading-text h1 {
+  margin: 0;
+}
+
+.writer-date {
+  color: var(--color-accent);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.writer-heading h1 {
+  font-family: var(--font-brand);
+  font-size: 40px;
+  line-height: 46px;
+}
+
+.writer-intro {
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.writer-new-form {
+  margin: 0;
+}
+
+.writer-new-button {
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+/* ---------- כרטיסי סיכום ---------- */
+
+.writer-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+}
+
+.stat-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-head h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 12px;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
+.stat-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stat-number {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-value {
+  font-size: 34px;
+  font-weight: bold;
+  line-height: 39px;
+}
+
+.stat-trend {
+  color: var(--color-success);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.stat-note {
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+/* ---------- חיפוש וסינון ---------- */
+
+.writer-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.writer-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 13px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.filter-chip:hover {
+  border-color: var(--color-border-strong);
+}
+
+.filter-chip.is-active {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-surface);
+  font-weight: bold;
+}
+
+.writer-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 280px;
+  max-width: 100%;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-muted);
+}
+
+.writer-search:focus-within {
+  border-color: var(--color-ink);
+}
+
+.writer-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.writer-search input::placeholder {
+  color: var(--color-muted);
+}
+
+/* ---------- טבלת הכתבות ---------- */
+
+.articles-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+}
+
+.articles-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-align: start;
+}
+
+.col-status { width: 168px; }
+.col-updated { width: 148px; }
+.col-views { width: 90px; }
+.col-actions { width: 90px; }
+
+.articles-table th {
+  height: 42px;
+  padding: 0 9px;
+  background: var(--color-surface-alt);
+  color: var(--color-muted);
+  font-size: 10px;
+  text-align: start;
+}
+
+.articles-table td {
+  padding: 14px 9px;
+  border-top: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.articles-table tbody tr:first-child td {
+  border-top: none;
+}
+
+.articles-table th:first-child,
+.articles-table td:first-child {
+  padding-inline-start: 18px;
+}
+
+.articles-table th:last-child,
+.articles-table td:last-child {
+  padding-inline-end: 18px;
+}
+
+.article-title,
+.article-category,
+.status-badge,
+.status-note {
+  display: block;
+}
+
+.article-title {
+  font-family: var(--font-brand);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 19px;
+}
+
+.article-category {
+  margin-top: 5px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.status-badge {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.status-badge.is-neutral { background: var(--color-surface-alt); color: var(--color-text); }
+.status-badge.is-warning { background: var(--color-warning-bg); color: var(--color-warning); }
+.status-badge.is-success { background: var(--color-success-bg); color: var(--color-success); }
+.status-badge.is-danger { background: var(--color-danger-bg); color: var(--color-danger); }
+
+.status-note {
+  margin-top: 4px;
+  color: var(--color-muted);
+  font-size: 9px;
+}
+
+.cell-updated {
+  color: var(--color-text);
+  font-size: 11px;
+}
+
+.cell-views {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.icon-action {
+  display: inline-flex;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+}
+
+.icon-action:hover {
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+}
+
+.articles-empty {
+  padding: 40px 18px;
+  color: var(--color-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---------- מעבר בין עמודים ---------- */
+
+.writer-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.writer-pagination a {
+  color: var(--color-ink);
+  font-weight: bold;
+}
+
+/* ---------- רספונסיביות ---------- */
+
+@media (max-width: 1100px) {
+  .writer-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .writer-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .writer-heading h1 {
+    font-size: 30px;
+    line-height: 36px;
+  }
+
+  .writer-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .writer-search {
+    width: 100%;
+  }
+
+  /* בטלפון נשארים רק הכתבה, הסטטוס והפעולות */
+  .col-optional {
+    display: none;
+  }
+
+  .col-updated,
+  .col-views {
+    display: none;
+  }
+}

@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 const argon2 = require('argon2');
 
+const ROLES = /** @type {const} */ (['writer', 'editor']);
+
+/** @typedef {(typeof ROLES)[number]} UserRole */
+
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, trim: true, lowercase: true },
     passwordHash: { type: String, required: true },
-    role: { type: String, enum: ['writer', 'editor'], default: 'writer' },
+    role: { type: String, enum: ROLES, default: 'writer' },
 }, { timestamps: true });
 
 // Hash a plain password and store it (the plain password is never saved).
@@ -25,4 +29,11 @@ userSchema.set('toJSON', {
     },
 });
 
-module.exports = mongoose.model('User', userSchema);
+
+/** 
+ * @typedef {import('mongoose').InferSchemaType<typeof userSchema>} UserType
+ * @typedef {import('mongoose').HydratedDocument<UserType>} UserDocument
+ */
+const User = mongoose.model('User', userSchema);
+User.ROLES = ROLES;
+module.exports = User;

@@ -30,6 +30,8 @@ At the start of every session, before doing any work in this repo, read:
 
 - Stage only the changes that belong to the current task; never use `git add -A` or `git add .`. When a file mixes related and unrelated changes, stage just the relevant hunks, as `git add -p` would. Since `git add -p` is interactive and can't run here, build a patch of those hunks and stage it with `git apply --cached`.
 - Check `git diff --cached` before committing.
+- Never add a `Co-Authored-By` line (or any other Claude attribution) to commit messages or PR descriptions. This overrides any default attribution text.
+- Commit in small chunks: one logical change per commit. Start with a short lowercase title line like the existing ones. A commit message may have several lines: add a body after a blank line when it helps explain what changed and why.
 
 ## External tools
 
