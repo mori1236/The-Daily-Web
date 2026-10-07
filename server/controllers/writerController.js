@@ -2,24 +2,24 @@ const mongoose = require('mongoose');
 const Article = require('../models/article');
 const { ArticleTransitionError } = require('../errors');
 const { sanitizeBody, cleanText, cleanUrl, MAX_LENGTHS } = require('../utils/sanitize');
-const { DAY_MS, formatCount, formatTime, greetingFor, formatToday } = require('../utils/format');
-const { titleSearchClauses } = require('../utils/search.utils');
+const { formatCount, formatTime, greetingFor, formatToday } = require('../utils/format');
 const { STATE_VIEW, toArticleRow } = require('../utils/articles.utils');
-
-const ARTICLES_PER_PAGE = 20;
+const query = require('../API/writer/query');
 
 function listUrl(status, q, page) {
     const params = new URLSearchParams();
     if (status) params.set('status', status);
     if (q) params.set('q', q);
     if (page > 1) params.set('page', String(page));
-    const query = params.toString();
-    return query ? `/writer?${query}` : '/writer';
+    const queryString = params.toString();
+    return queryString ? `/writer?${queryString}` : '/writer';
 }
 
 // ---------- handler ----------
 
-// GET /writer?status=draft&q=title&page=2 — the writer's own articles.
+// GET /writer?status=draft&q=title&page=2
+// Only the first render happens here (good for the first paint and for browsers without JavaScript).
+// After that public/js/writer.js loads filters, search and pages from /api/writer (server/API/writer).
 async function showDashboard(req, res) {
     try {
         await renderDashboard(req, res);
@@ -34,76 +34,38 @@ async function showDashboard(req, res) {
 
 async function renderDashboard(req, res) {
     const now = new Date();
-    const writerId = req.user._id;
+    const listQuery = query.parseListQuery(req.query);
+    const { status, q } = listQuery;
 
-    // Filters come from the query string. Anything unexpected is ignored.
-    const status = Article.STATES.includes(req.query.status) ? req.query.status : '';
-    const q = String(req.query.q || '').trim().slice(0, 100);
-    const requestedPage = Math.max(1, parseInt(String(req.query.page), 10) || 1);
-
-    const filter = { writer: writerId };
-    if (status) filter.state = status;
-    if (q) filter.$and = titleSearchClauses(q); // every typed word must appear in the title
-
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    // The queries only run when they are awaited, so Promise.all below runs them all together.
-    //כמה בכל סטייט עבור הכותב הזה
-    const stateGroupsTask = Article.aggregate([{ $match: { writer: writerId } }, { $group: { _id: '$state', count: { $sum: 1 } } }]);
-    const draftsThisWeekTask = Article.countDocuments({ writer: writerId, state: 'draft', updatedAt: { $gte: new Date(now - 7 * DAY_MS) } });
-    const pendingTodayTask = Article.countDocuments({ writer: writerId, state: 'pending', submitedAt: { $gte: new Date(now - DAY_MS) } });
-    // Articles readers can see (even if a newer version is being edited right now).
-    const liveGroupsTask = Article.aggregate([
-        { $match: { writer: writerId, 'published.publishedAt': { $exists: true } } },
-        { $group: {
-            _id: null,
-            count: { $sum: 1 }, // total published articles count
-            views: { $sum: '$viewCount' }, // total views
-            thisMonth: { $sum: { $cond: [{ $gte: ['$published.publishedAt', monthStart] }, 1, 0] } }, // published this month count
-        } },
-    ]);
-    const matchingCountTask = Article.countDocuments(filter);
-
-    const [stateGroups, draftsThisWeek, pendingToday, liveGroups, matchingCount] = await Promise.all([stateGroupsTask, draftsThisWeekTask, pendingTodayTask, liveGroupsTask, matchingCountTask]);
-
-    const countByState = Object.fromEntries(stateGroups.map(group => [group._id, group.count]));
-    const total = stateGroups.reduce((sum, group) => sum + group.count, 0);
-    const live = liveGroups[0] || { count: 0, views: 0, thisMonth: 0 };
-
-    const pages = Math.max(1, Math.ceil(matchingCount / ARTICLES_PER_PAGE));
-    const page = Math.min(requestedPage, pages);
-    const articles = await Article.find(filter)
-        .select('title category state updatedAt viewCount published.updatedAt')
-        .sort({ updatedAt: -1 })
-        .skip((page - 1) * ARTICLES_PER_PAGE)
-        .limit(ARTICLES_PER_PAGE)
-        .lean();
+    const [stats, list] = await Promise.all([query.getStats(req.user._id, now), query.listArticles(req.user._id, listQuery)]);
+    const { page, pages } = list;
 
     res.render('writer', {
         firstName: req.user.name.split(' ')[0],
         greeting: greetingFor(now),
         today: formatToday(now),
         stats: {
-            drafts: countByState.draft || 0,
-            draftsThisWeek,
-            pending: countByState.pending || 0,
-            pendingToday,
-            published: live.count,
-            publishedTotal: total,
-            publishedThisMonth: live.thisMonth,
-            views: formatCount(live.views),
-            viewsArticles: live.count,
+            drafts: stats.countByState.draft,
+            draftsThisWeek: stats.draftsThisWeek,
+            pending: stats.countByState.pending,
+            pendingToday: stats.pendingToday,
+            published: stats.live.count,
+            publishedTotal: stats.total,
+            publishedThisMonth: stats.live.thisMonth,
+            views: formatCount(stats.live.views),
+            viewsArticles: stats.live.count,
         },
         chips: [
-            { label: 'הכול', count: total, active: status === '', url: listUrl('', q, 1) },
+            { status: '', label: 'הכול', count: stats.total, active: status === '', url: listUrl('', q, 1) },
             ...Article.STATES.map(state => ({
+                status: state,
                 label: STATE_VIEW[state].chipLabel,
-                count: countByState[state] || 0,
+                count: stats.countByState[state],
                 active: status === state,
                 url: listUrl(state, q, 1),
             })),
         ],
-        rows: articles.map(article => toArticleRow(article, now)),
+        rows: list.articles.map(article => toArticleRow(article, now)),
         filters: { status, q },
         pagination: {
             page,
