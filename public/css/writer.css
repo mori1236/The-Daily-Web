@@ -38,6 +38,10 @@
   line-height: 21px;
 }
 
+.writer-new-form {
+  margin: 0;
+}
+
 .writer-new-button {
   flex-shrink: 0;
   font-size: 13px;
