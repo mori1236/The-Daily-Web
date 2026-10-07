@@ -5,10 +5,15 @@ const { COOKIE_NAME, getCookie } = require('../middleware/auth');
 
 const SESSION_DAYS = 7;
 
+/**
+ * 
+ * @param {import('../models/user').UserDocument} user 
+ * @returns {string}
+ */
 // Where a user lands after login/register.
-// TODO: send writers to '/writer' and editors to '/editor' once those pages exist.
+// TODO: send editors to '/editor' once that page exists.
 function homeFor(user) {
-    return '/';
+    return user.role === 'writer' ? '/writer' : '/';
 }
 
 // Create a session in the DB and send its token as a cookie.
