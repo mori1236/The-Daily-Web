@@ -15,10 +15,12 @@
           <h1><%= greeting %>, <%= firstName %></h1>
           <p class="writer-intro">כל הכתבות שלך במקום אחד — מטיוטה ראשונה ועד נתוני הפרסום.</p>
         </div>
-        <a href="/writer/articles/new" class="btn btn-primary writer-new-button">
-          <%- include('partials/icon', { name: 'plus' }) %>
-          כתבה חדשה
-        </a>
+        <form action="/writer/articles" method="POST" class="writer-new-form">
+          <button type="submit" class="btn btn-primary writer-new-button">
+            <%- include('partials/icon', { name: 'plus' }) %>
+            כתבה חדשה
+          </button>
+        </form>
       </div>
 
       <section class="writer-stats" aria-label="סיכום">
