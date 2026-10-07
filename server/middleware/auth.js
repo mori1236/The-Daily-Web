@@ -31,9 +31,14 @@ async function loadUser(req, res, next) {
  */
 function requireRoleHandler(role) {
     return (req, res, next) => {
-        if (!req.user) return res.redirect('/login');
+        // Ajax calls (/api/...) get a JSON answer; pages get a redirect or an error page.
+        const isApi = req.originalUrl.startsWith('/api/');
+        if (!req.user) {
+            return isApi ? res.status(401).json({ error: 'יש להתחבר מחדש' }) : res.redirect('/login');
+        }
         if (req.user.role !== role) {
             console.warn(`Forbidden: ${req.user.email} (${req.user.role}) tried ${req.method} ${req.originalUrl}`);
+            if (isApi) return res.status(403).json({ error: 'אין לך הרשאה לפעולה הזו' });
             return res.status(403).render('auth-error', {
                 message: 'אין לך הרשאה לדף הזה',
                 details: 'הדף הזה שמור לתפקיד אחר במערכת.',
