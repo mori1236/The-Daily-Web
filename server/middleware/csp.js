@@ -6,7 +6,7 @@ const policy = [
     "default-src 'self'",
     "script-src 'self'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // the design uses a few inline styles
-    "font-src https://fonts.gstatic.com",
+    "font-src 'self' https://fonts.gstatic.com",
     "img-src * data:", // article images can come from any site
     "object-src 'none'",
     "base-uri 'self'",
