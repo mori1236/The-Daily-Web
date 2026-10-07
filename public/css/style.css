@@ -40,6 +40,7 @@ body {
   padding: 0px 58px;
   background: var(--color-surface);
   border-bottom: #D7DAD6 1px solid;
+  margin-bottom: 36px;
 }
 
 logo p{
