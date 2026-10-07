@@ -84,7 +84,7 @@ async function tryRegister(req, res) {
     const email = String(req.body.email || '').trim().toLowerCase();
     const password = String(req.body.password || '');
     const confirmPassword = String(req.body.confirmPassword || '');
-    const role = req.body.role === 'editor' ? 'editor' : 'writer';
+    const role = User.ROLES.includes(req.body.role) ? req.body.role : 'writer';
     const values = { name, email, role }; // refill the form on error (never the passwords)
 
     let error = null;
