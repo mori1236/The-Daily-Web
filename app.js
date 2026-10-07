@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-//require('dotenv').config(); // טעינת משתני סביבה מקובץ .env
+const config = require('./server/config'); // טוען ומאמת את משתני הסביבה מקובץ .env
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = config.port;
 
 // הגדרת EJS כמנוע התבניות (View Engine)
 app.set('view engine', 'ejs');
@@ -14,9 +14,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // הגדרת תיקייה לקבצים סטטיים (כמו CSS, תמונות וכו')
 
 // חיבור למסד הנתונים MongoDB (תוודא שקובץ ה-.env שלך מוגדר עם MONGO_URI)
-// mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/the-daily-web')
-//     .then(() => console.log('Connected to MongoDB successfully!'))
-//     .catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect(config.mongoUri)
+    .then(() => console.log('Connected to MongoDB successfully!'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
 // נתיב לדף הבית (הפיד)
 app.get('/', async (req, res) => {
