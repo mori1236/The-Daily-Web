@@ -7,7 +7,7 @@ const STATES = /** @type {const} */ (['draft', 'pending', 'published', 'returned
 /**
  * @typedef {(typeof CATEGORIES)[number]} ArticleCategory
  * @typedef {(typeof STATES)[number]} ArticleState
- * @typedef {import('./user.js').UserType['role']} UserRole
+ * @typedef {import('./user.js').UserRole} UserRole
  */
 
 /** Hebrew names shown in the UI. Typed as a Record, so adding a category without a label is flagged. */
