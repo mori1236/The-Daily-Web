@@ -1,0 +1,18 @@
+<%# תפריט הצד של אזורי העבודה. מוסיפים כאן קישור כשנבנה הדף שלו.
+    פרמטרים: active — המפתח (key) של הקישור הפעיל %>
+<%
+  const links = [
+    { key: 'articles', label: 'הכתבות שלי', href: '/writer', icon: 'newspaper' },
+  ];
+%>
+<aside class="workspace-sidebar">
+  <nav aria-label="תפריט אזור עבודה" class="workspace-nav">
+    <p class="workspace-nav-title">מרחב עבודה</p>
+    <% links.forEach(link => { %>
+    <a href="<%= link.href %>" class="workspace-link"<%- link.key === active ? ' aria-current="page"' : '' %>>
+      <%- include('icon', { name: link.icon }) %>
+      <%= link.label %>
+    </a>
+    <% }) %>
+  </nav>
+</aside>
