@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const config = require('./server/config'); // טוען ומאמת את משתני הסביבה מקובץ .env
 const { loadUser } = require('./server/middleware/auth');
+const { csrfProtection } = require('./server/middleware/csrf');
 const { contentSecurityPolicy } = require('./server/middleware/csp');
 const authRoutes = require('./server/routes/auth');
 const writerRoutes = require('./server/routes/writer');
@@ -20,6 +21,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // קריאת גוף הבקשה מטפסים (POST) ומ-JSON (Ajax)
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// דוחה בקשות שמשנות נתונים ומגיעות מאתר אחר (CSRF)
+app.use(csrfProtection);
 
 // זיהוי המשתמש המחובר לפי עוגיית ה-session (req.user)
 app.use(loadUser);
