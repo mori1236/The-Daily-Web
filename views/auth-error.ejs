@@ -12,10 +12,10 @@
     <section class="auth-card">
       <div class="auth-card-header">
         <h1><%= message %></h1>
-        <p>משהו השתבש מצדנו. נסו שוב בעוד כמה רגעים.</p>
+        <p><%= locals.details || 'משהו השתבש מצדנו. נסו שוב בעוד כמה רגעים.' %></p>
       </div>
 
-      <a href="<%= retryUrl %>" class="btn btn-primary btn-block">נסו שוב</a>
+      <a href="<%= retryUrl %>" class="btn btn-primary btn-block"><%= locals.retryLabel || 'נסו שוב' %></a>
     </section>
   </main>
 
