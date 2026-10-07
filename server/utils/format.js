@@ -24,6 +24,12 @@ function formatUpdated(date, now) {
     return `${d.day}.${d.month}, ${time}`;
 }
 
+// "09:42"
+function formatTime(date) {
+    const d = dateParts(date);
+    return `${d.hour}:${d.minute}`;
+}
+
 // 24800 -> "24.8K"
 function formatCount(number) {
     if (number < 1000) return String(number);
@@ -44,4 +50,4 @@ function formatToday(now) {
         .format(now).replace(',', ' ·');
 }
 
-module.exports = { DAY_MS, formatUpdated, formatCount, greetingFor, formatToday };
+module.exports = { DAY_MS, formatUpdated, formatTime, formatCount, greetingFor, formatToday };
