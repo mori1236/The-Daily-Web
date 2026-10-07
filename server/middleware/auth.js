@@ -24,4 +24,25 @@ async function loadUser(req, res, next) {
     next();
 }
 
-module.exports = { COOKIE_NAME, getCookie, loadUser };
+/**
+ * Route guard: only users with the given role may continue.
+ * Guests are sent to the login page, other roles get a 403 page.
+ * @param {import('../models/user.js').UserRole} role
+ */
+function requireRoleHandler(role) {
+    return (req, res, next) => {
+        if (!req.user) return res.redirect('/login');
+        if (req.user.role !== role) {
+            console.warn(`Forbidden: ${req.user.email} (${req.user.role}) tried ${req.method} ${req.originalUrl}`);
+            return res.status(403).render('auth-error', {
+                message: 'אין לך הרשאה לדף הזה',
+                details: 'הדף הזה שמור לתפקיד אחר במערכת.',
+                retryUrl: '/',
+                retryLabel: 'חזרה לדף הבית',
+            });
+        }
+        next();
+    };
+}
+
+module.exports = { COOKIE_NAME, getCookie, loadUser, requireRoleHandler };
