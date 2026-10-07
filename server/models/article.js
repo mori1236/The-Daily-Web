@@ -10,6 +10,16 @@ const STATES = /** @type {const} */ (['draft', 'pending', 'published', 'returned
  * @typedef {import('./user.js').UserType['role']} UserRole
  */
 
+/** Hebrew names shown in the UI. Typed as a Record, so adding a category without a label is flagged. */
+const CATEGORY_LABELS = /** @type {Record<ArticleCategory, string>} */ ({
+    politics: 'פוליטי',
+    economy: 'כלכלה',
+    tech: 'טכנולוגיה',
+    sports: 'ספורט',
+    culture: 'תרבות',
+    world: 'עולם',
+});
+
 // The fields a writer edits. They exist twice on every article:
 // once as the working copy (top level) and once inside `published`.
 const contentFields = {
@@ -245,5 +255,6 @@ articleSchema.methods.Reject = async function (actuator, rejectNote) {
 
 const Article = mongoose.model('Article', articleSchema);
 Article.CATEGORIES = CATEGORIES;
+Article.CATEGORY_LABELS = CATEGORY_LABELS;
 Article.STATES = STATES;
 module.exports = Article;
