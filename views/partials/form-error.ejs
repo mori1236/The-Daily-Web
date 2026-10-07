@@ -1,0 +1,4 @@
+<%# הודעת שגיאה כללית לטופס. פרמטר: error — הטקסט (אם ריק, לא מוצג כלום) %>
+<% if (locals.error) { %>
+<p class="form-error" role="alert"><%= error %></p>
+<% } %>

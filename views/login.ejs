@@ -1,0 +1,53 @@
+<%- include('partials/head', { title: 'התחברות למערכת', styles: ['forms', 'auth'] }) %>
+<body class="auth-page">
+
+  <%- include('partials/auth-story') %>
+
+  <main class="auth-main">
+    <a href="/" class="auth-back">
+      חזרה לאתר החדשות
+      <%- include('partials/icon', { name: 'arrow-left' }) %>
+    </a>
+
+    <section class="auth-card">
+      <div class="auth-card-header">
+        <h1>ברוכים השבים</h1>
+        <p>התחברות מאובטחת לכתבים ולעורכים של The Daily Web.</p>
+      </div>
+
+      <%- include('partials/form-error', { error: locals.error }) %>
+
+      <form class="auth-form" action="/login" method="POST">
+        <%- include('partials/form-field', {
+          id: 'email', label: 'כתובת דוא״ל', type: 'email', icon: 'mail',
+          placeholder: 'name@dailyweb.co.il', autocomplete: 'username',
+          value: locals.values && values.email
+        }) %>
+
+        <%- include('partials/form-field', {
+          id: 'password', label: 'סיסמה', type: 'password', icon: 'lock',
+          placeholder: '••••••••••••', autocomplete: 'current-password',
+          minlength: 8, help: 'לפחות 8 תווים'
+        }) %>
+
+        <div class="auth-options">
+          <label class="checkbox">
+            <input type="checkbox" name="remember" checked>
+            זכור אותי במכשיר זה
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          כניסה למערכת
+          <%- include('partials/icon', { name: 'log-in' }) %>
+        </button>
+      </form>
+
+      <p class="auth-switch">עדיין לא רשומים? <a href="/register">הירשמו כאן</a></p>
+    </section>
+
+    <p class="auth-support">בעיה בכניסה? תמיכת דסק הדיגיטל זמינה בטלפון 03-5550190</p>
+  </main>
+
+</body>
+</html>

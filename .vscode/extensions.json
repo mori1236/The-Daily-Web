@@ -8,6 +8,7 @@
         "davidanson.vscode-markdownlint",
         "fabiospampinato.vscode-markdown-todo",
         "takumii.markdowntable",
-        "yzhang.markdown-all-in-one"
+        "yzhang.markdown-all-in-one",
+        "connorontheweb.ejs-colorizer"
     ]
 }

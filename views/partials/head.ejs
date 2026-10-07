@@ -1,0 +1,13 @@
+<%# תגית ה-<head> המשותפת לכל הדפים.
+    פרמטרים: title — כותרת הדף, styles — רשימת קבצי CSS נוספים (בלי סיומת) %>
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title ? title + ' | ' : '' %>The Daily Web</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <% (locals.styles || []).forEach(style => { %>
+  <link rel="stylesheet" href="/css/<%= style %>.css">
+  <% }) %>
+</head>

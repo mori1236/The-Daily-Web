@@ -46,9 +46,18 @@ function parseMongoUri(value) {
     return value;
 }
 
+// Optional flag: "true" or "false" (default false).
+function parseBoolean(name, value) {
+    if (value === undefined || value === '') return false;
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    errors.push(`${name} must be "true" or "false" (got "${value}")`);
+}
+
 const config = {
     port: parsePort(process.env.SERVER_PORT),
     mongoUri: parseMongoUri(process.env.MONGO_URI),
+    seedDemoData: parseBoolean('SEED_DEMO_DATA', process.env.SEED_DEMO_DATA),
 };
 
 if (errors.length) {

@@ -26,6 +26,11 @@ At the start of every session, before doing any work in this repo, read:
 - **Edits to published articles:** keep the published version live until an editor approves the new one.
 - **REST APIs:** use REST-style routes; JSON endpoints go under `/api/...`.
 
+## Git
+
+- Stage only the changes that belong to the current task; never use `git add -A` or `git add .`. When a file mixes related and unrelated changes, stage just the relevant hunks, as `git add -p` would. Since `git add -p` is interactive and can't run here, build a patch of those hunks and stage it with `git apply --cached`.
+- Check `git diff --cached` before committing.
+
 ## External tools
 
 Trello and Figma are available through the Composio MCP server (`composio`).
