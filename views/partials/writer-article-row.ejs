@@ -1,0 +1,21 @@
+<%# שורה אחת בטבלת הכתבות של הכתב. פרמטר: row.
+    משמשת גם לרינדור הראשון בשרת וגם כתבנית ש-public/js/writer.js משכפל וממלא:
+    האלמנטים עם data-field מקבלים את הטקסט מהשדה בשם הזה. %>
+<tr>
+  <td>
+    <span class="article-title" data-field="title"><%= row.title %></span>
+    <span class="article-category" data-field="category"><%= row.category %></span>
+  </td>
+  <td>
+    <span class="status-badge is-<%= row.stateTone %>" data-field="stateLabel"><%= row.stateLabel %></span>
+    <span class="status-note" data-field="note"><%= row.note %></span>
+  </td>
+  <td class="col-optional cell-updated" data-field="updated"><%= row.updated %></td>
+  <td class="col-optional cell-views" data-field="views"><%= row.views %></td>
+  <td>
+    <a href="<%= row.editUrl %>" class="icon-action" data-edit-link title="עריכה">
+      <%- include('icon', { name: 'pencil' }) %>
+      <span class="visually-hidden">עריכת הכתבה: <span data-field="title"><%= row.title %></span></span>
+    </a>
+  </td>
+</tr>

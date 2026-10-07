@@ -7,6 +7,7 @@ const { csrfProtection } = require('./server/middleware/csrf');
 const { contentSecurityPolicy } = require('./server/middleware/csp');
 const authRoutes = require('./server/routes/auth');
 const writerRoutes = require('./server/routes/writer');
+const writerApiRoutes = require('./server/API/writer/routes');
 const { seedDemoData } = require('./server/seed');
 
 const app = express();
@@ -56,6 +57,7 @@ app.use(authRoutes);
 
 // אזור הכתב — ניהול הכתבות האישיות
 app.use(writerRoutes);
+app.use('/api/writer', writerApiRoutes); // JSON: the article list and stats for the writer page
 
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {

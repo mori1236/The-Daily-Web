@@ -77,22 +77,23 @@
       <div class="writer-tools">
         <nav class="writer-filters" aria-label="סינון לפי סטטוס">
           <% chips.forEach(chip => { %>
-          <a href="<%= chip.url %>" class="filter-chip<%= chip.active ? ' is-active' : '' %>"<%- chip.active ? ' aria-current="true"' : '' %>>
+          <a href="<%= chip.url %>" class="filter-chip<%= chip.active ? ' is-active' : '' %>" data-filter-link data-status="<%= chip.status %>"<%- chip.active ? ' aria-current="true"' : '' %>>
             <%= chip.label %> <%= chip.count %>
           </a>
           <% }) %>
         </nav>
 
-        <form action="/writer" method="GET" role="search" class="writer-search">
-          <% if (filters.status) { %><input type="hidden" name="status" value="<%= filters.status %>"><% } %>
+        <form action="/writer" method="GET" role="search" class="writer-search" id="writer-search">
+          <input type="hidden" name="status" value="<%= filters.status %>">
           <label for="writer-search-input" class="visually-hidden">חיפוש בכתבות שלי</label>
           <%- include('partials/icon', { name: 'search' }) %>
           <input type="search" id="writer-search-input" name="q" value="<%= filters.q %>" maxlength="100" placeholder="חיפוש בכתבות שלי">
         </form>
       </div>
 
-      <div class="articles-table-wrap">
+      <div class="articles-table-wrap" id="articles-wrap">
         <table class="articles-table">
+          <caption class="visually-hidden">הכתבות שלי</caption>
           <colgroup>
             <col>
             <col class="col-status">
@@ -109,7 +110,11 @@
               <th scope="col">פעולות</th>
             </tr>
           </thead>
-          <tbody>
+          <%# ההודעות כאן כדי ש-writer.js יציג את אותו טקסט בלי לשכפל אותו בקוד %>
+          <tbody id="articles-body" aria-live="polite"
+                 data-message-filtered="לא נמצאו כתבות שמתאימות לחיפוש."
+                 data-message-empty="עוד לא כתבת כתבות. התחילו בכתבה חדשה!"
+                 data-message-error="אירעה שגיאה בטעינת הכתבות. נסו לרענן את הדף.">
             <% if (rows.length === 0) { %>
             <tr>
               <td colspan="5" class="articles-empty">
@@ -118,35 +123,22 @@
             </tr>
             <% } %>
             <% rows.forEach(row => { %>
-            <tr>
-              <td>
-                <span class="article-title"><%= row.title %></span>
-                <span class="article-category"><%= row.category %></span>
-              </td>
-              <td>
-                <span class="status-badge is-<%= row.stateTone %>"><%= row.stateLabel %></span>
-                <span class="status-note"><%= row.note %></span>
-              </td>
-              <td class="col-optional cell-updated"><%= row.updated %></td>
-              <td class="col-optional cell-views"><%= row.views %></td>
-              <td>
-                <a href="<%= row.editUrl %>" class="icon-action" aria-label="עריכת הכתבה: <%= row.title %>" title="עריכה">
-                  <%- include('partials/icon', { name: 'pencil' }) %>
-                </a>
-              </td>
-            </tr>
+            <%- include('partials/writer-article-row', { row }) %>
             <% }) %>
           </tbody>
         </table>
       </div>
 
-      <% if (pagination.pages > 1) { %>
-      <nav class="writer-pagination" aria-label="דפי תוצאות">
-        <% if (pagination.prevUrl) { %><a href="<%= pagination.prevUrl %>" rel="prev">הקודם</a><% } %>
-        <span>עמוד <%= pagination.page %> מתוך <%= pagination.pages %></span>
-        <% if (pagination.nextUrl) { %><a href="<%= pagination.nextUrl %>" rel="next">הבא</a><% } %>
+      <nav class="writer-pagination" id="writer-pagination" aria-label="דפי תוצאות"<%- pagination.pages > 1 ? '' : ' hidden' %>>
+        <a href="<%= pagination.prevUrl || '#' %>" rel="prev" data-page-link<%- pagination.prevUrl ? '' : ' hidden' %>>הקודם</a>
+        <span>עמוד <span data-page><%= pagination.page %></span> מתוך <span data-pages><%= pagination.pages %></span></span>
+        <a href="<%= pagination.nextUrl || '#' %>" rel="next" data-page-link<%- pagination.nextUrl ? '' : ' hidden' %>>הבא</a>
       </nav>
-      <% } %>
+
+      <%# שורה ריקה לשכפול — writer.js מעתיק אותה לכל כתבה שמגיעה מה-API %>
+      <template id="article-row-template">
+        <%- include('partials/writer-article-row', { row: { title: '', category: '', stateLabel: '', stateTone: 'neutral', note: '', updated: '', views: '', editUrl: '#' } }) %>
+      </template>
 
     </main>
   </div>
