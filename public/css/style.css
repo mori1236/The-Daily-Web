@@ -23,6 +23,14 @@ body {
   padding: 0;
 }
 
+/* תוכן כל דף מוגבל ל-1440px ומרוכז. הכותרת (site-header / workspace-header) נשארת ברוחב מלא */
+.auth-page,
+.workspace-content,
+.main-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
 .site-header {
   font-family: 'Arimo';
   display: flex;

@@ -1,5 +1,4 @@
-<%- include('partials/head', { title: 'התחברות למערכת', styles: ['forms', 'auth'] }) %>
-<body class="auth-page">
+<%- include('partials/header', { title: 'התחברות למערכת', styles: ['forms', 'auth'], container: 'auth-page' }) %>
 
   <%- include('partials/auth-story') %>
 
@@ -49,5 +48,4 @@
     <p class="auth-support">בעיה בכניסה? תמיכת דסק הדיגיטל זמינה בטלפון 03-5550190</p>
   </main>
 
-</body>
-</html>
+<%- include('partials/footer') %>

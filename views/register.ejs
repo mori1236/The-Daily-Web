@@ -1,5 +1,4 @@
-<%- include('partials/head', { title: 'הרשמה למערכת', styles: ['forms', 'auth'] }) %>
-<body class="auth-page">
+<%- include('partials/header', { title: 'הרשמה למערכת', styles: ['forms', 'auth'], container: 'auth-page' }) %>
 
   <%- include('partials/auth-story') %>
 
@@ -55,6 +54,4 @@
     <p class="auth-support">בעיה בהרשמה? תמיכת דסק הדיגיטל זמינה בטלפון 03-5550190</p>
   </main>
 
-  <script src="/js/register.js"></script>
-</body>
-</html>
+<%- include('partials/footer', { script: '/js/register.js' }) %>

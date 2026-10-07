@@ -1,6 +1,4 @@
-<%- include('partials/head', { title: 'עריכת כתבה', styles: ['forms', 'workspace', 'writer', 'writer-editor'] }) %>
-
-<body class="workspace-page">
+<%- include('partials/header', { title: 'עריכת כתבה', styles: ['forms', 'workspace', 'writer', 'writer-editor'], container: 'workspace-page' }) %>
 
   <%- include('partials/workspace-header', { area: 'עריכת כתבה' }) %>
 
@@ -121,6 +119,4 @@
     </div>
   </dialog>
 
-  <script src="/js/writer-editor.js" defer></script>
-</body>
-</html>
+<%- include('partials/footer', { script: '/js/writer-editor.js' }) %>

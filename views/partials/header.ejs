@@ -1,5 +1,5 @@
-<%# תגית ה-<head> המשותפת לכל הדפים.
-    פרמטרים: title — כותרת הדף, styles — רשימת קבצי CSS נוספים (בלי סיומת) %>
+<%# תחילת כל דף: <head>, פתיחת <body> ועטיפה (container) שמקבלת את הקלאס של הדף.
+    פרמטרים: title — כותרת הדף, styles — רשימת קבצי CSS נוספים (בלי סיומת), container — קלאס העטיפה. נסגר ב-footer %>
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -11,3 +11,5 @@
   <link rel="stylesheet" href="/css/<%= style %>.css">
   <% }) %>
 </head>
+<body>
+<div class="<%= container %>">

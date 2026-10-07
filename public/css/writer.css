@@ -52,7 +52,6 @@
 .writer-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  align-items: start;
   gap: 14px;
 }
 
@@ -90,6 +89,7 @@
 }
 
 .stat-body {
+  margin-top: auto;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
