@@ -106,6 +106,21 @@
     </main>
   </div>
 
+  <dialog class="confirm-dialog" id="submit-dialog" aria-labelledby="submit-dialog-title">
+    <h2 id="submit-dialog-title">להגיש את הכתבה לאישור?</h2>
+    <p>
+      אחרי ההגשה אי אפשר לערוך את הכתבה עד שהעורך יאשר אותה או יחזיר אותה לתיקונים.
+      <% if (article.published) { %>הגרסה המפורסמת תישאר באתר עד האישור.<% } %>
+    </p>
+    <div class="confirm-dialog-actions">
+      <button type="button" class="btn btn-secondary" id="submit-dialog-cancel">חזרה לעריכה</button>
+      <button type="button" class="btn btn-primary" id="submit-dialog-confirm">
+        <%- include('partials/icon', { name: 'send' }) %>
+        הגשה לאישור
+      </button>
+    </div>
+  </dialog>
+
   <script src="/js/writer-editor.js" defer></script>
 </body>
 </html>

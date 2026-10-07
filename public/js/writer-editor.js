@@ -21,6 +21,9 @@ const saveText = document.getElementById('editor-save-text');
 const submitButton = document.getElementById('editor-submit');
 const errorBox = document.getElementById('editor-error');
 const toolbar = document.getElementById('editor-toolbar');
+const submitDialog = document.getElementById('submit-dialog');
+const submitDialogCancel = document.getElementById('submit-dialog-cancel');
+const submitDialogConfirm = document.getElementById('submit-dialog-confirm');
 
 const fieldLabels = { title: 'כותרת', summary: 'תקציר', content: 'תוכן', category: 'קטגוריה' };
 
@@ -171,8 +174,21 @@ toolbar.addEventListener('click', event => {
 
 // ---------- submit for approval ----------
 
-submitButton.addEventListener('click', async () => {
+// The button only asks for confirmation. The article can't be edited after it is submitted.
+submitButton.addEventListener('click', () => {
     clearError();
+    submitDialog.showModal();
+});
+
+submitDialogCancel.addEventListener('click', () => submitDialog.close());
+
+// Clicking the dark area around the box closes it too.
+submitDialog.addEventListener('click', event => {
+    if (event.target === submitDialog) submitDialog.close();
+});
+
+submitDialogConfirm.addEventListener('click', async () => {
+    submitDialogConfirm.disabled = true;
     submitButton.disabled = true;
     let submitted = false;
     try {
@@ -196,7 +212,11 @@ submitButton.addEventListener('click', async () => {
     } catch (err) {
         showError('אירעה שגיאה בהגשה. נסו שוב.');
     } finally {
-        if (!submitted) submitButton.disabled = false; // after a successful submit the page is replaced
+        if (!submitted) { // after a successful submit the page is replaced
+            submitButton.disabled = false;
+            submitDialogConfirm.disabled = false;
+            submitDialog.close(); // errors are shown on the page behind the dialog
+        }
     }
 });
 
