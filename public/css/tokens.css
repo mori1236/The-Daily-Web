@@ -13,6 +13,12 @@
   --color-on-dark-muted: #b8bdb8; /* טקסט משני על רקע כהה */
   --color-accent: #e53935;        /* אדום — לייב, קישורים בולטים */
   --color-success: #19764b;       /* ירוק — אבטחה, הצלחה */
+  --color-surface-alt: #ecedea;   /* רקע משני: כותרת טבלה, אייקונים, תגית "בהכנה" */
+  --color-success-bg: #e4f3eb;    /* רקע תגית "פורסמה" */
+  --color-warning: #a96500;       /* כתום — ממתין לאישור */
+  --color-warning-bg: #fff2d6;
+  --color-danger: #b71c1c;        /* אדום כהה — הוחזר לתיקונים */
+  --color-danger-bg: #fde9e8;
 
   /* טיפוגרפיה */
   --font-body: 'Arimo', Arial, sans-serif;

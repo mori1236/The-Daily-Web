@@ -91,12 +91,12 @@ logo .sub-text-logo{
   font-weight: bold;
 }
 
-nav{
+.site-header nav{
   display: flex;
   gap: 28px;
 }
 
-nav a::after {
+.site-header nav a::after {
   content: attr(data-text); /* שואב את הטקסט מתוך ה-data-text שכתבנו ב-HTML */
   content: attr(data-text) / ""; /* תמיכה נגישה */
   font-weight: bold;
@@ -107,7 +107,7 @@ nav a::after {
   pointer-events: none;
 }
 
-nav a{
+.site-header nav a{
   color: #555B57;
   font-size: 14px;
   margin: 2px;
@@ -118,12 +118,12 @@ nav a{
   justify-content: center;
 }
 
-nav a:hover{
+.site-header nav a:hover{
   font-weight: bold;
 
 }
 
-nav a:visited{
+.site-header nav a:visited{
   color: #555B57;
 }
 

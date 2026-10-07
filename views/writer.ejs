@@ -1,0 +1,156 @@
+<%- include('partials/head', { title: 'הכתבות שלי', styles: ['forms', 'workspace', 'writer'] }) %>
+
+<body class="workspace-page">
+
+  <%- include('partials/workspace-header', { area: 'אזור כתב' }) %>
+
+  <div class="workspace">
+    <%- include('partials/workspace-sidebar', { active: 'articles' }) %>
+
+    <main class="workspace-content">
+
+      <div class="writer-heading">
+        <div class="writer-heading-text">
+          <p class="writer-date"><%= today %></p>
+          <h1><%= greeting %>, <%= firstName %></h1>
+          <p class="writer-intro">כל הכתבות שלך במקום אחד — מטיוטה ראשונה ועד נתוני הפרסום.</p>
+        </div>
+        <form action="/writer/articles" method="POST" class="writer-new-form">
+          <button type="submit" class="btn btn-primary writer-new-button">
+            <%- include('partials/icon', { name: 'plus' }) %>
+            כתבה חדשה
+          </button>
+        </form>
+      </div>
+
+      <section class="writer-stats" aria-label="סיכום">
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-icon"><%- include('partials/icon', { name: 'file-pen' }) %></span>
+            <h2>טיוטות פעילות</h2>
+          </div>
+          <div class="stat-body">
+            <div class="stat-number"><span class="stat-value"><%= stats.drafts %></span></div>
+            <span class="stat-note"><%= stats.draftsThisWeek %> עודכנו השבוע</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-icon"><%- include('partials/icon', { name: 'clock' }) %></span>
+            <h2>ממתינות לאישור</h2>
+          </div>
+          <div class="stat-body">
+            <div class="stat-number"><span class="stat-value"><%= stats.pending %></span></div>
+            <span class="stat-note"><%= stats.pendingToday %> הוגשו ב־24 שעות האחרונות</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-icon"><%- include('partials/icon', { name: 'circle-check' }) %></span>
+            <h2>פורסמו</h2>
+          </div>
+          <div class="stat-body">
+            <div class="stat-number">
+              <span class="stat-value"><%= stats.published %></span>
+              <% if (stats.publishedThisMonth > 0) { %>
+              <span class="stat-trend">↑ <%= stats.publishedThisMonth %> החודש</span>
+              <% } %>
+            </div>
+            <span class="stat-note">מתוך <%= stats.publishedTotal %></span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-head">
+            <span class="stat-icon"><%- include('partials/icon', { name: 'eye' }) %></span>
+            <h2>סך הצפיות</h2>
+          </div>
+          <div class="stat-body">
+            <div class="stat-number"><span class="stat-value"><%= stats.views %></span></div>
+            <span class="stat-note">ב־<%= stats.viewsArticles %> כתבות</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="writer-tools">
+        <nav class="writer-filters" aria-label="סינון לפי סטטוס">
+          <% chips.forEach(chip => { %>
+          <a href="<%= chip.url %>" class="filter-chip<%= chip.active ? ' is-active' : '' %>"<%- chip.active ? ' aria-current="true"' : '' %>>
+            <%= chip.label %> <%= chip.count %>
+          </a>
+          <% }) %>
+        </nav>
+
+        <form action="/writer" method="GET" role="search" class="writer-search">
+          <% if (filters.status) { %><input type="hidden" name="status" value="<%= filters.status %>"><% } %>
+          <label for="writer-search-input" class="visually-hidden">חיפוש בכתבות שלי</label>
+          <%- include('partials/icon', { name: 'search' }) %>
+          <input type="search" id="writer-search-input" name="q" value="<%= filters.q %>" maxlength="100" placeholder="חיפוש בכתבות שלי">
+        </form>
+      </div>
+
+      <div class="articles-table-wrap">
+        <table class="articles-table">
+          <colgroup>
+            <col>
+            <col class="col-status">
+            <col class="col-updated">
+            <col class="col-views">
+            <col class="col-actions">
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">כתבה</th>
+              <th scope="col">סטטוס</th>
+              <th scope="col" class="col-optional">עדכון אחרון</th>
+              <th scope="col" class="col-optional">צפיות</th>
+              <th scope="col">פעולות</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (rows.length === 0) { %>
+            <tr>
+              <td colspan="5" class="articles-empty">
+                <%= filters.q || filters.status ? 'לא נמצאו כתבות שמתאימות לחיפוש.' : 'עוד לא כתבת כתבות. התחילו בכתבה חדשה!' %>
+              </td>
+            </tr>
+            <% } %>
+            <% rows.forEach(row => { %>
+            <tr>
+              <td>
+                <span class="article-title"><%= row.title %></span>
+                <span class="article-category"><%= row.category %></span>
+              </td>
+              <td>
+                <span class="status-badge is-<%= row.stateTone %>"><%= row.stateLabel %></span>
+                <span class="status-note"><%= row.note %></span>
+              </td>
+              <td class="col-optional cell-updated"><%= row.updated %></td>
+              <td class="col-optional cell-views"><%= row.views %></td>
+              <td>
+                <a href="<%= row.editUrl %>" class="icon-action" aria-label="עריכת הכתבה: <%= row.title %>" title="עריכה">
+                  <%- include('partials/icon', { name: 'pencil' }) %>
+                </a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <% if (pagination.pages > 1) { %>
+      <nav class="writer-pagination" aria-label="דפי תוצאות">
+        <% if (pagination.prevUrl) { %><a href="<%= pagination.prevUrl %>" rel="prev">הקודם</a><% } %>
+        <span>עמוד <%= pagination.page %> מתוך <%= pagination.pages %></span>
+        <% if (pagination.nextUrl) { %><a href="<%= pagination.nextUrl %>" rel="next">הבא</a><% } %>
+      </nav>
+      <% } %>
+
+    </main>
+  </div>
+
+  <script src="/js/writer.js" defer></script>
+</body>
+</html>

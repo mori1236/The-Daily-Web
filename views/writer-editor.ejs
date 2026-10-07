@@ -1,0 +1,126 @@
+<%- include('partials/head', { title: 'עריכת כתבה', styles: ['forms', 'workspace', 'writer', 'writer-editor'] }) %>
+
+<body class="workspace-page">
+
+  <%- include('partials/workspace-header', { area: 'עריכת כתבה' }) %>
+
+  <div class="workspace">
+    <%- include('partials/workspace-sidebar', { active: 'articles' }) %>
+
+    <main class="editor" id="editor" data-article-id="<%= article._id %>" data-can-edit="<%= canEdit %>">
+
+      <div class="editor-topbar">
+        <div class="editor-doc-state">
+          <span class="status-badge is-<%= state.tone %>" id="editor-state"><%= state.label %></span>
+          <span class="editor-topbar-title" id="editor-topbar-title"><%= article.title || 'כתבה ללא כותרת' %></span>
+        </div>
+
+        <div class="editor-actions">
+          <p class="editor-save-status" id="editor-save-status" role="status" aria-live="polite">
+            <%- include('partials/icon', { name: 'cloud-check' }) %>
+            <span id="editor-save-text"><%= canEdit ? 'כל השינויים נשמרו · ' + savedAt : 'הכתבה ממתינה לעורך' %></span>
+          </p>
+          <button type="button" class="btn btn-primary editor-submit" id="editor-submit"<%- canEdit ? '' : ' disabled' %>>
+            <%- include('partials/icon', { name: 'send' }) %>
+            <%= article.state === 'returned' ? 'הגשה מחדש' : 'הגשה לאישור' %>
+          </button>
+        </div>
+      </div>
+
+      <% if (article.state === 'returned' && article.editorRejectNote) { %>
+      <div class="editor-banner is-danger" role="note">
+        <strong>העורך החזיר את הכתבה לתיקונים:</strong>
+        <span><%= article.editorRejectNote %></span>
+      </div>
+      <% } else if (article.state === 'pending') { %>
+      <div class="editor-banner" role="note">הכתבה הוגשה ומחכה לאישור העורך. אי אפשר לערוך אותה בינתיים.</div>
+      <% } else if (article.published) { %>
+      <div class="editor-banner" role="note">הגרסה המפורסמת עדיין באתר. השינויים שלך יופיעו בו רק אחרי אישור העורך.</div>
+      <% } %>
+
+      <p class="form-error editor-error" id="editor-error" role="alert" hidden></p>
+
+      <div class="editor-body">
+
+        <section class="editor-document" aria-label="מסמך הכתבה">
+          <div class="editor-toolbar" role="toolbar" aria-label="עיצוב טקסט" id="editor-toolbar">
+            <button type="button" data-command="bold" title="מודגש" aria-label="מודגש"><%- include('partials/icon', { name: 'bold' }) %></button>
+            <button type="button" data-command="italic" title="נטוי" aria-label="נטוי"><%- include('partials/icon', { name: 'italic' }) %></button>
+            <button type="button" data-command="underline" title="קו תחתון" aria-label="קו תחתון"><%- include('partials/icon', { name: 'underline' }) %></button>
+            <span class="editor-toolbar-divider"></span>
+            <button type="button" data-command="formatBlock" data-value="h2" title="כותרת" aria-label="כותרת">H2</button>
+            <button type="button" data-command="formatBlock" data-value="h3" title="כותרת משנה" aria-label="כותרת משנה">H3</button>
+            <button type="button" data-command="formatBlock" data-value="p" title="פסקה" aria-label="פסקה">¶</button>
+            <span class="editor-toolbar-divider"></span>
+            <button type="button" data-command="insertUnorderedList" title="רשימה" aria-label="רשימה"><%- include('partials/icon', { name: 'list' }) %></button>
+            <button type="button" data-command="insertOrderedList" title="רשימה ממוספרת" aria-label="רשימה ממוספרת"><%- include('partials/icon', { name: 'list-ordered' }) %></button>
+            <button type="button" data-command="formatBlock" data-value="blockquote" title="ציטוט" aria-label="ציטוט"><%- include('partials/icon', { name: 'quote' }) %></button>
+            <span class="editor-toolbar-divider"></span>
+            <button type="button" data-command="createLink" title="קישור" aria-label="קישור"><%- include('partials/icon', { name: 'link' }) %></button>
+          </div>
+
+          <div class="editor-content">
+            <label for="editor-title" class="visually-hidden">כותרת הכתבה</label>
+            <input type="text" id="editor-title" class="editor-title" maxlength="150" placeholder="כותרת הכתבה" value="<%= article.title %>"<%- canEdit ? '' : ' disabled' %>>
+
+            <label for="editor-summary" class="visually-hidden">תקציר</label>
+            <textarea id="editor-summary" class="editor-summary" rows="3" maxlength="300" placeholder="תקציר קצר שמופיע בפיד"<%- canEdit ? '' : ' disabled' %>><%= article.summary %></textarea>
+
+            <div id="editor-text" class="editor-text" role="textbox" aria-multiline="true" aria-label="תוכן הכתבה"
+                 data-placeholder="כתבו כאן את הכתבה…"<%- canEdit ? ' contenteditable="true"' : '' %>><%- contentHtml %></div>
+          </div>
+        </section>
+
+        <aside class="editor-settings" aria-label="הגדרות פרסום">
+          <h2 class="editor-settings-title">
+            <%- include('partials/icon', { name: 'sliders-horizontal' }) %>
+            הגדרות פרסום
+          </h2>
+
+          <div class="field">
+            <label for="editor-category" class="field-label">קטגוריה</label>
+            <select id="editor-category" class="editor-select"<%- canEdit ? '' : ' disabled' %>>
+              <option value="" <%= article.category ? '' : 'selected' %> disabled>בחרו קטגוריה</option>
+              <% categories.forEach(category => { %>
+              <option value="<%= category.key %>" <%= article.category === category.key ? 'selected' : '' %>><%= category.label %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="field">
+            <span class="field-label">כתב/ת</span>
+            <p class="editor-readonly"><%= user.name %></p>
+          </div>
+
+          <div class="field">
+            <label for="editor-image" class="field-label">תמונה ראשית</label>
+            <div class="editor-image-preview" id="editor-image-preview">
+              <% if (article.imageUrl) { %><img src="<%= article.imageUrl %>" alt="<%= article.title %>"><% } else { %><span>אין תמונה</span><% } %>
+            </div>
+            <input type="url" id="editor-image" class="editor-input" dir="ltr" maxlength="500" placeholder="https://example.com/image.jpg" value="<%= article.imageUrl %>"<%- canEdit ? '' : ' disabled' %>>
+            <span class="field-help">קישור לתמונה קיימת. כותרת הכתבה משמשת כטקסט חלופי.</span>
+          </div>
+        </aside>
+
+      </div>
+    </main>
+  </div>
+
+  <dialog class="confirm-dialog" id="submit-dialog" aria-labelledby="submit-dialog-title">
+    <h2 id="submit-dialog-title">להגיש את הכתבה לאישור?</h2>
+    <p>
+      אחרי ההגשה אי אפשר לערוך את הכתבה עד שהעורך יאשר אותה או יחזיר אותה לתיקונים.
+      <% if (article.published) { %>הגרסה המפורסמת תישאר באתר עד האישור.<% } %>
+    </p>
+    <div class="confirm-dialog-actions">
+      <button type="button" class="btn btn-secondary" id="submit-dialog-cancel">חזרה לעריכה</button>
+      <button type="button" class="btn btn-primary" id="submit-dialog-confirm">
+        <%- include('partials/icon', { name: 'send' }) %>
+        הגשה לאישור
+      </button>
+    </div>
+  </dialog>
+
+  <script src="/js/writer-editor.js" defer></script>
+</body>
+</html>
