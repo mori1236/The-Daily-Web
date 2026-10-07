@@ -18,11 +18,13 @@ const demoUsers = [
 const articleCount = 500;
 const dayMs = 24 * 60 * 60 * 1000;
 
-const subjects = ['The city council', 'A local startup', 'The national team', 'Researchers', 'The central bank',
-    'A new museum', 'Farmers', 'The transport ministry', 'A famous author', 'Students'];
-const actions = ['announces a major plan', 'faces unexpected delays', 'wins an important award', 'reveals new findings',
-    'opens to the public', 'responds to criticism', 'breaks a long-standing record', 'launches a new program'];
-const places = ['in Tel Aviv', 'in Haifa', 'in Jerusalem', 'across the country', 'in the Negev', 'in the Galilee'];
+// A title is built as "<subject>: <development> <place>", for example "חוקרים: ממצאים חדשים בגליל".
+// The development is a noun phrase, so every combination reads well in Hebrew.
+const subjects = ['מועצת העיר', 'סטארט־אפ מקומי', 'נבחרת ישראל', 'חוקרים', 'הבנק המרכזי',
+    'מוזיאון חדש', 'חקלאים', 'משרד התחבורה', 'סופר ידוע', 'סטודנטים'];
+const developments = ['תוכנית חדשה', 'עיכובים בלתי צפויים', 'פרס יוקרתי', 'ממצאים חדשים',
+    'פתיחה לקהל', 'תגובה לביקורת', 'שיא חדש', 'מיזם חדש'];
+const places = ['בתל אביב', 'בחיפה', 'בירושלים', 'ברחבי הארץ', 'בנגב', 'בגליל'];
 
 // A small deterministic pseudo-random number generator, so every seed run
 // produces the same articles (handy when debugging and at the defense).
@@ -36,12 +38,12 @@ function pick(list) {
 }
 
 function makeContent(index, version) {
-    const title = `${pick(subjects)} ${pick(actions)} ${pick(places)}`;
-    const paragraph = `${title}. This is demo article number ${index + 1}, version ${version}. ` +
-        'It exists only to fill the site with realistic looking content for the demo.';
+    const title = `${pick(subjects)}: ${pick(developments)} ${pick(places)}`;
+    const paragraph = `${title}. זוהי כתבת דוגמה מספר ${index + 1}, גרסה ${version}. ` +
+        'היא קיימת רק כדי למלא את האתר בתוכן שנראה אמיתי להדגמה.';
     return {
         title,
-        summary: `${title}. Read the full story.`,
+        summary: `${title}. קראו את הכתבה המלאה.`,
         content: [paragraph, paragraph, paragraph].join('\n\n'),
         category: pick(Article.CATEGORIES),
         imageUrl: `https://picsum.photos/seed/daily-web-${index}/800/450`,
@@ -90,7 +92,7 @@ function makeArticle(index, writers, editors, now) {
             });
             if (stage > 0) article.submitedAt = new Date(now - random() * dayMs);
             if (stage === 2) {
-                article.editorRejectNote = 'Please shorten the summary and double check the facts.';
+                article.editorRejectNote = 'כדאי לקצר את התקציר ולבדוק שוב את העובדות.';
                 article.rejectedAt = new Date(now - random() * dayMs);
             }
         }
@@ -110,7 +112,7 @@ function makeArticle(index, writers, editors, now) {
             article.submitedAt = created;
             article.editor = editor._id;
             article.rejectedAt = new Date(created.getTime() + dayMs / 4);
-            article.editorRejectNote = 'The article needs a stronger opening and a source for the numbers.';
+            article.editorRejectNote = 'הכתבה צריכה פתיח חזק יותר ומקור למספרים.';
         }
     }
     return article;
