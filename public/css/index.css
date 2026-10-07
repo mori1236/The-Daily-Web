@@ -1,0 +1,253 @@
+/* מבנה ראשי */
+.main-container {
+    width: 1440px;
+    display: flex;
+    flex-direction: column;
+    gap: 42px;
+    margin: 36px auto 0;
+}
+
+.upper-section {
+    display: flex;
+    gap: 28px;
+    height: 410px;
+}
+
+#weatherWidget {
+    width: 282px;
+}
+
+.article-carousel {
+    background-color: var(--color-surface);
+    flex: 1;
+    border-radius: 16px;
+    height: inherit;
+    border: 1px var(--color-border) solid;
+}
+
+.main-article{
+    display: flex;
+    height: inherit;
+    overflow: hidden;
+}
+
+.main-article img{
+    width: 570px;
+    object-fit: cover;
+    display: block;
+    height: 100%;
+    flex-shrink: 0;
+    border-radius: 16px;
+}
+
+.main-article-content{
+    padding: 34px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.main-article-content h2{
+    color: var(--color-ink);
+    font-weight: bold;
+    font-size: 52px;
+    font-family: 'Inter';
+    margin: 0px;
+}
+
+.main-article-content p{
+    font-family: 'Arimo';
+    font-size: 16px;
+    color: var(--color-text);
+}
+
+.main-article-content .article-button{
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    gap: 8px;
+    align-self: flex-end;
+
+    font-family: 'Arimo', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 13px;
+    color: var(--color-on-dark);
+
+    width: fit-content;
+    height: fit-content;
+
+    background: var(--color-ink);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.main-article-content .article-button:hover{
+    background: #2b302d
+}
+
+
+.filters-sidebar {
+    height: 44px;
+}
+
+/* מעטפת ראשית - כלי סינון */
+.filter-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1328px;
+    height: 42px;
+    box-sizing: border-box;
+    gap: 20px;
+    align-self: center;
+}
+
+.search-sort-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    height: 42px;
+}
+
+/* תיבת חיפוש */
+.search-box {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 14px;
+    width: 320px;
+    height: 42px;
+    background: #FFFFFF;
+    border: 1px solid #D7DAD6;
+    border-radius: 6px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Arimo', sans-serif;
+    font-size: 13px;
+    color: #111312;
+    text-align: right;
+    width: 100%;
+}
+
+.search-box input::placeholder {
+    color: #7C837E;
+}
+
+/* תיבת מיון */
+.sort-box {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 14px;
+    width: 125px;
+    height: 42px;
+    background: #FFFFFF;
+    border: 1px solid #D7DAD6;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.sort-box select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Arimo', sans-serif;
+    font-size: 12px;
+    color: #555B57;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    padding-left: 15px;
+}
+
+.sort-box .icon-wrapper {
+    position: absolute;
+    left: 14px;
+    pointer-events: none;
+}
+
+/* קבוצת קטגוריות (Radio Chips) */
+.categories-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    overflow-x: auto;
+}
+
+.category-chip {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    height: 36px;
+    background: #FFFFFF;
+    border: 1px solid #D7DAD6;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.category-chip input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.category-chip .label {
+    font-family: 'Arimo', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #555B57;
+}
+
+/* מצב נבחר (Active / Checked) */
+.category-chip:has(input[type="radio"]:checked) {
+    background: #111312;
+    border-color: #111312;
+}
+
+.category-chip:has(input[type="radio"]:checked) .label {
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+/* טיפוגרפיה כללית ועזרים */
+.filter-bar .label,
+.search-box .placeholder {
+    font-family: 'Arimo', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    color: #555B57;
+}
+
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
