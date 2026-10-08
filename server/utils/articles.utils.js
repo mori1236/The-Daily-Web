@@ -2,6 +2,7 @@
 
 const Article = require('../models/article');
 const { formatUpdated, formatCount } = require('./format');
+const { sanitizeBody, cleanText, cleanUrl, MAX_LENGTHS } = require('./sanitize');
 
 /**
  * How each article state looks in the UI.
@@ -42,4 +43,97 @@ function toArticleRow(article, now) {
     };
 }
 
-module.exports = { STATE_VIEW, noteFor, toArticleRow };
+// ---------- editor area ----------
+
+// The small grey sentence under an article in the editor's list.
+function queueNoteFor(article) {
+    const hasLiveVersion = Boolean(article.published);
+    switch (article.state) {
+        case 'draft': return hasLiveVersion ? 'הכתב/ת מעדכן/ת כתבה שפורסמה' : 'הכתב/ת עדיין כותב/ת';
+        case 'pending': return hasLiveVersion ? 'עדכון לכתבה שפורסמה' : 'כתבה חדשה';
+        case 'returned': return 'ממתינה לתיקוני הכתב/ת';
+        case 'published': return 'הגרסה העדכנית באתר';
+    }
+}
+
+// One item of the editor's article list. `article.writer` must be loaded with populate.
+function toQueueRow(article, now) {
+    const state = STATE_VIEW[article.state];
+    return {
+        id: article._id,
+        title: article.title || 'כתבה ללא כותרת',
+        category: article.category ? Article.CATEGORY_LABELS[article.category] : 'ללא קטגוריה',
+        writerName: article.writer ? article.writer.name : '—',
+        stateLabel: state.label,
+        stateTone: state.tone,
+        note: queueNoteFor(article),
+        updated: formatUpdated(article.updatedAt, now),
+    };
+}
+
+// One version of an article (the published one or the working copy) as the review panel shows it.
+function toVersion(source, label, meta) {
+    return {
+        label,
+        meta,
+        title: source.title || 'כתבה ללא כותרת',
+        summary: source.summary,
+        contentHtml: sanitizeBody(source.content), // cleaned again before it is printed as HTML
+        imageUrl: source.imageUrl,
+    };
+}
+
+// What the editor's review panel shows for one article. `article.writer` must be loaded with populate.
+// Readers see `published`; the writer's working copy is the new version waiting for a decision.
+function toReview(article, now) {
+    const state = STATE_VIEW[article.state];
+    const category = article.category ? Article.CATEGORY_LABELS[article.category] : 'ללא קטגוריה';
+    const writerName = article.writer ? article.writer.name : '—';
+    const isPending = article.state === 'pending';
+    return {
+        id: article._id,
+        title: article.title || article.published?.title || 'כתבה ללא כותרת',
+        meta: `${writerName} · ${category}`,
+        stateLabel: state.label,
+        stateTone: state.tone,
+        // The editor can only decide on, or edit, an article that waits for approval.
+        canReview: isPending,
+        canEdit: isPending,
+        editUrl: `/editor/articles/${article._id}/edit`,
+        returnedNote: article.state === 'returned' ? article.editorRejectNote || '' : '',
+        published: article.published
+            ? toVersion(article.published, 'גרסה מפורסמת', `פורסמה ${formatUpdated(article.published.updatedAt, now)}`)
+            : null,
+        // A published article has no newer version: its working copy is the same as the published one.
+        draft: article.state === 'published'
+            ? null
+            : toVersion(article, article.published ? 'גרסה חדשה' : 'גרסת הכתב/ת', `עודכנה ${formatUpdated(article.updatedAt, now)}`),
+    };
+}
+
+// The review panel before the editor opens an article (the page renders it hidden).
+const EMPTY_REVIEW = {
+    id: '', title: '', meta: '', stateLabel: '', stateTone: 'neutral',
+    canReview: false, canEdit: false, editUrl: '#', returnedNote: '', published: null, draft: null,
+};
+
+// ---------- saving ----------
+
+/**
+ * Reads the fields a writer or an editor changed in the editor page (autosave body).
+ * Every field is cleaned here, and fields that were not sent stay out of the result.
+ * @param {Record<string, any> | undefined} body - req.body
+ * @returns {import('../models/article.js').ContentChanges}
+ */
+function readContentChanges(body) {
+    const sent = body || {};
+    const changes = {};
+    if (sent.title !== undefined) changes.title = cleanText(sent.title, MAX_LENGTHS.title);
+    if (sent.summary !== undefined) changes.summary = cleanText(sent.summary, MAX_LENGTHS.summary);
+    if (sent.content !== undefined) changes.content = sanitizeBody(sent.content);
+    if (sent.imageUrl !== undefined) changes.imageUrl = cleanUrl(sent.imageUrl);
+    if (Article.CATEGORIES.includes(sent.category)) changes.category = sent.category;
+    return changes;
+}
+
+module.exports = { STATE_VIEW, noteFor, toArticleRow, toQueueRow, toReview, EMPTY_REVIEW, readContentChanges };
