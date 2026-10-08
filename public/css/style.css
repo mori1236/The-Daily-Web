@@ -23,6 +23,17 @@ body {
   padding: 0;
 }
 
+/* פסי גלילה דקים בצבעי האתר, בכל הדפים */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+/* על רקע כהה (תפריט הצד) */
+.workspace-sidebar {
+  scrollbar-color: var(--color-muted) transparent;
+}
+
 /* תוכן כל דף מוגבל ל-1440px ומרוכז. הכותרת (site-header) נשארת ברוחב מלא */
 .auth-main,
 .main-container {
