@@ -40,3 +40,29 @@ async function showArticle(req, res, next) {
 }
 
 module.exports = { showArticle };
+
+async function addReadingTime(req, res, next) {
+    try {
+        const { id } = req.params;
+        const seconds = Number(req.body.seconds);
+
+        if (!mongoose.Types.ObjectId.isValid(id) || seconds !== 5) {
+            return res.status(400).json({ error: 'נתוני זמן קריאה לא תקינים' });
+        }
+
+        const result = await Article.updateOne(
+            { _id: id, state: 'published', published: { $ne: null } },
+            { $inc: { readTimeSeconds: 5 } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'הכתבה לא נמצאה' });
+        }
+
+        res.json({ ok: true });
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports.addReadingTime = addReadingTime;

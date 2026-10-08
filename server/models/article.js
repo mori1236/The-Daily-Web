@@ -61,6 +61,7 @@ const articleSchema = new mongoose.Schema({
     }],
 
     viewCount: { type: Number, default: 0 }, // total views, used for sorting by popularity
+    readTimeSeconds: { type: Number, default: 0 }, // active reading time in seconds
 }, { timestamps: true });
 
 // Public feed: newest published articles, optionally for one category.
