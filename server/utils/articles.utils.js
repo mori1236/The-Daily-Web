@@ -161,4 +161,4 @@ function readContentChanges(body) {
     return changes;
 }
 
-module.exports = { STATE_VIEW, noteFor, toArticleRow, toQueueRow, toReview, EMPTY_REVIEW, readContentChanges };
+module.exports = { STATE_VIEW, noteFor, toArticleRow, toQueueRow, toReview, EMPTY_REVIEW, readContentChanges, toFeedArticle };
