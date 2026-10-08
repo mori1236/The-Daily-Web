@@ -23,8 +23,16 @@
       <% } %>
 
       <div class="article-content"><%= article.published.content %></div>
-      <footer class="article-footer">צפיות: <%= article.viewCount %></footer>
+      <footer class="article-footer">
+        צפיות: <%= article.viewCount %>
+        | זמן קריאה פעיל שנצבר: <%= article.readTimeSeconds %> שניות
+      </footer>
     </article>
   </main>
+
+  <script>
+    window.articleId = '<%= article._id %>';
+  </script>
+  <script src="/js/article.js"></script>
 </body>
 </html>
