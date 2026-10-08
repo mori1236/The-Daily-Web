@@ -50,4 +50,29 @@ function formatToday(now) {
         .format(now).replace(',', ' ·');
 }
 
-module.exports = { DAY_MS, formatUpdated, formatTime, formatCount, greetingFor, formatToday };
+function formatRelativeTime(date, now = new Date()) {
+    if (!date) return '';
+    const dateObj = new Date(date);
+    const diffMs = Math.max(0, now.getTime() - dateObj.getTime());
+    const mins = Math.floor(diffMs / (60 * 1000));
+    if (mins < 1) return 'הרגע';
+    if (mins === 1) return 'לפני דקה';
+    if (mins < 60) return `לפני ${mins} דקות`;
+    const hours = Math.floor(mins / 60);
+    if (hours === 1) return 'לפני שעה';
+    if (hours < 24) return `לפני ${hours} שעות`;
+    const days = Math.floor(hours / 24);
+    if (days === 1) return 'אתמול';
+    if (days < 7) return `לפני ${days} ימים`;
+    const d = dateParts(dateObj);
+    return `${d.day}.${d.month}.${d.year}`;
+}
+
+function estimateReadingTime(text) {
+    if (!text) return '1 דק\' קריאה';
+    const words = text.trim().split(/\s+/).length;
+    const mins = Math.max(1, Math.ceil(words / 150));
+    return `${mins} דק' קריאה`;
+}
+
+module.exports = { DAY_MS, formatUpdated, formatTime, formatCount, greetingFor, formatToday, formatRelativeTime, estimateReadingTime };

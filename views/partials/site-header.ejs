@@ -20,20 +20,23 @@
   </div>
 
   <% if (!locals.area) { %>
-  <nav class="site-nav" aria-label="קטגוריות">
-    <a href="/" data-text="ראשי">ראשי</a>
-    <a href="/" data-text="פוליטי">פוליטי</a>
-    <a href="/" data-text="כלכלה">כלכלה</a>
-    <a href="/" data-text="טכנולוגיה">טכנולוגיה</a>
-    <a href="/" data-text="תרבות">תרבות</a>
-    <a href="/" data-text="ספורט">ספורט</a>
+  <nav>
+    <a href="/" class="<%= (!locals.currentCategory || currentCategory === 'all') ? 'active' : '' %>"
+      data-text="ראשי">ראשי</a>
+    <a href="/?category=politics" class="<%= (locals.currentCategory === 'politics') ? 'active' : '' %>"
+      data-text="פוליטי">פוליטי</a>
+    <a href="/?category=economy" class="<%= (locals.currentCategory === 'economy') ? 'active' : '' %>"
+      data-text="כלכלה">כלכלה</a>
+    <a href="/?category=tech" class="<%= (locals.currentCategory === 'tech') ? 'active' : '' %>"
+      data-text="טכנולוגיה">טכנולוגיה</a>
+    <a href="/?category=culture" class="<%= (locals.currentCategory === 'culture') ? 'active' : '' %>"
+      data-text="תרבות">תרבות</a>
+    <a href="/?category=sports" class="<%= (locals.currentCategory === 'sports') ? 'active' : '' %>"
+      data-text="ספורט">ספורט</a>
   </nav>
   <% } %>
 
   <div class="site-header-actions">
-    <% if (!locals.area) { %>
-    <a href="/" class="site-header-link">חיפוש</a>
-    <% } %>
     <% if (locals.user) { %>
     <a href="<%= user.role === 'editor' ? '/editor' : '/writer' %>" class="site-user">
       <span class="site-user-details">

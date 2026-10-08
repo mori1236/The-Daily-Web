@@ -1,133 +1,219 @@
 <%- include('partials/header', { title: '', container: 'home-page', styles: ['index'] }) %>
   <%- include('partials/site-header') %>
 
-  <div class="main-container">
-    <!-- אזור הסינון והחיפוש (צד לקוח שיעבוד עם AJAX בהמשך) -->
-    <div class="upper-section">
-      <div class="article-carousel">
-        <article class="main-article">
-          <div class="main-article-content">
-            <h2>
-              הממשלה אישרה את תוכנית השיקום לצפון
-            </h2>
-            <p>
-              המועצות יקבלו תקציב מיידי לתשתיות, חינוך ועסקים. ראשי הרשויות מברכים — אך דורשים לוח זמנים מחייב.
-            </p>
-            <a class="article-button">
-              <span>
-                לכתבה המלאה
-              </span>
-              <%- include('partials/icon', { name: 'arrow-left' }) %>
-            </a>
-          </div>
-          <img src="/img/login-newsroom.jpg" alt="">
-        </article>
-      </div>
+  <!-- פס מבזקי חדשות רצים / כותרת חמה מתחת לתפריט -->
+  <%# <div class="breaking-news-bar"> %>
+    <%# <div class="breaking-container"> %>
+      <%# <div class="breaking-headline"> %>
+        <%# <span class="breaking-tag">חדשות חמות</span> %>
+        <%# <span class="breaking-text">הקבינט יתכנס בצהריים לדיון מיוחד במתווה הסיוע לצפון</span> %>
+      <%# </div> %>
+      <%# <div class="breaking-time"> %>
+        <% if (false) { %>עודכן <%= currentTime || '08:42' %><% } %>
+      <%# </div> %>
+    <%# </div> %>
+  <%# </div> %>
 
-      <aside>
-        <div id="weatherWidget">
-          <h3>מזג אוויר</h3>
-          <p>טוען נתוני מזג אוויר...</p>
+  <div class="main-container">
+    <!-- אזור עליון: כתבה ראשית ו-ווידג'ט מזג אוויר -->
+    <section class="upper-section">
+      <!-- כרטיס הסיפור המרכזי (בימין בדפי RTL) -->
+      <% if (heroArticle) { %>
+        <article class="hero-article-card" id="heroArticleCard" data-article-id="<%= heroArticle.id %>">
+          <div class="hero-content">
+            <div class="hero-top-badge">
+              <span class="hero-badge" id="heroBadge">הסיפור המרכזי</span>
+            </div>
+            
+            <h1 class="hero-title" id="heroTitle"><%= heroArticle.title %></h1>
+            
+            <p class="hero-summary" id="heroSummary"><%= heroArticle.summary %></p>
+            
+            <div class="hero-bottom-row">
+              <div class="hero-meta">
+                <span id="heroAuthor">מאת <%= heroArticle.writer %></span>
+                <span class="meta-dot">·</span>
+                <span id="heroTime"><%= heroArticle.publishedAtFormatted %></span>
+                <span class="meta-dot">·</span>
+                <span id="heroReadingTime"><%= heroArticle.readingTime %></span>
+              </div>
+              <a href="<%= heroArticle.url %>" class="hero-read-btn" id="heroReadBtn">
+                <span>לכתבה המלאה</span>
+                <span class="btn-arrow" aria-hidden="true">←</span>
+              </a>
+            </div>
+          </div>
+          <div class="hero-image-wrap">
+            <img 
+              id="heroImg"
+              src="<%= heroArticle.imageUrl %>" 
+              alt="<%= heroArticle.title %>"
+              onerror="this.onerror=null; this.src='/img/login-newsroom.jpg';"
+            />
+          </div>
+        </article>
+      <% } %>
+
+      <!-- ווידג'ט מזג אוויר (בשמאל בדפי RTL) -->
+      <aside class="weather-card" id="weatherWidget" aria-label="תחזית מזג האוויר">
+        <div class="weather-card-header">
+          <span class="weather-location">תל אביב · היום</span>
+          <span class="weather-more-dots">···</span>
+        </div>
+        
+        <div class="weather-current">
+          <div class="weather-temp-wrap">
+            <span class="weather-temp">27°</span>
+            <span class="weather-icon" title="שמשי">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </span>
+          </div>
+          <div class="weather-feels">מרגיש כמו 29°</div>
+        </div>
+
+        <div class="weather-forecast">
+          <div class="forecast-row">
+            <span class="forecast-time">12:00</span>
+            <span class="forecast-dot">·</span>
+            <span class="forecast-val">28° בהיר</span>
+          </div>
+          <div class="forecast-row">
+            <span class="forecast-time">16:00</span>
+            <span class="forecast-dot">·</span>
+            <span class="forecast-val">27° מעונן</span>
+          </div>
+          <div class="forecast-row">
+            <span class="forecast-time">20:00</span>
+            <span class="forecast-dot">·</span>
+            <span class="forecast-val">24° נעים</span>
+          </div>
+        </div>
+
+        <div class="weather-footer">
+          <span>לחות 63%</span>
+          <span class="forecast-dot">·</span>
+          <span>רוח 18 קמ"ש</span>
         </div>
       </aside>
-    </div>
+    </section>
     
+    <!-- סרגל סינון קטגוריות, חיפוש ומיון -->
     <div class="filter-bar">
-      <!-- קטגוריות (צ'יפים / תגיות סינון) -->
-      <div class="categories-group">
-        <!-- קטגוריה 1: הכל (נבחרת כברירת מחדל) -->
-        <label class="category-chip active">
-          <input type="radio" name="category" value="all" checked>
+      <!-- קטגוריות כצ'יפים -->
+      <!-- <div class="categories-group" role="tablist" aria-label="סינון לפי קטגוריה">
+        <button type="button" class="category-chip <%= (!locals.currentCategory || currentCategory === 'all') ? 'active' : '' %>" data-category="all">
           <span class="label">הכל</span>
-        </label>
-        
-        <!-- קטגוריות נוספות -->
-        <label class="category-chip">
-          <input type="radio" name="category" value="news">
-          <span class="label">חדשות</span>
-        </label>
-        
-        <label class="category-chip">
-          <input type="radio" name="category" value="tech">
-          <span class="label">טכנולוגיה</span>
-        </label>
-        
-        <label class="category-chip">
-          <input type="radio" name="category" value="sports">
-          <span class="label">ספורט</span>
-        </label>
-        
-        <label class="category-chip">
-          <input type="radio" name="category" value="economy">
+        </button>
+        <button type="button" class="category-chip <%= (locals.currentCategory === 'politics') ? 'active' : '' %>" data-category="politics">
+          <span class="label">פוליטי</span>
+        </button>
+        <button type="button" class="category-chip <%= (locals.currentCategory === 'economy') ? 'active' : '' %>" data-category="economy">
           <span class="label">כלכלה</span>
-        </label>
-        
-        <label class="category-chip">
-          <input type="radio" name="category" value="culture">
+        </button>
+        <button type="button" class="category-chip <%= (locals.currentCategory === 'tech') ? 'active' : '' %>" data-category="tech">
+          <span class="label">טכנולוגיה</span>
+        </button>
+        <button type="button" class="category-chip <%= (locals.currentCategory === 'culture') ? 'active' : '' %>" data-category="culture">
           <span class="label">תרבות</span>
-        </label>
-      </div>
+        </button>
+        <button type="button" class="category-chip <%= (locals.currentCategory === 'sports') ? 'active' : '' %>" data-category="sports">
+          <span class="label">ספורט</span>
+        </button>
+      </div> -->
       
-      <div class="search-sort-group">
-        <!-- חיפוש -->
+        <!-- תיבת חיפוש -->
         <div class="search-box">
-          <input type="text" id="search-input" placeholder="חיפוש כתבות..." />
-          <div class="icon-wrapper">
-            <!-- אייקון חיפוש (או SVG) -->
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6" stroke="#7C837E" stroke-width="1.5"/><path d="M12.5 12.5L16 16" stroke="#7C837E" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="חיפוש כתבות, נושאים וכתבים" 
+            aria-label="חיפוש כתבות"
+          />
+          <div class="search-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
           </div>
         </div>
         
-        <!-- מיון -->
-        <div class="sort-box">
-          <select id="sort-select">
-            <option value="" disabled selected>מיון לפי</option>
-            <option value="date">תאריך פרסום</option>
-            <option value="popularity">פופולריות</option>
+        <!-- תיבת סינון לפי סטטוס צפייה (מימין ל-sort-box) -->
+        <div class="sort-box read-filter-box">
+          <select id="readStatusSelect" aria-label="סינון לפי סטטוס צפייה">
+            <option value="all" selected>כל הסטטוסים</option>
+            <option value="unread">טרם נצפה</option>
+            <option value="read">נצפה</option>
           </select>
-          <div class="icon-wrapper">
-            <!-- אייקון חצים -->
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M4 6L7.5 2.5L11 6" stroke="#555B57" stroke-width="1.2" stroke-linecap="round"/><path d="M11 9L7.5 12.5L4 9" stroke="#555B57" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <div class="sort-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555B57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+        </div>
+
+        <!-- תיבת מיון -->
+        <div class="sort-box">
+          <select id="sortSelect" aria-label="מיון כתבות">
+            <option value="newest" <%= (locals.currentSort !== 'popularity') ? 'selected' : '' %>>החדשות ביותר</option>
+            <option value="popularity" <%= (locals.currentSort === 'popularity') ? 'selected' : '' %>>פופולריות</option>
+          </select>
+          <div class="sort-icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <path d="M4 6L7.5 2.5L11 6" stroke="#555B57" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M11 9L7.5 12.5L4 9" stroke="#555B57" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
           </div>
         </div>
       </div>
-    </div>
 
     <!-- פיד הכתבות הראשי -->
-    <main class="feed-section">
-      <h2>כתבות אחרונות</h2>
-      
-      <div id="articlesContainer">
-        <!-- לולאה שרצה על מערך הכתבות שהגיע מהשרת -->
+    <main class="feed-section" id="feedMain" data-current-category="<%= locals.currentCategory || 'all' %>">
+      <div id="articlesGrid" class="articles-grid">
         <% if (articles && articles.length > 0) { %>
           <% articles.forEach(article => { %>
-            <article class="article-card">
-              <% if (article.imageUrl) { %>
-                <img src="<%= article.imageUrl %>" alt="<%= article.title %>">
-              <% } %>
-              <div class="article-content">
-                <span class="category"><%= article.category %></span>
-                <h3>
-                  <a href="/articles/<%= article._id %>"><%= article.title %></a>
-                </h3>
-                <p class="summary"><%= article.summary %></p>
-                <div class="meta">
-                  <span>כתב: <%= article.author ? article.author.username : 'מערכת' %></span> | 
-                  <span>פורסם ב: <%= new Date(article.publishedAt).toLocaleDateString('he-IL') %></span>
-                </div>
-              </div>
-            </article>
+            <%- include('partials/article-card', { article }) %>
           <% }) %>
-        <% } else { %>
-            <p>אין כתבות להצגה כרגע.</p>
         <% } %>
       </div>
 
-      <!-- אלמנט עוגן עבור גלילה אינסופית (Infinite Scroll) -->
-      <div id="loadingIndicator" style="display: none;">טוען כתבות נוספות...</div>
+      <!-- הודעת תוצאות ריקות -->
+      <div id="emptyState" class="empty-state" style="<%= (articles && articles.length > 0) ? 'display: none;' : '' %>">
+        <p>לא נמצאו כתבות התואמות לחיפוש או לקטגוריה שנבחרה.</p>
+      </div>
+
+      <!-- אינדיקטור טעינה וגלילה אינסופית -->
+      <div class="feed-pagination-wrap">
+        <div id="feedLoader" class="feed-loader" style="display: none;">
+          <div class="spinner"></div>
+          <span>טוען 20 כתבות נוספות...</span>
+        </div>
+
+        <button type="button" id="loadMoreBtn" class="load-more-btn">
+          הצגת כתבות נוספות
+        </button>
+
+        <div id="allLoadedNotice" class="all-loaded-notice" style="display: none;">
+          <span>הגעת לסוף הפיד — כל הכתבות מוצגות</span>
+        </div>
+
+        <!-- אלמנט עוגן בלתי נראה עבור IntersectionObserver -->
+        <div id="scrollSentinel" class="scroll-sentinel" aria-hidden="true"></div>
+      </div>
     </main>
   </div>
 
-  <!-- סקריפט צד לקוח לטיפול בחיפוש, סינון וגלילה אינסופית ב-AJAX -->
-<script src="/js/feed.js" defer></script>
-<%- include('partials/footer') %>
+  <!-- סקריפט הפיד לניהול סינון, חיפוש וגלילה אינסופית ב-AJAX -->
+  <script src="/js/feed.js"></script>
+</body>
+</html>

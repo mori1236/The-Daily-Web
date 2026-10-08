@@ -1,0 +1,100 @@
+<%- include('partials/header', { title: article.title, styles: ['index', 'article'], container: 'container' }) %>
+<body>
+
+  <%- include('partials/site-header') %>
+
+  <div class="article-page-container">
+    <nav class="article-breadcrumb" aria-label="ניווט">
+      <a href="/" class="back-link">
+        <span class="arrow" aria-hidden="true">→</span>
+        <span>חזרה לכל הכתבות</span>
+      </a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-category"><%= article.categoryLabel %></span>
+    </nav>
+
+    <main class="article-single">
+      <header class="article-header">
+        <div class="article-tag-row">
+          <span class="article-tag category-<%= article.category %>"><%= article.categoryLabel %></span>
+          <span class="article-read-time"><%= article.readingTime %></span>
+        </div>
+
+        <h1 class="article-page-title"><%= article.title %></h1>
+
+        <% if (article.summary) { %>
+          <p class="article-page-lead"><%= article.summary %></p>
+        <% } %>
+
+        <div class="article-byline">
+          <div class="author-info">
+            <span class="author-avatar" aria-hidden="true">✍</span>
+            <div class="author-details">
+              <span class="author-name">מאת <%= article.writer %></span>
+              <span class="publish-date"><%= article.publishedAtFormatted %> · עודכן לאחרונה</span>
+            </div>
+          </div>
+
+          <div class="article-stats">
+            <span class="views-badge" title="צפיות בכתבה">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span><%= article.viewCount %> צפיות</span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <% if (article.imageUrl) { %>
+        <figure class="article-featured-media">
+          <img 
+            src="<%= article.imageUrl %>" 
+            alt="<%= article.title %>"
+            onerror="this.onerror=null; this.src='/img/login-newsroom.jpg';"
+          />
+        </figure>
+      <% } %>
+
+      <section class="article-body">
+        <% 
+          const paragraphs = (fullContent || article.summary || '')
+            .split(/\n\s*\n/)
+            .map(p => p.trim())
+            .filter(Boolean);
+        %>
+        <% if (paragraphs.length > 0) { %>
+          <% paragraphs.forEach(p => { %>
+            <p><%= p %></p>
+          <% }) %>
+        <% } else { %>
+          <p><%= article.summary %></p>
+        <% } %>
+      </section>
+
+      <!-- כפתור שיתוף / חזרה -->
+      <footer class="article-page-footer">
+        <a href="/" class="back-home-button">
+          <span>חזרה לפיד החדשות</span>
+          <span aria-hidden="true">←</span>
+        </a>
+      </footer>
+
+      <!-- עוד כתבות מומלצות -->
+      <% if (locals.moreArticles && moreArticles.length > 0) { %>
+        <section class="related-articles-section">
+          <h2 class="related-heading">כתבות נוספות שעשויות לעניין אותך</h2>
+          <div class="articles-grid">
+            <% moreArticles.forEach(item => { %>
+              <%- include('partials/article-card', { article: item }) %>
+            <% }) %>
+          </div>
+        </section>
+      <% } %>
+    </main>
+  </div>
+
+  <script src="/js/article.js"></script>
+</body>
+</html>

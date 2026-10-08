@@ -240,3 +240,80 @@ body {
     animation: none;
   }
 }
+
+logo .text-logo{
+  font-family: 'inter';
+  color: #111312;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+logo .sub-text-logo{
+  font-family: 'Arimo';
+  color: #7C837E;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.site-header nav{
+  display: flex;
+  gap: 28px;
+}
+
+.site-header nav a::after {
+  content: attr(data-text); /* שואב את הטקסט מתוך ה-data-text שכתבנו ב-HTML */
+  content: attr(data-text) / ""; /* תמיכה נגישה */
+  font-weight: bold;
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
+.site-header nav a{
+  color: #555B57;
+  font-size: 14px;
+  margin: 2px;
+  text-decoration: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-header nav a:hover{
+  font-weight: bold;
+}
+
+.site-header nav a.active {
+  color: var(--color-accent, #e53935);
+  font-weight: bold;
+}
+
+.site-header nav a:visited{
+  color: #555B57;
+}
+
+.site-header nav a.active:visited {
+  color: var(--color-accent, #e53935);
+}
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.site-header-logout {
+  margin: 0;
+}
+
+.site-header-logout button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: #555B57;
+  cursor: pointer;
+}

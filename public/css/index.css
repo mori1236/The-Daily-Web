@@ -1,253 +1,661 @@
-/* מבנה ראשי */
+/* ==========================================================================
+   Homepage Feed Styles — The Daily Web
+   ========================================================================== */
+
+/* פס מבזקים / חדשות חמות */
+.breaking-news-bar {
+  background: var(--color-ink, #111312);
+  color: var(--color-on-dark, #f7f7f4);
+  font-size: 13px;
+  width: 100%;
+  margin-top: -36px; /* הצמדה מדויקת ל-site-header */
+  margin-bottom: 28px;
+}
+
+.breaking-container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.breaking-headline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breaking-tag {
+  background: var(--color-accent, #e53935);
+  color: #ffffff;
+  padding: 3px 12px;
+  border-radius: var(--radius-pill, 999px);
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.breaking-text {
+  font-weight: 500;
+  color: #f7f7f4;
+}
+
+.breaking-time {
+  color: var(--color-on-dark-muted, #b8bdb8);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* מיכל העמוד הראשי */
 .main-container {
-    width: 1440px;
-    display: flex;
-    flex-direction: column;
-    gap: 42px;
-    margin: 36px auto 0;
+  max-width: 1360px;
+  margin: 36px auto 0 auto;
+  padding: 0 24px 60px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
+/* ==========================================================================
+   החלק העליון: כתבה ראשית ווידג'ט מזג אוויר
+   ========================================================================== */
 .upper-section {
-    display: flex;
-    gap: 28px;
-    height: 410px;
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
 }
 
-#weatherWidget {
-    width: 282px;
+/* כרטיס הסיפור המרכזי */
+.hero-article-card {
+  flex: 1;
+  display: flex;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: var(--radius-lg, 16px);
+  overflow: hidden;
+  box-shadow: var(--shadow-card, 0 5px 18px rgba(17, 19, 18, 0.07));
+  min-height: 380px;
 }
 
-.article-carousel {
-    background-color: var(--color-surface);
-    flex: 1;
-    border-radius: 16px;
-    height: inherit;
-    border: 1px var(--color-border) solid;
+.hero-content {
+  flex: 1;
+  padding: 34px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.main-article{
-    display: flex;
-    height: inherit;
-    overflow: hidden;
+.hero-top-badge {
+  margin-bottom: 8px;
 }
 
-.main-article img{
-    width: 570px;
-    object-fit: cover;
-    display: block;
-    height: 100%;
-    flex-shrink: 0;
-    border-radius: 16px;
+.hero-badge {
+  display: inline-block;
+  background: #fde8e8;
+  color: #b71c1c;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: var(--radius-pill, 999px);
 }
 
-.main-article-content{
-    padding: 34px;
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
+.hero-title {
+  font-family: var(--font-brand, 'Inter', sans-serif);
+  font-size: 42px;
+  line-height: 1.18;
+  font-weight: 800;
+  color: var(--color-ink, #111312);
+  margin: 10px 0 14px 0;
+  letter-spacing: -0.5px;
 }
 
-.main-article-content h2{
-    color: var(--color-ink);
-    font-weight: bold;
-    font-size: 52px;
-    font-family: 'Inter';
-    margin: 0px;
+.hero-summary {
+  font-family: var(--font-body, 'Arimo', sans-serif);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-text, #555b57);
+  margin: 0 0 24px 0;
+  max-width: 600px;
 }
 
-.main-article-content p{
-    font-family: 'Arimo';
-    font-size: 16px;
-    color: var(--color-text);
+.hero-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.main-article-content .article-button{
-    display: flex;
-    align-items: center;
-    padding: 16px 24px;
-    gap: 8px;
-    align-self: flex-end;
-
-    font-family: 'Arimo', sans-serif;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 13px;
-    color: var(--color-on-dark);
-
-    width: fit-content;
-    height: fit-content;
-
-    background: var(--color-ink);
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s ease;
+.hero-meta {
+  font-size: 13px;
+  color: var(--color-muted, #7c837e);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.main-article-content .article-button:hover{
-    background: #2b302d
+.hero-read-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-ink, #111312);
+  color: var(--color-on-dark, #f7f7f4);
+  padding: 12px 24px;
+  border-radius: var(--radius-md, 6px);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
-
-.filters-sidebar {
-    height: 44px;
+.hero-read-btn:hover {
+  background: #2b302d;
+  transform: translateY(-1px);
 }
 
-/* מעטפת ראשית - כלי סינון */
+.hero-image-wrap {
+  width: 520px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #eaeaea;
+}
+
+.hero-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ווידג'ט מזג אוויר */
+.weather-card {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: var(--radius-lg, 16px);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card, 0 5px 18px rgba(17, 19, 18, 0.07));
+}
+
+.weather-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-ink, #111312);
+}
+
+.weather-more-dots {
+  color: var(--color-muted, #7c837e);
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+.weather-current {
+  margin: 14px 0 10px 0;
+}
+
+.weather-temp-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.weather-temp {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-ink, #111312);
+  font-family: var(--font-brand, 'Inter', sans-serif);
+}
+
+.weather-feels {
+  font-size: 13px;
+  color: var(--color-muted, #7c837e);
+  margin-top: 4px;
+}
+
+.weather-forecast {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0;
+  border-top: 1px solid #f0f0ed;
+  border-bottom: 1px solid #f0f0ed;
+}
+
+.forecast-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text, #555b57);
+}
+
+.forecast-dot, .meta-dot {
+  color: var(--color-border-strong, #b8bdb8);
+}
+
+.weather-footer {
+  font-size: 12px;
+  color: var(--color-muted, #7c837e);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   סרגל הסינון, החיפוש והמיון
+   ========================================================================== */
 .filter-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1328px;
-    height: 42px;
-    box-sizing: border-box;
-    gap: 20px;
-    align-self: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.search-sort-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    height: 42px;
-}
-
-/* תיבת חיפוש */
-.search-box {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 14px;
-    width: 320px;
-    height: 42px;
-    background: #FFFFFF;
-    border: 1px solid #D7DAD6;
-    border-radius: 6px;
-}
-
-.search-box input {
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'Arimo', sans-serif;
-    font-size: 13px;
-    color: #111312;
-    text-align: right;
-    width: 100%;
-}
-
-.search-box input::placeholder {
-    color: #7C837E;
-}
-
-/* תיבת מיון */
-.sort-box {
-    position: relative;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 14px;
-    width: 125px;
-    height: 42px;
-    background: #FFFFFF;
-    border: 1px solid #D7DAD6;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.sort-box select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'Arimo', sans-serif;
-    font-size: 12px;
-    color: #555B57;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    padding-left: 15px;
-}
-
-.sort-box .icon-wrapper {
-    position: absolute;
-    left: 14px;
-    pointer-events: none;
-}
-
-/* קבוצת קטגוריות (Radio Chips) */
 .categories-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    height: 36px;
-    overflow-x: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 
 .category-chip {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    padding: 0 14px;
-    height: 36px;
-    background: #FFFFFF;
-    border: 1px solid #D7DAD6;
-    border-radius: 999px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  height: 38px;
+  background: #ffffff;
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: var(--radius-pill, 999px);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-text, #555b57);
+  transition: all 0.2s ease;
 }
 
-.category-chip input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
+.category-chip:hover:not(.active) {
+  background: var(--color-bg, #f5f5f2);
+  border-color: var(--color-border-strong, #b8bdb8);
 }
 
-.category-chip .label {
-    font-family: 'Arimo', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 14px;
-    color: #555B57;
+.category-chip.active {
+  background: var(--color-ink, #111312);
+  border-color: var(--color-ink, #111312);
+  color: #ffffff;
+  font-weight: 700;
 }
 
-/* מצב נבחר (Active / Checked) */
-.category-chip:has(input[type="radio"]:checked) {
-    background: #111312;
-    border-color: #111312;
+.search-sort-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.category-chip:has(input[type="radio"]:checked) .label {
-    color: #FFFFFF;
-    font-weight: 700;
+.search-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  width: 320px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: var(--radius-md, 6px);
+  transition: border-color 0.2s ease;
 }
 
-/* טיפוגרפיה כללית ועזרים */
-.filter-bar .label,
-.search-box .placeholder {
-    font-family: 'Arimo', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    color: #555B57;
+.search-box:focus-within {
+  border-color: var(--color-ink, #111312);
 }
 
-.icon-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-ink, #111312);
+  text-align: right;
+  width: 100%;
+}
+
+.search-icon {
+  color: var(--color-muted, #7c837e);
+  display: flex;
+  align-items: center;
+}
+
+.sort-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  min-width: 135px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: var(--radius-md, 6px);
+}
+
+.sort-box select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-text, #555b57);
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  padding-left: 20px;
+}
+
+.sort-icon {
+  position: absolute;
+  left: 12px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+/* ==========================================================================
+   רשת הכתבות (Feed Grid) — 4 עמודות
+   ========================================================================== */
+.feed-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+/* כרטיס כתבה בפיד */
+.feed-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.feed-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(17, 19, 18, 0.08);
+  border-color: var(--color-border-strong, #b8bdb8);
+}
+
+.feed-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.feed-card-media {
+  height: 180px;
+  width: 100%;
+  overflow: hidden;
+  background: #f0f0ed;
+}
+
+.feed-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.feed-card:hover .feed-card-media img {
+  transform: scale(1.04);
+}
+
+.feed-card-content {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.feed-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.meta-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.feed-card-category {
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.feed-card-category.category-politics { color: #b91c1c; }
+.feed-card-category.category-economy { color: #0284c7; }
+.feed-card-category.category-tech { color: #7c3aed; }
+.feed-card-category.category-culture { color: #d97706; }
+.feed-card-category.category-sports { color: #16a34a; }
+
+.feed-card-time {
+  color: var(--color-muted, #7c837e);
+}
+
+/* אינדיקטור צפייה (טרם נצפה / נצפה) */
+.read-badge.unread {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-muted, #7c837e);
+  font-size: 11px;
+}
+
+.read-badge.unread .read-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #e53935;
+  display: inline-block;
+}
+
+.read-badge.read {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.feed-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-ink, #111312);
+  margin: 0 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 46px;
+}
+
+.feed-card-summary {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text, #555b57);
+  margin: 0 0 14px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.feed-card-footer {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #f2f3f0;
+  font-size: 12px;
+  color: var(--color-muted, #7c837e);
+}
+
+/* מצב ללא תוצאות */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: 12px;
+  color: var(--color-muted, #7c837e);
+  font-size: 16px;
+}
+
+/* ==========================================================================
+   גלילה אינסופית וכפתור טעינה
+   ========================================================================== */
+.feed-pagination-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px 0 60px;
+  gap: 16px;
+}
+
+.load-more-btn {
+  background: #ffffff;
+  border: 1px solid var(--color-border, #d7dad6);
+  border-radius: var(--radius-md, 6px);
+  padding: 12px 38px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-ink, #111312);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.load-more-btn:hover {
+  background: var(--color-ink, #111312);
+  color: #ffffff;
+  border-color: var(--color-ink, #111312);
+}
+
+.feed-loader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text, #555b57);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid var(--color-border, #d7dad6);
+  border-top-color: var(--color-ink, #111312);
+  border-radius: 50%;
+  animation: feed-spin 0.8s linear infinite;
+}
+
+@keyframes feed-spin {
+  to { transform: rotate(360deg); }
+}
+
+.all-loaded-notice {
+  font-size: 13px;
+  color: var(--color-muted, #7c837e);
+  background: #ffffff;
+  padding: 8px 22px;
+  border-radius: var(--radius-pill, 999px);
+  border: 1px solid var(--color-border, #d7dad6);
+}
+
+.scroll-sentinel {
+  height: 20px;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   רספונסיביות
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .articles-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .hero-image-wrap {
+    width: 420px;
+  }
+}
+
+@media (max-width: 960px) {
+  .upper-section {
+    flex-direction: column;
+  }
+  .weather-card {
+    width: 100%;
+  }
+  .hero-article-card {
+    flex-direction: column;
+  }
+  .hero-image-wrap {
+    width: 100%;
+    height: 260px;
+  }
+  .articles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-sort-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  .search-box, .sort-box {
+    width: 100%;
+  }
+  .articles-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-title {
+    font-size: 28px;
+  }
 }
