@@ -1,12 +1,12 @@
-// Client script for the article editor (views/writer-editor.ejs).
-// Saves the article automatically while the writer types, and submits it for approval.
+// Client script for the article editor (views/writer-editor.ejs), used by writers and editors.
+// Saves the article automatically while the user types. Writers can also submit it for approval
+// (editors have no submit button and no dialog, so that part is skipped).
 
 const SAVE_DELAY_MS = 1500; // wait this long after the last keystroke before saving
 const RETRY_DELAY_MS = 5000; // wait this long before trying again after a failed save
 
 const editor = document.getElementById('editor');
-const articleId = editor.dataset.articleId;
-const saveUrl = `/api/writer/articles/${articleId}`;
+const saveUrl = editor.dataset.saveUrl; // the writer and the editor save to different routes
 
 const titleInput = document.getElementById('editor-title');
 const summaryInput = document.getElementById('editor-summary');
@@ -174,51 +174,53 @@ toolbar.addEventListener('click', event => {
 
 // ---------- submit for approval ----------
 
-// The button only asks for confirmation. The article can't be edited after it is submitted.
-submitButton.addEventListener('click', () => {
-    clearError();
-    submitDialog.showModal();
-});
+if (submitButton) {
+    // The button only asks for confirmation. The article can't be edited after it is submitted.
+    submitButton.addEventListener('click', () => {
+        clearError();
+        submitDialog.showModal();
+    });
 
-submitDialogCancel.addEventListener('click', () => submitDialog.close());
+    submitDialogCancel.addEventListener('click', () => submitDialog.close());
 
-// Clicking the dark area around the box closes it too.
-submitDialog.addEventListener('click', event => {
-    if (event.target === submitDialog) submitDialog.close();
-});
+    // Clicking the dark area around the box closes it too.
+    submitDialog.addEventListener('click', event => {
+        if (event.target === submitDialog) submitDialog.close();
+    });
 
-submitDialogConfirm.addEventListener('click', async () => {
-    submitDialogConfirm.disabled = true;
-    submitButton.disabled = true;
-    let submitted = false;
-    try {
-        if (!(await saveEverything())) {
-            showError('לא הצלחנו לשמור את השינויים האחרונים. נסו שוב בעוד רגע.');
-            return;
+    submitDialogConfirm.addEventListener('click', async () => {
+        submitDialogConfirm.disabled = true;
+        submitButton.disabled = true;
+        let submitted = false;
+        try {
+            if (!(await saveEverything())) {
+                showError('לא הצלחנו לשמור את השינויים האחרונים. נסו שוב בעוד רגע.');
+                return;
+            }
+            const response = await fetch(`${saveUrl}/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: '{}',
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                const missing = (data.missingFields || []).map(name => fieldLabels[name] || name);
+                showError(missing.length > 0 ? `אי אפשר להגיש עדיין. חסר: ${missing.join(', ')}` : data.error);
+                return;
+            }
+            submitted = true;
+            location.href = data.redirectUrl;
+        } catch (err) {
+            showError('אירעה שגיאה בהגשה. נסו שוב.');
+        } finally {
+            if (!submitted) { // after a successful submit the page is replaced
+                submitButton.disabled = false;
+                submitDialogConfirm.disabled = false;
+                submitDialog.close(); // errors are shown on the page behind the dialog
+            }
         }
-        const response = await fetch(`${saveUrl}/submit`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: '{}',
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            const missing = (data.missingFields || []).map(name => fieldLabels[name] || name);
-            showError(missing.length > 0 ? `אי אפשר להגיש עדיין. חסר: ${missing.join(', ')}` : data.error);
-            return;
-        }
-        submitted = true;
-        location.href = data.redirectUrl;
-    } catch (err) {
-        showError('אירעה שגיאה בהגשה. נסו שוב.');
-    } finally {
-        if (!submitted) { // after a successful submit the page is replaced
-            submitButton.disabled = false;
-            submitDialogConfirm.disabled = false;
-            submitDialog.close(); // errors are shown on the page behind the dialog
-        }
-    }
-});
+    });
+}
 
 // ---------- do not lose work when the tab is closed or hidden ----------
 
