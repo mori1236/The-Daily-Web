@@ -60,6 +60,7 @@ async function renderDashboard(req, res) {
             ...Article.STATES.map(state => ({
                 status: state,
                 label: STATE_VIEW[state].chipLabel,
+                tone: STATE_VIEW[state].tone,
                 count: stats.countByState[state],
                 active: status === state,
                 url: listUrl(state, q, 1),
