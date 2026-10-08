@@ -1,0 +1,89 @@
+<%- include('partials/header', { title: 'תור אישורים', styles: ['forms', 'workspace', 'writer', 'confirm-dialog', 'editor'], container: 'workspace-page' }) %>
+
+  <%- include('partials/site-header', { area: 'אזור עורך' }) %>
+
+  <div class="workspace">
+    <%- include('partials/workspace-sidebar', { active: 'queue' }) %>
+
+    <main class="workspace-content">
+
+      <div class="queue-heading">
+        <div class="queue-heading-text">
+          <p class="writer-date">דסק החדשות</p>
+          <h1>תור אישורים</h1>
+          <p class="writer-intro">בדיקה, השוואת גרסאות וקבלת החלטות לפני פרסום.</p>
+        </div>
+        <span class="status-badge is-warning" id="queue-pending-badge"><span data-count><%= counts.pending %></span> ממתינות</span>
+      </div>
+
+      <div class="writer-tools">
+        <nav class="writer-filters" aria-label="סינון לפי סטטוס">
+          <% chips.forEach(chip => { %>
+          <a href="<%= chip.url %>" class="filter-chip<%= chip.tone ? ' is-' + chip.tone : '' %><%= chip.active ? ' is-active' : '' %>" data-filter-link data-status="<%= chip.status %>"<%- chip.active ? ' aria-current="true"' : '' %>>
+            <%= chip.label %> <span data-count><%= chip.count %></span>
+          </a>
+          <% }) %>
+        </nav>
+
+        <form action="/editor" method="GET" role="search" class="writer-search" id="queue-search">
+          <input type="hidden" name="status" value="<%= filters.status %>">
+          <input type="hidden" name="article" value="<%= hasReview ? review.id : '' %>">
+          <label for="queue-search-input" class="visually-hidden">חיפוש בכותרות הכתבות</label>
+          <%- include('partials/icon', { name: 'search' }) %>
+          <input type="search" id="queue-search-input" name="q" value="<%= filters.q %>" maxlength="100" placeholder="חיפוש בכותרות הכתבות">
+        </form>
+      </div>
+
+      <div class="queue-layout">
+
+        <section class="queue" aria-label="רשימת הכתבות">
+          <h2 class="queue-head"><span data-total><%= total %></span> כתבות</h2>
+          <%# ההודעות כאן כדי ש-editor.js יציג את אותו טקסט בלי לשכפל אותו בקוד %>
+          <ul class="queue-list" id="queue-list" aria-live="polite"
+              data-message-filtered="לא נמצאו כתבות שמתאימות לחיפוש."
+              data-message-empty="אין עדיין כתבות במערכת."
+              data-message-error="אירעה שגיאה בטעינת הכתבות. נסו לרענן את הדף.">
+            <% if (rows.length === 0) { %>
+            <li class="queue-empty"><%= filters.q || filters.status ? 'לא נמצאו כתבות שמתאימות לחיפוש.' : 'אין עדיין כתבות במערכת.' %></li>
+            <% } %>
+            <% rows.forEach(row => { %>
+            <%- include('partials/editor-queue-item', { row }) %>
+            <% }) %>
+          </ul>
+
+          <nav class="writer-pagination" id="queue-pagination" aria-label="דפי תוצאות"<%- pagination.pages > 1 ? '' : ' hidden' %>>
+            <a href="<%= pagination.prevUrl || '#' %>" rel="prev" data-page-link<%- pagination.prevUrl ? '' : ' hidden' %>>הקודם</a>
+            <span>עמוד <span data-page><%= pagination.page %></span> מתוך <span data-pages><%= pagination.pages %></span></span>
+            <a href="<%= pagination.nextUrl || '#' %>" rel="next" data-page-link<%- pagination.nextUrl ? '' : ' hidden' %>>הבא</a>
+          </nav>
+        </section>
+
+        <section class="review-area" aria-label="בדיקת כתבה">
+          <p class="review-empty" id="review-empty"<%- hasReview ? ' hidden' : '' %>>בחרו כתבה מהרשימה כדי לראות את התוכן שלה ולהחליט עליה.</p>
+          <%- include('partials/editor-review', { review, hasReview }) %>
+        </section>
+
+      </div>
+
+      <%# פריט ריק לשכפול — editor.js מעתיק אותו לכל כתבה שמגיעה מה-API %>
+      <template id="queue-item-template">
+        <%- include('partials/editor-queue-item', { row: { id: '', url: '#', selected: false, title: '', category: '', writerName: '', stateLabel: '', stateTone: 'neutral', note: '', updated: '' } }) %>
+      </template>
+
+    </main>
+  </div>
+
+  <dialog class="confirm-dialog" id="delete-dialog" aria-labelledby="delete-dialog-title">
+    <h2 id="delete-dialog-title">למחוק את הכתבה?</h2>
+    <p>המחיקה סופית: הכתבה, כולל הגרסה המפורסמת שלה, תוסר מהאתר ולא ניתן יהיה לשחזר אותה.</p>
+    <div class="confirm-dialog-actions">
+      <button type="button" class="btn btn-secondary" id="delete-dialog-cancel">ביטול</button>
+      <button type="button" class="btn btn-danger" id="delete-dialog-confirm">
+        <%- include('partials/icon', { name: 'trash' }) %>
+        מחיקה
+      </button>
+    </div>
+  </dialog>
+
+<script src="/js/editor.js" defer></script>
+<%- include('partials/footer') %>

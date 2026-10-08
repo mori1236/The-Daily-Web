@@ -11,9 +11,8 @@ const SESSION_DAYS = 7;
  * @returns {string}
  */
 // Where a user lands after login/register.
-// TODO: send editors to '/editor' once that page exists.
 function homeFor(user) {
-    return user.role === 'writer' ? '/writer' : '/';
+    return user.role === 'writer' ? '/writer' : '/editor';
 }
 
 // Create a session in the DB and send its token as a cookie.

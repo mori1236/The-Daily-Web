@@ -1,11 +1,13 @@
-<%- include('partials/header', { title: 'עריכת כתבה', styles: ['forms', 'workspace', 'writer', 'writer-editor'], container: 'workspace-page' }) %>
+<%# העמוד משמש גם את הכתב וגם את העורך. הנתונים שמשתנים ביניהם מגיעים מהבקר: saveUrl, backUrl, writerName %>
+<% const byEditor = user.role === 'editor'; %>
+<%- include('partials/header', { title: 'עריכת כתבה', styles: ['forms', 'workspace', 'writer', 'confirm-dialog', 'writer-editor'], container: 'workspace-page' }) %>
 
-  <%- include('partials/workspace-header', { area: 'עריכת כתבה' }) %>
+  <%- include('partials/site-header', { area: 'עריכת כתבה' }) %>
 
   <div class="workspace">
-    <%- include('partials/workspace-sidebar', { active: 'articles' }) %>
+    <%- include('partials/workspace-sidebar', { active: byEditor ? 'queue' : 'articles' }) %>
 
-    <main class="editor" id="editor" data-article-id="<%= article._id %>" data-can-edit="<%= canEdit %>">
+    <main class="editor" id="editor" data-article-id="<%= article._id %>" data-save-url="<%= saveUrl %>" data-can-edit="<%= canEdit %>">
 
       <div class="editor-topbar">
         <div class="editor-doc-state">
@@ -16,16 +18,24 @@
         <div class="editor-actions">
           <p class="editor-save-status" id="editor-save-status" role="status" aria-live="polite">
             <%- include('partials/icon', { name: 'cloud-check' }) %>
-            <span id="editor-save-text"><%= canEdit ? 'כל השינויים נשמרו · ' + savedAt : 'הכתבה ממתינה לעורך' %></span>
+            <span id="editor-save-text"><%= canEdit ? 'כל השינויים נשמרו · ' + savedAt : (byEditor ? 'אפשר לערוך רק כתבה שממתינה לאישור' : 'הכתבה ממתינה לעורך') %></span>
           </p>
+          <% if (byEditor) { %>
+          <a href="<%= backUrl %>" class="btn btn-secondary editor-submit">חזרה לתור האישורים</a>
+          <% } else { %>
           <button type="button" class="btn btn-primary editor-submit" id="editor-submit"<%- canEdit ? '' : ' disabled' %>>
             <%- include('partials/icon', { name: 'send' }) %>
             <%= article.state === 'returned' ? 'הגשה מחדש' : 'הגשה לאישור' %>
           </button>
+          <% } %>
         </div>
       </div>
 
-      <% if (article.state === 'returned' && article.editorRejectNote) { %>
+      <% if (byEditor && canEdit) { %>
+      <div class="editor-banner" role="note">אתם עורכים את הגרסה שהכתב/ת הגיש/ה. השינויים נשמרים אוטומטית, ויופיעו באתר רק אחרי אישור ופרסום.</div>
+      <% } else if (byEditor) { %>
+      <div class="editor-banner" role="note">אפשר לערוך רק כתבה שממתינה לאישור. כאן אפשר לצפות בתוכן בלבד.</div>
+      <% } else if (article.state === 'returned' && article.editorRejectNote) { %>
       <div class="editor-banner is-danger" role="note">
         <strong>העורך החזיר את הכתבה לתיקונים:</strong>
         <span><%= article.editorRejectNote %></span>
@@ -87,7 +97,7 @@
 
           <div class="field">
             <span class="field-label">כתב/ת</span>
-            <p class="editor-readonly"><%= user.name %></p>
+            <p class="editor-readonly"><%= writerName %></p>
           </div>
 
           <div class="field">
@@ -104,6 +114,7 @@
     </main>
   </div>
 
+  <% if (!byEditor) { %>
   <dialog class="confirm-dialog" id="submit-dialog" aria-labelledby="submit-dialog-title">
     <h2 id="submit-dialog-title">להגיש את הכתבה לאישור?</h2>
     <p>
@@ -118,5 +129,7 @@
       </button>
     </div>
   </dialog>
+  <% } %>
 
-<%- include('partials/footer', { script: '/js/writer-editor.js' }) %>
+<script src="/js/writer-editor.js" defer></script>
+<%- include('partials/footer') %>

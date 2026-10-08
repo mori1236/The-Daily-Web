@@ -253,6 +253,18 @@ articleSchema.methods.Reject = async function (actuator, rejectNote) {
     await this.save();
 };
 
+/**
+ * Deletes the article for good (any state).
+ * @this {ArticleDocument}
+ * @param {import('./user.js').UserDocument} actuator
+ * @returns {Promise<void>}
+ * @throws {ArticleTransitionError}
+ */
+articleSchema.methods.DeleteNow = async function (actuator) {
+    requireRole(this, actuator, 'editor', 'delete articles');
+    await this.deleteOne();
+};
+
 const Article = mongoose.model('Article', articleSchema);
 Article.CATEGORIES = CATEGORIES;
 Article.CATEGORY_LABELS = CATEGORY_LABELS;

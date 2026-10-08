@@ -159,6 +159,18 @@
   font-weight: bold;
 }
 
+/* צ'יפ של סטטוס מקבל את אותם צבעים כמו התגית של הסטטוס בטבלה */
+.filter-chip.is-neutral { background: var(--color-surface-alt); }
+.filter-chip.is-warning { border-color: transparent; background: var(--color-warning-bg); color: var(--color-warning); }
+.filter-chip.is-success { border-color: transparent; background: var(--color-success-bg); color: var(--color-success); }
+.filter-chip.is-danger { border-color: transparent; background: var(--color-danger-bg); color: var(--color-danger); }
+
+/* כשהצ'יפ פעיל הצבע הופך לרקע מלא */
+.filter-chip.is-warning.is-active { background: var(--color-warning); color: var(--color-surface); }
+.filter-chip.is-success.is-active { background: var(--color-success); color: var(--color-surface); }
+.filter-chip.is-danger.is-active { background: var(--color-danger); color: var(--color-surface); }
+.filter-chip.is-neutral.is-active { background: var(--color-ink); }
+
 .writer-search {
   display: flex;
   align-items: center;

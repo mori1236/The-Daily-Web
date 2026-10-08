@@ -23,28 +23,184 @@ body {
   padding: 0;
 }
 
-/* תוכן כל דף מוגבל ל-1440px ומרוכז. הכותרת (site-header / workspace-header) נשארת ברוחב מלא */
-.auth-page,
-.workspace-content,
+/* פסי גלילה דקים בצבעי האתר, בכל הדפים */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+/* על רקע כהה (תפריט הצד) */
+.workspace-sidebar {
+  scrollbar-color: var(--color-muted) transparent;
+}
+
+/* תוכן כל דף מוגבל ל-1440px ומרוכז. הכותרת (site-header) נשארת ברוחב מלא */
+.auth-main,
 .main-container {
   max-width: 1440px;
   margin: 0 auto;
 }
 
+/* ---------- כותרת עליונה משותפת (אתר + אזורי עבודה) ---------- */
+
 .site-header {
-  font-family: 'Arimo';
   display: flex;
-  height: 78px;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 58px;
+  height: 72px;
+  padding: 0 32px;
   background: var(--color-surface);
-  border-bottom: #D7DAD6 1px solid;
-  margin-bottom: 36px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-logo p{
-  margin: 0px;
+.site-header-context,
+.site-header-actions,
+.site-user {
+  display: flex;
+  align-items: center;
+}
+
+.site-header-context {
+  gap: 14px;
+}
+
+.site-brand {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.site-brand-name {
+  font-family: var(--font-brand);
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 29px;
+}
+
+.site-brand-edition {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-muted);
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* שם האזור, עם קו מפריד מהלוגו */
+.site-area {
+  padding-inline-start: 14px;
+  border-inline-start: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 26px;
+}
+
+.site-nav {
+  display: flex;
+  gap: 28px;
+}
+
+.site-nav a {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 2px;
+  color: #555B57;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* הטקסט המוסתר מונע קפיצה ברוחב כשהקישור הופך למודגש */
+.site-nav a::after {
+  content: attr(data-text);
+  content: attr(data-text) / "";
+  font-weight: bold;
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
+.site-nav a:hover {
+  font-weight: bold;
+}
+
+.site-header-actions {
+  gap: 16px;
+}
+
+.site-header-link {
+  color: #555B57;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.site-user {
+  gap: 9px;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.site-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.site-user-name {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.site-user-role {
+  color: var(--color-muted);
+  font-size: 10px;
+}
+
+.site-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-surface);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.site-logout {
+  margin: 0;
+  padding-inline-start: 12px;
+  border-inline-start: 1px solid var(--color-border);
+}
+
+.site-logout-button {
+  display: flex;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.site-logout-button:hover {
+  color: var(--color-ink);
+}
+
+@media (max-width: 800px) {
+  .site-header {
+    padding: 0 16px;
+  }
+
+  .site-user-details {
+    display: none;
+  }
 }
 
 /* נקודת "שידור חי" אדומה עם הבהוב — גל שמתרחב ונעלם סביב הנקודה */

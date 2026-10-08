@@ -1,0 +1,13 @@
+<%# פריט אחד ברשימת הכתבות של העורך. פרמטר: row.
+    משמש גם לרינדור הראשון בשרת וגם כתבנית ש-public/js/editor.js משכפל וממלא:
+    האלמנטים עם data-field מקבלים את הטקסט מהשדה בשם הזה. %>
+<li>
+  <a href="<%= row.url %>" class="queue-item<%= row.selected ? ' is-selected' : '' %>" data-queue-link data-id="<%= row.id %>"<%- row.selected ? ' aria-current="true"' : '' %>>
+    <span class="queue-item-title" data-field="title"><%= row.title %></span>
+    <span class="queue-item-meta"><span data-field="category"><%= row.category %></span> · <span data-field="writerName"><%= row.writerName %></span></span>
+    <span class="queue-item-status">
+      <span class="status-badge is-<%= row.stateTone %>" data-field="stateLabel"><%= row.stateLabel %></span>
+      <span class="queue-item-note"><span data-field="note"><%= row.note %></span> · <span data-field="updated"><%= row.updated %></span></span>
+    </span>
+  </a>
+</li>

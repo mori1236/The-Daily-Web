@@ -9,6 +9,8 @@ const authRoutes = require('./server/routes/auth');
 const writerRoutes = require('./server/routes/writer');
 const writerApiRoutes = require('./server/API/writer/routes');
 const articleRoutes = require('./server/routes/articles');
+const editorRoutes = require('./server/routes/editor');
+const editorApiRoutes = require('./server/API/editor/routes');
 const { seedDemoData } = require('./server/seed');
 
 const app = express();
@@ -50,6 +52,10 @@ app.use(authRoutes);
 // אזור הכתב — ניהול הכתבות האישיות
 app.use(writerRoutes);
 app.use('/api/writer', writerApiRoutes); // JSON: the article list and stats for the writer page
+
+// אזור העורך — תור האישורים וניהול כל הכתבות
+app.use(editorRoutes);
+app.use('/api/editor', editorApiRoutes); // JSON: the article list and the review panel for the editor page
 
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {

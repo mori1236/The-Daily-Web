@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Article = require('../models/article');
-const { ArticleTransitionError } = require('../errors');
-const { sanitizeBody, cleanText, cleanUrl, MAX_LENGTHS } = require('../utils/sanitize');
+const { sanitizeBody } = require('../utils/sanitize');
 const { formatCount, formatTime, greetingFor, formatToday } = require('../utils/format');
-const { STATE_VIEW, toArticleRow } = require('../utils/articles.utils');
+const { STATE_VIEW, toArticleRow, readContentChanges } = require('../utils/articles.utils');
+const { sendApiError } = require('../utils/api-errors');
 const query = require('../API/writer/query');
 
 function listUrl(status, q, page) {
@@ -60,6 +60,7 @@ async function renderDashboard(req, res) {
             ...Article.STATES.map(state => ({
                 status: state,
                 label: STATE_VIEW[state].chipLabel,
+                tone: STATE_VIEW[state].tone,
                 count: stats.countByState[state],
                 active: status === state,
                 url: listUrl(state, q, 1),
@@ -78,9 +79,6 @@ async function renderDashboard(req, res) {
 
 // ---------- article editor ----------
 
-// Which HTTP status each ArticleTransitionError reason becomes (see server/errors.js).
-const ERROR_STATUS = { forbidden: 403, 'invalid-state': 409, 'invalid-input': 400 };
-
 // Loads the article from the :id in the URL. Sends the answer and returns null when it can't be used.
 async function findOwnArticle(req, res) {
     const article = mongoose.isValidObjectId(req.params.id) ? await Article.findById(req.params.id) : null;
@@ -89,16 +87,6 @@ async function findOwnArticle(req, res) {
         return null;
     }
     return article;
-}
-
-// Sends the error of a failed action as JSON.
-function sendApiError(res, err, logMessage) {
-    if (err instanceof ArticleTransitionError) {
-        console.warn(`${logMessage}: ${err.message}`);
-        return res.status(ERROR_STATUS[err.reason] || 400).json({ error: err.message, reason: err.reason, missingFields: err.details.missingFields });
-    }
-    console.error(`${logMessage}:`, err);
-    res.status(500).json({ error: 'אירעה שגיאה בשרת' });
 }
 
 // POST /writer/articles — creates an empty draft and opens it in the editor.
@@ -133,6 +121,9 @@ async function showEditor(req, res) {
             // Only the last version a writer can send is editable: a pending article waits for the editor.
             canEdit: ['draft', 'returned', 'published'].includes(article.state),
             savedAt: formatTime(article.updatedAt),
+            saveUrl: `/api/writer/articles/${article._id}`,
+            backUrl: '/writer',
+            writerName: req.user.name, // a writer only opens their own articles
         });
     } catch (err) {
         console.error('Writer editor error:', err);
@@ -146,15 +137,7 @@ async function saveArticle(req, res) {
         const article = await findOwnArticle(req, res);
         if (!article) return;
 
-        const body = req.body || {};
-        const changes = {};
-        if (body.title !== undefined) changes.title = cleanText(body.title, MAX_LENGTHS.title);
-        if (body.summary !== undefined) changes.summary = cleanText(body.summary, MAX_LENGTHS.summary);
-        if (body.content !== undefined) changes.content = sanitizeBody(body.content);
-        if (body.imageUrl !== undefined) changes.imageUrl = cleanUrl(body.imageUrl);
-        if (Article.CATEGORIES.includes(body.category)) changes.category = body.category;
-
-        await article.setArticleContent(req.user, changes);
+        await article.setArticleContent(req.user, readContentChanges(req.body));
         const state = STATE_VIEW[article.state];
         res.json({ state: article.state, stateLabel: state.label, stateTone: state.tone, savedAt: formatTime(article.updatedAt) });
     } catch (err) {

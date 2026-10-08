@@ -1,6 +1,6 @@
 <%- include('partials/header', { title: 'הכתבות שלי', styles: ['forms', 'workspace', 'writer'], container: 'workspace-page' }) %>
 
-  <%- include('partials/workspace-header', { area: 'אזור כתב' }) %>
+  <%- include('partials/site-header', { area: 'אזור כתב' }) %>
 
   <div class="workspace">
     <%- include('partials/workspace-sidebar', { active: 'articles' }) %>
@@ -75,7 +75,7 @@
       <div class="writer-tools">
         <nav class="writer-filters" aria-label="סינון לפי סטטוס">
           <% chips.forEach(chip => { %>
-          <a href="<%= chip.url %>" class="filter-chip<%= chip.active ? ' is-active' : '' %>" data-filter-link data-status="<%= chip.status %>"<%- chip.active ? ' aria-current="true"' : '' %>>
+          <a href="<%= chip.url %>" class="filter-chip<%= chip.tone ? ' is-' + chip.tone : '' %><%= chip.active ? ' is-active' : '' %>" data-filter-link data-status="<%= chip.status %>"<%- chip.active ? ' aria-current="true"' : '' %>>
             <%= chip.label %> <%= chip.count %>
           </a>
           <% }) %>
@@ -141,4 +141,5 @@
     </main>
   </div>
 
-<%- include('partials/footer', { script: '/js/writer.js' }) %>
+<script src="/js/writer.js" defer></script>
+<%- include('partials/footer') %>

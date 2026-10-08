@@ -1,37 +1,57 @@
-<%# כותרת האתר העליונה — לוגו, ניווט וקישורים %>
-  <header class="site-header">
-    <logo>
-      <p class="text-logo">The Daily Web</p>
-      <div style="display: flex; align-items: center; gap: 6px;">
+<%# הכותרת העליונה המשותפת לכל הדפים: אתר החדשות ואזורי העבודה.
+    פרמטרים: area — שם אזור העבודה (למשל "אזור כתב"). בלי area מוצג ניווט הקטגוריות של האתר.
+    המשתמש המחובר מגיע מ-res.locals.user %>
+<%
+  const roleLabels = { writer: 'כתב/ת', editor: 'עורך/ת' };
+  const initials = locals.user ? user.name.trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('') : '';
+%>
+<header class="site-header">
+  <div class="site-header-context">
+    <a href="/" class="site-brand">
+      <span class="site-brand-name">The Daily Web</span>
+      <span class="site-brand-edition">
         <span class="live-dot"></span>
-        <p class="sub-text-logo">החדשות החמות ברשת</p>
-      </div>
-    </logo>
-    <nav>
-      <a href="/" class="<%= (!locals.currentCategory || currentCategory === 'all') ? 'active' : '' %>"
-        data-text="ראשי">ראשי</a>
-      <a href="/?category=politics" class="<%= (locals.currentCategory === 'politics') ? 'active' : '' %>"
-        data-text="פוליטי">פוליטי</a>
-      <a href="/?category=economy" class="<%= (locals.currentCategory === 'economy') ? 'active' : '' %>"
-        data-text="כלכלה">כלכלה</a>
-      <a href="/?category=tech" class="<%= (locals.currentCategory === 'tech') ? 'active' : '' %>"
-        data-text="טכנולוגיה">טכנולוגיה</a>
-      <a href="/?category=culture" class="<%= (locals.currentCategory === 'culture') ? 'active' : '' %>"
-        data-text="תרבות">תרבות</a>
-      <a href="/?category=sports" class="<%= (locals.currentCategory === 'sports') ? 'active' : '' %>"
-        data-text="ספורט">ספורט</a>
-    </nav>
+        החדשות החמות ברשת
+      </span>
+    </a>
+    <% if (locals.area) { %>
+    <span class="site-area"><%= area %></span>
+    <% } %>
+  </div>
 
-    <div class="site-header-actions">
-      <% if (locals.user) { %>
-        <a href="<%= user.role === 'editor' ? '/editor' : '/writer' %>">
-          <%= user.name %>
-        </a>
-        <form action="/logout" method="POST" class="site-header-logout">
-          <button type="submit">התנתקות</button>
-        </form>
-        <% } else { %>
-          <a href="/login">התחברות לכתבים/עורכים</a>
-          <% } %>
-    </div>
-  </header>
+  <% if (!locals.area) { %>
+  <nav>
+    <a href="/" class="<%= (!locals.currentCategory || currentCategory === 'all') ? 'active' : '' %>"
+      data-text="ראשי">ראשי</a>
+    <a href="/?category=politics" class="<%= (locals.currentCategory === 'politics') ? 'active' : '' %>"
+      data-text="פוליטי">פוליטי</a>
+    <a href="/?category=economy" class="<%= (locals.currentCategory === 'economy') ? 'active' : '' %>"
+      data-text="כלכלה">כלכלה</a>
+    <a href="/?category=tech" class="<%= (locals.currentCategory === 'tech') ? 'active' : '' %>"
+      data-text="טכנולוגיה">טכנולוגיה</a>
+    <a href="/?category=culture" class="<%= (locals.currentCategory === 'culture') ? 'active' : '' %>"
+      data-text="תרבות">תרבות</a>
+    <a href="/?category=sports" class="<%= (locals.currentCategory === 'sports') ? 'active' : '' %>"
+      data-text="ספורט">ספורט</a>
+  </nav>
+  <% } %>
+
+  <div class="site-header-actions">
+    <% if (locals.user) { %>
+    <a href="<%= user.role === 'editor' ? '/editor' : '/writer' %>" class="site-user">
+      <span class="site-user-details">
+        <span class="site-user-name"><%= user.name %></span>
+        <span class="site-user-role"><%= roleLabels[user.role] %></span>
+      </span>
+      <span class="site-avatar" aria-hidden="true"><%= initials %></span>
+    </a>
+    <form action="/logout" method="POST" class="site-logout">
+      <button type="submit" class="site-logout-button" aria-label="התנתקות" title="התנתקות">
+        <%- include('icon', { name: 'log-out' }) %>
+      </button>
+    </form>
+    <% } else { %>
+    <a href="/login" class="site-header-link">התחברות לכתבים/עורכים</a>
+    <% } %>
+  </div>
+</header>

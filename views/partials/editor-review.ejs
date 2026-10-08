@@ -1,0 +1,65 @@
+<%# לוח הבדיקה של העורך: הכתבה שנבחרה, הגרסה המפורסמת והגרסה החדשה זו לצד זו, וכפתורי ההחלטה. פרמטר: review.
+    משמש גם לרינדור הראשון בשרת וגם ש-public/js/editor.js ממלא מחדש מה-API:
+    האלמנטים עם data-field מקבלים טקסט, ובתוך כל גרסה data-version-field. תוכן הכתבה (HTML) כבר נוקה בשרת. %>
+<article class="review" id="review" aria-label="בדיקת כתבה" data-article-id="<%= review.id %>"<%- hasReview ? '' : ' hidden' %>>
+
+  <header class="review-bar">
+    <div class="review-bar-text">
+      <h2 class="review-title" data-field="title"><%= review.title %></h2>
+      <p class="review-meta">
+        <span class="status-badge is-<%= review.stateTone %>" data-field="stateLabel"><%= review.stateLabel %></span>
+        <span data-field="meta"><%= review.meta %></span>
+      </p>
+    </div>
+
+    <div class="review-actions">
+      <button type="button" class="btn btn-primary" data-action="publish"<%- review.canReview ? '' : ' hidden' %>>
+        <%- include('icon', { name: 'circle-check' }) %>
+        אישור ופרסום
+      </button>
+      <button type="button" class="btn btn-secondary" data-action="return"<%- review.canReview ? '' : ' hidden' %>>
+        <%- include('icon', { name: 'undo' }) %>
+        החזרה לתיקונים
+      </button>
+      <a href="<%= review.editUrl %>" class="btn btn-secondary" data-edit-link<%- review.canEdit ? '' : ' hidden' %>>
+        <%- include('icon', { name: 'pencil' }) %>
+        עריכה
+      </a>
+      <button type="button" class="btn btn-secondary btn-danger-text" data-action="delete">
+        <%- include('icon', { name: 'trash' }) %>
+        מחיקה
+      </button>
+    </div>
+  </header>
+
+  <p class="form-error" id="review-error" role="alert" hidden></p>
+
+  <p class="review-returned-note" id="review-returned-note"<%- review.returnedNote ? '' : ' hidden' %>>
+    <strong>ההערה שנשלחה לכתב/ת:</strong>
+    <span data-field="returnedNote"><%= review.returnedNote %></span>
+  </p>
+
+  <div class="review-versions">
+    <%# הגרסה החדשה ראשונה, כך שבעברית היא מופיעה מימין לגרסה המפורסמת (כמו ב-Figma) %>
+    <% ['draft', 'published'].forEach(key => { const version = review[key]; %>
+    <section class="review-version" data-version="<%= key %>"<%- version ? '' : ' hidden' %>>
+      <h3 class="review-version-head">
+        <span data-version-field="label"><%= version ? version.label : '' %></span>
+        <span class="review-version-meta" data-version-field="meta"><%= version ? version.meta : '' %></span>
+      </h3>
+      <div class="review-version-body">
+        <img class="review-image" data-version-image src="<%= version ? version.imageUrl : '' %>" alt=""<%- version && version.imageUrl ? '' : ' hidden' %>>
+        <h4 class="review-version-title" data-version-field="title"><%= version ? version.title : '' %></h4>
+        <p class="review-version-summary" data-version-field="summary"><%= version ? version.summary : '' %></p>
+        <div class="review-text" data-version-html><%- version ? version.contentHtml : '' %></div>
+      </div>
+    </section>
+    <% }) %>
+  </div>
+
+  <div class="review-return" id="review-return"<%- review.canReview ? '' : ' hidden' %>>
+    <label for="review-note" class="field-label">הערה לכתב/ת (חובה כשמחזירים לתיקונים)</label>
+    <textarea id="review-note" class="review-note" rows="3" maxlength="1000" placeholder="מה צריך לתקן בכתבה?"></textarea>
+  </div>
+
+</article>
