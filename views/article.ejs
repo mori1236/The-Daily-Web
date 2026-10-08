@@ -1,0 +1,30 @@
+<%- include('partials/head', { title: article.published.title, description, canonicalUrl, imageUrl, styles }) %>
+
+<body>
+  <%- include('partials/site-header') %>
+
+  <main class="article-page">
+    <a class="back-link" href="/">חזרה לעמוד הראשי</a>
+
+    <article>
+      <header class="article-header">
+        <span class="category"><%= article.published.category %></span>
+        <h1><%= article.published.title %></h1>
+        <p class="article-summary"><%= article.published.summary %></p>
+
+        <div class="article-meta">
+          <span>כתב: <%= article.writer ? article.writer.name : 'מערכת' %></span>
+          <span>פורסם ב: <%= new Date(article.published.publishedAt).toLocaleDateString('he-IL') %></span>
+        </div>
+      </header>
+
+      <% if (article.published.imageUrl) { %>
+        <img class="article-image" src="<%= article.published.imageUrl %>" alt="<%= article.published.title %>">
+      <% } %>
+
+      <div class="article-content"><%= article.published.content %></div>
+      <footer class="article-footer">צפיות: <%= article.viewCount %></footer>
+    </article>
+  </main>
+</body>
+</html>

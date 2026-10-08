@@ -4,7 +4,9 @@ const path = require('path');
 const config = require('./server/config'); // טוען ומאמת את משתני הסביבה מקובץ .env
 const { loadUser } = require('./server/middleware/auth');
 const authRoutes = require('./server/routes/auth');
+const articleRoutes = require('./server/routes/articles');
 const { seedDemoData } = require('./server/seed');
+const Article = require('./server/models/article');
 
 const app = express();
 const PORT = config.port;
@@ -35,8 +37,13 @@ mongoose.connect(config.mongoUri)
 // נתיב לדף הבית (הפיד)
 app.get('/', async (req, res) => {
     try {
-        // כרגע נשלח מערך ריק, בהמשך נשלח לכאן את הכתבות מ-MongoDB
-        const articles = []; 
+        const articles = await Article.find({
+            state: 'published',
+            published: { $ne: null },
+        })
+            .populate('writer', 'name')
+            .sort({ 'published.publishedAt': -1 })
+            .lean();
         res.render('index', { articles });
     } catch (err) {
         console.error(err);
@@ -46,6 +53,7 @@ app.get('/', async (req, res) => {
 
 // התחברות / התנתקות
 app.use(authRoutes);
+app.use(articleRoutes);
 
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {

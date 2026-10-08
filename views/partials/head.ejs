@@ -6,6 +6,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title ? title + ' | ' : '' %>The Daily Web</title>
+
+  <% if (locals.description) { %>
+    <meta name="description" content="<%= description %>">
+  <% } %>
+
+  <% if (locals.canonicalUrl) { %>
+    <link rel="canonical" href="<%= canonicalUrl %>">
+  <% } %>
+
+  <meta property="og:title" content="<%= title || 'The Daily Web' %>">
+  <% if (locals.description) { %>
+    <meta property="og:description" content="<%= description %>">
+  <% } %>
+  <% if (locals.imageUrl) { %>
+    <meta property="og:image" content="<%= imageUrl %>">
+  <% } %>
+  <meta property="og:type" content="article">
   <link rel="stylesheet" href="/css/style.css">
   <% (locals.styles || []).forEach(style => { %>
   <link rel="stylesheet" href="/css/<%= style %>.css">

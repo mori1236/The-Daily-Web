@@ -26,18 +26,18 @@
         <% if (articles && articles.length > 0) { %>
           <% articles.forEach(article => { %>
             <article class="article-card">
-              <% if (article.imageUrl) { %>
-                <img src="<%= article.imageUrl %>" alt="<%= article.title %>">
+              <% if (article.published && article.published.imageUrl) { %>
+                <img src="<%= article.published.imageUrl %>" alt="<%= article.published.title %>">
               <% } %>
               <div class="article-content">
-                <span class="category"><%= article.category %></span>
+                <span class="category"><%= article.published.category %></span>
                 <h3>
-                  <a href="/articles/<%= article._id %>"><%= article.title %></a>
+                  <a href="/articles/<%= article._id %>"><%= article.published.title %></a>
                 </h3>
-                <p class="summary"><%= article.summary %></p>
+                <p class="summary"><%= article.published.summary %></p>
                 <div class="meta">
-                  <span>כתב: <%= article.author ? article.author.username : 'מערכת' %></span> | 
-                  <span>פורסם ב: <%= new Date(article.publishedAt).toLocaleDateString('he-IL') %></span>
+                  <span>כתב: <%= article.writer ? article.writer.name : 'מערכת' %></span> |
+                  <span>פורסם ב: <%= new Date(article.published.publishedAt).toLocaleDateString('he-IL') %></span>
                 </div>
               </div>
             </article>
