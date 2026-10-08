@@ -1,9 +1,16 @@
 <%# תפריט הצד של אזורי העבודה. מוסיפים כאן קישור כשנבנה הדף שלו.
+    הקישורים נבחרים לפי התפקיד של המשתמש המחובר (res.locals.user).
     פרמטרים: active — המפתח (key) של הקישור הפעיל %>
 <%
-  const links = [
-    { key: 'articles', label: 'הכתבות שלי', href: '/writer', icon: 'newspaper' },
-  ];
+  const linksByRole = {
+    writer: [
+      { key: 'articles', label: 'הכתבות שלי', href: '/writer', icon: 'newspaper' },
+    ],
+    editor: [
+      { key: 'queue', label: 'תור אישורים', href: '/editor', icon: 'list-checks' },
+    ],
+  };
+  const links = linksByRole[user.role] || [];
 %>
 <aside class="workspace-sidebar">
   <nav aria-label="תפריט אזור עבודה" class="workspace-nav">
