@@ -2,13 +2,31 @@
 
 /* ---------- תפריט צד + תוכן ---------- */
 
-.workspace {
+/* הדף עצמו לא גולל: הכותרת והתפריט נשארים במקום, ורק התוכן גולל */
+/* בדפי העבודה גם החלון לא גולל */
+body:has(.workspace-page) {
+  overflow: hidden;
+}
+
+.workspace-page {
   display: flex;
-  min-height: calc(100vh - 72px);
+  flex-direction: column;
+  height: 100vh;
+}
+
+.workspace-page .site-header {
+  flex: none;
+}
+
+.workspace {
+  flex: 1;
+  display: flex;
+  min-height: 0;
 }
 
 .workspace-sidebar {
   flex: 0 0 236px;
+  overflow-y: auto;
   padding: 28px 18px 24px;
   background: var(--color-dark);
 }
@@ -50,6 +68,18 @@
 
 .workspace-link[aria-current='page'] svg {
   color: var(--color-accent);
+}
+
+.workspace-content,
+.editor {
+  overflow-y: auto;
+}
+
+/* תוכן העמוד מוגבל ל-1440px ומרוכז, אבל פס הגלילה נשאר בקצה החלון */
+.workspace-content > * {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
 }
 
 .workspace-content {

@@ -25,7 +25,6 @@ body {
 
 /* תוכן כל דף מוגבל ל-1440px ומרוכז. הכותרת (site-header) נשארת ברוחב מלא */
 .auth-main,
-.workspace-content,
 .main-container {
   max-width: 1440px;
   margin: 0 auto;
