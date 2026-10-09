@@ -1,5 +1,6 @@
 const User = require('./models/user');
 const Article = require('./models/article');
+const Comment = require('./models/comment');
 
 // Demo data for local development. Enabled with SEED_DEMO_DATA=true in .env.
 // Every demo user has the password "123456".
@@ -145,11 +146,83 @@ async function seedArticles() {
     console.log(`Seeded ${articles.length} demo articles`);
 }
 
+async function seedComments() {
+    if (await Comment.countDocuments() > 0) return;
+
+    const publishedArticles = await Article.find({ state: 'published' }).limit(30);
+    if (publishedArticles.length === 0) return;
+
+    const now = Date.now();
+    const demoComments = [
+        {
+            authorName: 'אורי כהן',
+            content: 'חשוב שהתקציב יגיע גם לעסקים הקטנים. הם אלה שמחזיקים את היישובים בחיים.',
+            minutesAgo: 12,
+        },
+        {
+            authorName: 'מאיה לב',
+            content: 'מקווה שבקרוב נראה לוחות זמנים שקופים לציבור ולא רק כותרות. זה המבחן האמיתי.',
+            minutesAgo: 28,
+        },
+        {
+            authorName: 'יוסי כהן',
+            content: 'כתבה מצוינת ומעמיקה! מעלה נקודות חשובות שאי אפשר להתעלם מהן.',
+            minutesAgo: 65,
+        },
+        {
+            authorName: 'רוני אלון',
+            content: 'מסכים לגמרי עם הנאמר. יש צורך בשינוי מיידי של סדרי העדיפויות.',
+            minutesAgo: 180,
+        },
+        {
+            authorName: 'דניאל שרון',
+            content: 'נושא קריטי שנוגע לכולנו. מקווה שהגורמים הרלוונטיים יקראו ויישמו.',
+            minutesAgo: 320,
+        },
+    ];
+
+    const commentsToInsert = [];
+    for (let i = 0; i < publishedArticles.length; i++) {
+        const article = publishedArticles[i];
+        if (i === 0) {
+            commentsToInsert.push({
+                article: article._id,
+                authorName: demoComments[0].authorName,
+                content: demoComments[0].content,
+                createdAt: new Date(now - demoComments[0].minutesAgo * 60 * 1000),
+                updatedAt: new Date(now - demoComments[0].minutesAgo * 60 * 1000),
+            });
+            commentsToInsert.push({
+                article: article._id,
+                authorName: demoComments[1].authorName,
+                content: demoComments[1].content,
+                createdAt: new Date(now - demoComments[1].minutesAgo * 60 * 1000),
+                updatedAt: new Date(now - demoComments[1].minutesAgo * 60 * 1000),
+            });
+        } else if (i % 2 === 0) {
+            const c = demoComments[i % demoComments.length];
+            commentsToInsert.push({
+                article: article._id,
+                authorName: c.authorName,
+                content: c.content,
+                createdAt: new Date(now - c.minutesAgo * 60 * 1000),
+                updatedAt: new Date(now - c.minutesAgo * 60 * 1000),
+            });
+        }
+    }
+
+    if (commentsToInsert.length > 0) {
+        await Comment.insertMany(commentsToInsert);
+        console.log(`Seeded ${commentsToInsert.length} demo comments`);
+    }
+}
+
 // Adds each kind of demo data only when its collection is empty,
 // so real data is never overwritten and restarts are safe.
 async function seedDemoData() {
     await seedUsers();
     await seedArticles();
+    await seedComments();
 }
 
 module.exports = { seedDemoData };

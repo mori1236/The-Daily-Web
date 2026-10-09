@@ -36,8 +36,14 @@
           </div>
 
           <div class="article-stats">
+            <a href="#commentsSection" class="comments-badge" title="מעבר לתגובות">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span><span id="bylineCommentsCount"><%= comments.length %></span> תגובות</span>
+            </a>
             <span class="views-badge" title="צפיות בכתבה">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
@@ -72,6 +78,9 @@
           <p><%= article.summary %></p>
         <% } %>
       </section>
+
+      <!-- אזור תגובות קוראים (Figma) -->
+      <%- include('partials/comments', { comments, article }) %>
 
       <!-- כפתור שיתוף / חזרה -->
       <footer class="article-page-footer">

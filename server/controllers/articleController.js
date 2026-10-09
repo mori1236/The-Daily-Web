@@ -1,5 +1,7 @@
 const Article = require('../models/article');
 const User = require('../models/user');
+const Comment = require('../models/comment');
+const { formatComment } = require('./commentController');
 const { toFeedArticle } = require('../utils/articles.utils');
 const { formatTime } = require('../utils/format');
 
@@ -152,6 +154,10 @@ const articleController = {
             const now = new Date();
             const article = toFeedArticle(articleDoc, now);
 
+            // Fetch comments for the article
+            const commentDocs = await Comment.find({ article: id }).sort({ createdAt: -1 });
+            const comments = commentDocs.map(c => formatComment(c, now));
+
             // Fetch a few related / more articles from the same category or latest
             const moreDocs = await Article.find({
                 _id: { $ne: articleDoc._id },
@@ -165,6 +171,7 @@ const articleController = {
 
             res.render('article', {
                 article,
+                comments,
                 fullContent: articleDoc.published.content || articleDoc.published.summary || '',
                 moreArticles,
                 currentCategory: article.category, // highlights the article's category in the header nav
