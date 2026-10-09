@@ -71,6 +71,13 @@ const articleSchema = new mongoose.Schema({
     }],
 
     viewCount: { type: Number, default: 0 }, // total views, used for sorting by popularity
+    viewTrackingStartedAt: { type: Date }, // old aggregate counts have no recoverable timestamps
+    // Reserved for seed fixtures; ordinary articles never receive this metadata.
+    analyticsDemo: { type: new mongoose.Schema({
+        key: { type: String, required: true },
+        until: { type: Date, required: true },
+        seededAt: { type: Date },
+    }, { _id: false }), default: undefined },
 }, { timestamps: true });
 
 // Public feed: newest published articles, optionally for one category.
