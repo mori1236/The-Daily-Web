@@ -95,7 +95,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 32px;
-  padding: 48px 110px 40px;
+  /* padding: 48px 110px 40px; */
 }
 
 .auth-back {
@@ -112,6 +112,9 @@
 }
 
 .auth-card {
+  align-self: center;
+  margin-top: auto;
+  margin-bottom: auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
