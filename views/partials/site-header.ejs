@@ -6,6 +6,7 @@
   const initials = locals.user ? user.name.trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('') : '';
 %>
 <header class="site-header">
+  <link rel="stylesheet" href="/css/weather.css">
 <div class="site-header-context">
 
   <a href="/" class="site-brand">
@@ -19,7 +20,7 @@
 
   <!-- Weather -->
   <div class="header-weather" id="weatherWidget">
-    <span class="weather-icon"></span>
+    <span class="weather-icon" title="מזג האוויר"></span>
 
     <span class="weather-temp">
       --°
@@ -30,6 +31,9 @@
     </span>
   </div>
 
+<% if (locals.area) { %>
+  <span class="site-area"><%= area %></span>
+<% } %>
   <% if (locals.area) { %>
     <span class="site-area"><%= area %></span>
   <% } %>

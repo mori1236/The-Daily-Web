@@ -7,13 +7,10 @@ async function getWeather(req, res) {
     res.json(weather);
   } catch (error) {
     console.error("Weather error:", error);
-
-    res.status(503).json({
+    res.status(503).json({ //להתריע שהשירות אינו זמין כרגע
       error: "Weather service is temporarily unavailable"
     });
-  }
-}
-
+  }}
 module.exports = {
   getWeather
 };

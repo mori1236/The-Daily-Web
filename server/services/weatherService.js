@@ -1,4 +1,4 @@
-//Cache time set
+// 10 דקות של מטמון כדי למנוע בקשות חוזרות מדי
 const CACHE_DURATION = 10 * 60 * 1000;
 
 let cachedWeather = null;
