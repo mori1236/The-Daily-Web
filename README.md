@@ -60,6 +60,16 @@ Your connections are private to you. You need access to the Trello board and the
 
 ## 📁 Folder structure
 
+### Feed read-status filtering
+
+The browser keeps read article IDs in `localStorage` under `dailyweb_read_articles`.
+It requests the feed with `POST /api/articles?page=1&limit=20` and a JSON body
+`{ "readStatus": "unread", "readIds": ["<article ObjectId>"] }`.
+Supported statuses are `all`, `read`, and `unread`. MongoDB applies this filter
+before pagination and counting, together with category, search, and sort filters.
+Read history stays in the browser and is sent for each filtered request; it is not
+saved to a user account. The existing GET endpoint remains available for feed clients.
+
 MVC layout:
 
 - `app.js` — entry point.

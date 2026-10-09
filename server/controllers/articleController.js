@@ -1,5 +1,7 @@
 const Article = require('../models/article');
 const User = require('../models/user');
+const Comment = require('../models/comment');
+const { formatComment } = require('./commentController');
 const { toFeedArticle } = require('../utils/articles.utils');
 const { formatTime } = require('../utils/format');
 
@@ -15,6 +17,7 @@ const articleController = {
             const now = new Date();
             const category = req.query.category;
             const sort = req.query.sort;
+            const readStatus = req.query.readStatus;
 
             // Base filter for published articles
             /** @type {Record<string, any>} */
@@ -24,9 +27,9 @@ const articleController = {
             }
 
             /** @type {Record<string, 1 | -1>} */
-            let sortObj = { 'published.publishedAt': -1 };
+            let sortObj = { 'published.publishedAt': -1, _id: -1 };
             if (sort === 'popularity') {
-                sortObj = { viewCount: -1, 'published.publishedAt': -1 };
+                sortObj = { viewCount: -1, 'published.publishedAt': -1, _id: -1 };
             }
 
             // Find the hero story matching the category filter (or overall for 'all')
@@ -47,6 +50,7 @@ const articleController = {
                 categoryLabels: Article.CATEGORY_LABELS,
                 currentCategory: category || 'all',
                 currentSort: sort || 'newest',
+                currentReadFilter: readStatus || 'all',
                 currentTime: formatTime(now),
             });
         } catch (err) {
@@ -56,7 +60,7 @@ const articleController = {
     },
 
     /**
-     * GET /api/articles — JSON endpoint for Ajax search, filter, and infinite scroll (20 per page).
+     * GET/POST /api/articles — paginated feed; POST also accepts local read history.
      */
     async getFeedArticles(req, res) {
         try {
@@ -68,6 +72,17 @@ const articleController = {
 
             /** @type {Record<string, any>} */
             const filter = { published: { $ne: null } };
+
+            const readStatus = req.body?.readStatus || req.query.readStatus || 'all';
+            const readIds = req.body?.readIds || [];
+            if (!['all', 'read', 'unread'].includes(readStatus) ||
+                !Array.isArray(readIds) ||
+                !readIds.every(id => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id))) {
+                return res.status(400).json({ error: 'Invalid read filter or article IDs' });
+            }
+            if (readStatus !== 'all') {
+                filter._id = { [readStatus === 'read' ? '$in' : '$nin']: [...new Set(readIds)] };
+            }
 
             if (category && category !== 'all') {
                 filter['published.category'] = category;
@@ -89,9 +104,9 @@ const articleController = {
             }
 
             /** @type {Record<string, 1 | -1>} */
-            let sortObj = { 'published.publishedAt': -1 };
+            let sortObj = { 'published.publishedAt': -1, _id: -1 };
             if (sort === 'popularity') {
-                sortObj = { viewCount: -1, 'published.publishedAt': -1 };
+                sortObj = { viewCount: -1, 'published.publishedAt': -1, _id: -1 };
             }
 
             const skip = (page - 1) * limit;
@@ -152,6 +167,10 @@ const articleController = {
             const now = new Date();
             const article = toFeedArticle(articleDoc, now);
 
+            // Fetch comments for the article
+            const commentDocs = await Comment.find({ article: id }).sort({ createdAt: -1 });
+            const comments = commentDocs.map(c => formatComment(c, now));
+
             // Fetch a few related / more articles from the same category or latest
             const moreDocs = await Article.find({
                 _id: { $ne: articleDoc._id },
@@ -165,8 +184,10 @@ const articleController = {
 
             res.render('article', {
                 article,
+                comments,
                 fullContent: articleDoc.published.content || articleDoc.published.summary || '',
                 moreArticles,
+                currentCategory: article.category, // highlights the article's category in the header nav
             });
         } catch (err) {
             console.error('Error showing article:', err);

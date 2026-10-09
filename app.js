@@ -9,6 +9,7 @@ const authRoutes = require('./server/routes/auth');
 const writerRoutes = require('./server/routes/writer');
 const writerApiRoutes = require('./server/API/writer/routes');
 const articleRoutes = require('./server/routes/articles');
+const commentRoutes = require('./server/routes/comments');
 const editorRoutes = require('./server/routes/editor');
 const weatherRoutes = require('./server/routes/weather');
 const editorApiRoutes = require('./server/API/editor/routes');
@@ -46,6 +47,7 @@ mongoose.connect(config.mongoUri)
 
 // פיד הכתבות הראשי ודפי הכתבות
 app.use(articleRoutes);
+app.use(commentRoutes);
 
 // התחברות / התנתקות
 app.use(authRoutes);
