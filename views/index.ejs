@@ -150,9 +150,9 @@
         <!-- תיבת סינון לפי סטטוס צפייה (מימין ל-sort-box) -->
         <div class="sort-box read-filter-box">
           <select id="readStatusSelect" aria-label="סינון לפי סטטוס צפייה">
-            <option value="all" selected>כל הסטטוסים</option>
-            <option value="unread">טרם נצפה</option>
-            <option value="read">נצפה</option>
+            <option value="all" <%= (locals.currentReadFilter === 'all') ? 'selected' : '' %>>כל הסטטוסים</option>
+            <option value="unread" <%= (locals.currentReadFilter === 'unread') ? 'selected' : '' %>>טרם נצפה</option>
+            <option value="read" <%= (locals.currentReadFilter === 'read') ? 'selected' : '' %>>נצפה</option>
           </select>
           <div class="sort-icon" aria-hidden="true">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555B57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

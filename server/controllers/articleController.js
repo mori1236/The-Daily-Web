@@ -15,6 +15,7 @@ const articleController = {
             const now = new Date();
             const category = req.query.category;
             const sort = req.query.sort;
+            const readStatus = req.query.readStatus;
 
             // Base filter for published articles
             /** @type {Record<string, any>} */
@@ -47,6 +48,7 @@ const articleController = {
                 categoryLabels: Article.CATEGORY_LABELS,
                 currentCategory: category || 'all',
                 currentSort: sort || 'newest',
+                currentReadFilter: readStatus || 'all',
                 currentTime: formatTime(now),
             });
         } catch (err) {

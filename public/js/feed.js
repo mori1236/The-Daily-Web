@@ -43,9 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortSelect = document.getElementById('sortSelect');
     const readStatusSelect = document.getElementById('readStatusSelect');
 
-    if (readStatusSelect) {
-        readStatusSelect.value = currentReadFilter;
-    }
 
     const READ_STORAGE_KEY = 'dailyweb_read_articles';
 
@@ -130,8 +127,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // If visible cards are few, auto-load next page to populate
-        if (visibleCount < 8 && hasMore && !isLoading && currentReadFilter !== 'all') {
-            fetchArticles(currentPage + 1, false);
+        // אם יש מעט מדי כתבות גלויות על המסך ויש עוד מה לטעון בשרת, נטען עמוד נוסף באופן אוטומטי
+        if (visibleCount < 6 && hasMore && !isLoading && currentReadFilter !== 'all') {
+            // קריאה לפונקציית עזר שתמשיך לטעון עמודים ברקע עד שיהיו מספיק כתבות גלויות
+            autoFillFilteredFeed();
+        }
+    }
+
+    // פונקציית עזר ששואבת עמודים ברקע עד שהמסך מתמלא בכתבות תואמות לפילטר
+    async function autoFillFilteredFeed() {
+        if (isLoading || !hasMore || currentReadFilter === 'all') return;
+        
+        // נטען את העמוד הבא
+        await fetchArticles(currentPage + 1, false);
+        
+        // נחשב מחדש כמה כתבות גלויות יש עכשיו במסך אחרי הטעינה
+        const readList = getReadArticles();
+        const cards = grid.querySelectorAll('.feed-card');
+        let currentVisible = 0;
+        
+        cards.forEach(card => {
+            const id = card.dataset.articleId;
+            let visible = true;
+            if (currentReadFilter === 'read') {
+                visible = readList.includes(id);
+            } else if (currentReadFilter === 'unread') {
+                visible = !readList.includes(id);
+            }
+            if (visible) currentVisible++;
+        });
+
+        // אם עדיין יש פחות מ-6 כתבות גלויות ויש עוד מה לטעון בשרת - נמשיך לטעון אוטומטית את העמוד הבא!
+        if (currentVisible < 6 && hasMore && !isLoading) {
+            autoFillFilteredFeed();
         }
     }
 
@@ -295,6 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Update read badges for newly loaded cards
             updateReadBadges();
+            if (typeof applyReadFilter === 'function') {
+                applyReadFilter();
+            }
 
         } catch (err) {
             console.error('Failed to load articles:', err);
@@ -338,34 +369,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Category filter clicks
-    categoryChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            const cat = chip.dataset.category || 'all';
-            if (cat === currentCategory) return;
+    // categoryChips.forEach(chip => {
+    //     chip.addEventListener('click', () => {
+    //         const cat = chip.dataset.category || 'all';
+    //         if (cat === currentCategory) return;
 
-            categoryChips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
+    //         categoryChips.forEach(c => c.classList.remove('active'));
+    //         chip.classList.add('active');
 
-            currentCategory = cat;
-            currentPage = 1;
-            hasMore = true;
+    //         currentCategory = cat;
+    //         currentPage = 1;
+    //         hasMore = true;
 
-            // Reflect in URL without full page reload
-            const nextUrl = (cat === 'all') ? '/' : `/?category=${encodeURIComponent(cat)}`;
-            window.history.pushState({ category: cat }, '', nextUrl);
+    //         // Reflect in URL without full page reload
+    //         const nextUrl = (cat === 'all') ? '/' : `/?category=${encodeURIComponent(cat)}`;
+    //         window.history.pushState({ category: cat }, '', nextUrl);
 
-            fetchArticles(1, true);
-        });
-    });
+    //         fetchArticles(1, true);
+    //     });
+    // });
 
     // Handle browser back/forward buttons
     window.addEventListener('popstate', () => {
         currentCategory = getActiveCategory();
         const urlParams = new URLSearchParams(window.location.search);
+
         currentSort = urlParams.get('sort') || 'newest';
         if (sortSelect) sortSelect.value = currentSort;
+
         currentSearch = urlParams.get('q') || '';
         if (searchInput) searchInput.value = currentSearch;
+
+
+        currentReadFilter = urlParams.get('readStatus') || 'all';
+        if (readStatusSelect) readStatusSelect.value = currentReadFilter;
 
         categoryChips.forEach(c => {
             if ((c.dataset.category || 'all') === currentCategory) c.classList.add('active');
@@ -383,7 +420,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         currentPage = 1;
         hasMore = true;
-        fetchArticles(1, true);
+        fetchArticles(1, true).then(() => {
+            if (typeof applyReadFilter === 'function') {
+                applyReadFilter();
+            }
+        });
     });
 
     // Search input with debounce (300ms)
@@ -423,6 +464,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ReadStatus filter change
+    if (readStatusSelect){
+        readStatusSelect.addEventListener('change', (e) => {
+            currentReadFilter = e.target.value;
+            currentPage = 1;
+            hasMore = true;
+
+            const url = new URL(window.location.href);
+
+            if (currentReadFilter && currentReadFilter !== 'all') {
+            url.searchParams.set('readStatus', currentReadFilter);
+            } else {
+                url.searchParams.delete('readStatus');
+            }
+
+            
+            const currentCategory = typeof getActiveCategory === 'function' ? getActiveCategory() : 'all';
+            if (currentCategory && currentCategory !== 'all') {
+                url.searchParams.set('category', currentCategory);
+            } else {
+                url.searchParams.delete('category');
+            }
+
+            if (typeof currentSort !== 'undefined' && currentSort && currentSort !== 'newest') {
+                url.searchParams.set('sort', currentSort);
+            } else {
+                url.searchParams.delete('sort');
+            }
+
+            if (typeof currentSearch !== 'undefined' && currentSearch) {
+                url.searchParams.set('q', currentSearch);
+            } else {
+                url.searchParams.delete('q');
+            }
+
+            window.history.pushState(null, '', url.pathname + url.search);
+
+            applyReadFilter();
+        });
+    }
+
+
     // Sort select change
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
@@ -432,24 +515,40 @@ document.addEventListener('DOMContentLoaded', () => {
             hasMore = true;
 
             const url = new URL(window.location.href);
+
             if (currentCategory && currentCategory !== 'all') {
                 url.searchParams.set('category', currentCategory);
             } else {
                 url.searchParams.delete('category');
             }
+
             if (currentSort && currentSort !== 'newest') {
                 url.searchParams.set('sort', currentSort);
             } else {
                 url.searchParams.delete('sort');
             }
+
             if (currentSearch) {
                 url.searchParams.set('q', currentSearch);
             } else {
                 url.searchParams.delete('q');
             }
+
+            if (typeof currentReadFilter !== 'undefined' && currentReadFilter && currentReadFilter !== 'all') {
+                url.searchParams.set('readStatus', currentReadFilter);
+            } else {
+                url.searchParams.delete('readStatus');
+            }
+
             window.history.pushState(null, '', url.pathname + url.search);
 
-            fetchArticles(1, true);
+            fetchArticles(1, true).then(() => {
+                // **חשוב מאוד:** אחרי שהכתבות החדשות נטענות מהשרת, 
+                // אנחנו מפעילים מחדש את סינון ה"נצפה / טרם נצפה" על הכרטיסיות החדשות שהגיעו!
+                if (typeof applyReadFilter === 'function') {
+                    applyReadFilter();
+                }
+            });
         });
     }
 
@@ -466,4 +565,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check for read badges on server-rendered cards
     updateReadBadges();
+    applyReadFilter();
 });
