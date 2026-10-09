@@ -19,7 +19,7 @@
     <section class="upper-section">
       <!-- כרטיס הסיפור המרכזי (בימין בדפי RTL) -->
       <% if (heroArticle) { %>
-        <article class="hero-article-card" id="heroArticleCard" data-article-id="<%= heroArticle.id %>">
+        <article class="hero-article-card" id="heroArticleCard" data-article-id="<%= heroArticle.id %>" <%- locals.currentReadFilter !== 'all' ? 'style="display: none;"' : '' %>>
           <div class="hero-content">
             <div class="hero-top-badge">
               <span class="hero-badge" id="heroBadge">הסיפור המרכזי</span>
@@ -150,9 +150,9 @@
         <!-- תיבת סינון לפי סטטוס צפייה (מימין ל-sort-box) -->
         <div class="sort-box read-filter-box">
           <select id="readStatusSelect" aria-label="סינון לפי סטטוס צפייה">
-            <option value="all" selected>כל הסטטוסים</option>
-            <option value="unread">טרם נצפה</option>
-            <option value="read">נצפה</option>
+            <option value="all" <%= (locals.currentReadFilter === 'all') ? 'selected' : '' %>>כל הסטטוסים</option>
+            <option value="unread" <%= (locals.currentReadFilter === 'unread') ? 'selected' : '' %>>טרם נצפה</option>
+            <option value="read" <%= (locals.currentReadFilter === 'read') ? 'selected' : '' %>>נצפה</option>
           </select>
           <div class="sort-icon" aria-hidden="true">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555B57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -180,7 +180,7 @@
     <!-- פיד הכתבות הראשי -->
     <main class="feed-section" id="feedMain" data-current-category="<%= locals.currentCategory || 'all' %>">
       <div id="articlesGrid" class="articles-grid">
-        <% if (articles && articles.length > 0) { %>
+        <% if (locals.currentReadFilter === 'all' && articles && articles.length > 0) { %>
           <% articles.forEach(article => { %>
             <%- include('partials/article-card', { article }) %>
           <% }) %>
@@ -188,7 +188,7 @@
       </div>
 
       <!-- הודעת תוצאות ריקות -->
-      <div id="emptyState" class="empty-state" style="<%= (articles && articles.length > 0) ? 'display: none;' : '' %>">
+      <div id="emptyState" class="empty-state" style="<%= (locals.currentReadFilter !== 'all' || (articles && articles.length > 0)) ? 'display: none;' : '' %>">
         <p>לא נמצאו כתבות התואמות לחיפוש או לקטגוריה שנבחרה.</p>
       </div>
 
