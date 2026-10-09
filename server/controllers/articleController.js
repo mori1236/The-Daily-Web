@@ -167,6 +167,7 @@ const articleController = {
                 article,
                 fullContent: articleDoc.published.content || articleDoc.published.summary || '',
                 moreArticles,
+                currentCategory: article.category, // highlights the article's category in the header nav
             });
         } catch (err) {
             console.error('Error showing article:', err);
