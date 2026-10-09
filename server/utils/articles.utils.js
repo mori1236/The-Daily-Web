@@ -67,7 +67,6 @@ function toFeedArticle(article, now = new Date()) {
     };
 }
 
-module.exports = { STATE_VIEW, noteFor, toArticleRow, toFeedArticle };
 // ---------- editor area ----------
 
 // The small grey sentence under an article in the editor's list.
