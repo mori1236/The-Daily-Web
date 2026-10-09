@@ -65,15 +65,11 @@
 
       <section class="article-body">
         <% 
-          const paragraphs = (fullContent || article.summary || '')
-            .split(/\n\s*\n/)
-            .map(p => p.trim())
-            .filter(Boolean);
+          const contentToRender = fullContent || article.summary || '';
         %>
-        <% if (paragraphs.length > 0) { %>
-          <% paragraphs.forEach(p => { %>
-            <p><%= p %></p>
-          <% }) %>
+        
+        <% if (contentToRender.trim().length > 0) { %>
+          <%- contentToRender %>
         <% } else { %>
           <p><%= article.summary %></p>
         <% } %>

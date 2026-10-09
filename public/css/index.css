@@ -68,6 +68,7 @@
 .upper-section {
   display: flex;
   gap: 24px;
+  height: 400px;
   align-items: stretch;
 }
 
@@ -624,6 +625,7 @@
 @media (max-width: 960px) {
   .upper-section {
     flex-direction: column;
+    height: auto;
   }
   .weather-card {
     width: 100%;
