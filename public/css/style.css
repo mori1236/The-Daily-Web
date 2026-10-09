@@ -257,7 +257,45 @@ logo .sub-text-logo{
 
 .site-header nav{
   display: flex;
+  justify-content: center;
   gap: 28px;
+}
+
+/* Equal side columns keep the navigation centered across the whole header. */
+.site-header:has(nav) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: 24px;
+}
+
+.site-header:has(nav) .site-header-actions {
+  justify-self: end;
+}
+
+@media (max-width: 1100px) {
+  .site-header:has(nav) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    height: auto;
+    padding-block: 12px;
+    gap: 12px;
+  }
+
+  .site-header:has(nav) .site-header-context {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .site-header nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+  }
+
+  .site-header:has(nav) .site-header-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
 }
 
 .site-header nav a::after {
