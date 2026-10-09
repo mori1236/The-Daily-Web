@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const limit = 20;
     let isLoading = false;
     let hasMore = true;
+    let activeRequest = null;
+    let failedRequest = null;
 
     // DOM Elements
     const grid = document.getElementById('articlesGrid');
@@ -49,7 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper: Get read article IDs from localStorage
     function getReadArticles() {
         try {
-            return JSON.parse(localStorage.getItem(READ_STORAGE_KEY) || '[]');
+            const ids = JSON.parse(localStorage.getItem(READ_STORAGE_KEY) || '[]');
+            return Array.isArray(ids)
+                ? [...new Set(ids.filter(id => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id)).map(id => id.toLowerCase()))]
+                : [];
         } catch (e) {
             return [];
         }
@@ -65,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem(READ_STORAGE_KEY, JSON.stringify(list));
             }
             updateReadBadges();
-            applyReadFilter();
+            if (currentReadFilter !== 'all') fetchArticles(1, true);
         } catch (e) {
             console.warn('Storage error', e);
         }
@@ -92,75 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
         });
-    }
-
-    // Filter cards currently in DOM according to read/unread status
-    function applyReadFilter() {
-        const readList = getReadArticles();
-        const cards = grid.querySelectorAll('.feed-card');
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-            const id = card.dataset.articleId;
-            let visible = true;
-            if (currentReadFilter === 'read') {
-                visible = readList.includes(id);
-            } else if (currentReadFilter === 'unread') {
-                visible = !readList.includes(id);
-            }
-            card.style.display = visible ? '' : 'none';
-            if (visible) visibleCount++;
-        });
-
-        if (emptyState) {
-            emptyState.style.display = (visibleCount === 0) ? 'block' : 'none';
-            const emptyMsg = emptyState.querySelector('p');
-            if (emptyMsg && visibleCount === 0) {
-                if (currentReadFilter === 'read') {
-                    emptyMsg.textContent = 'טרם צפית בכתבות מתוך הקטגוריה שנבחרה.';
-                } else if (currentReadFilter === 'unread') {
-                    emptyMsg.textContent = 'כל הכתבות שנטענו כבר נצפו.';
-                } else {
-                    emptyMsg.textContent = 'לא נמצאו כתבות התואמות לחיפוש או לקטגוריה שנבחרה.';
-                }
-            }
-        }
-
-        // If visible cards are few, auto-load next page to populate
-        // אם יש מעט מדי כתבות גלויות על המסך ויש עוד מה לטעון בשרת, נטען עמוד נוסף באופן אוטומטי
-        if (visibleCount < 6 && hasMore && !isLoading && currentReadFilter !== 'all') {
-            // קריאה לפונקציית עזר שתמשיך לטעון עמודים ברקע עד שיהיו מספיק כתבות גלויות
-            autoFillFilteredFeed();
-        }
-    }
-
-    // פונקציית עזר ששואבת עמודים ברקע עד שהמסך מתמלא בכתבות תואמות לפילטר
-    async function autoFillFilteredFeed() {
-        if (isLoading || !hasMore || currentReadFilter === 'all') return;
-        
-        // נטען את העמוד הבא
-        await fetchArticles(currentPage + 1, false);
-        
-        // נחשב מחדש כמה כתבות גלויות יש עכשיו במסך אחרי הטעינה
-        const readList = getReadArticles();
-        const cards = grid.querySelectorAll('.feed-card');
-        let currentVisible = 0;
-        
-        cards.forEach(card => {
-            const id = card.dataset.articleId;
-            let visible = true;
-            if (currentReadFilter === 'read') {
-                visible = readList.includes(id);
-            } else if (currentReadFilter === 'unread') {
-                visible = !readList.includes(id);
-            }
-            if (visible) currentVisible++;
-        });
-
-        // אם עדיין יש פחות מ-6 כתבות גלויות ויש עוד מה לטעון בשרת - נמשיך לטעון אוטומטית את העמוד הבא!
-        if (currentVisible < 6 && hasMore && !isLoading) {
-            autoFillFilteredFeed();
-        }
     }
 
     // Sanitize string for HTML insertion
@@ -257,8 +193,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch articles from /api/articles with pagination, search, category, and sort
     async function fetchArticles(pageToFetch, replace = false) {
-        if (isLoading) return;
+        if (isLoading && !replace) return;
+        if (replace && activeRequest) activeRequest.abort();
+        const request = new AbortController();
+        activeRequest = request;
         isLoading = true;
+        failedRequest = null;
+        if (replace) {
+            grid.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'none';
+            if (allLoadedNotice) allLoadedNotice.style.display = 'none';
+        }
 
         if (loader) loader.style.display = 'flex';
         if (loadMoreBtn) loadMoreBtn.style.display = 'none';
@@ -279,10 +224,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 params.set('q', currentSearch);
             }
 
-            const response = await fetch(`/api/articles?${params.toString()}`);
+            const response = await fetch(`/api/articles?${params.toString()}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    readStatus: currentReadFilter,
+                    readIds: currentReadFilter === 'all' ? [] : getReadArticles(),
+                }),
+                signal: request.signal,
+            });
             if (!response.ok) throw new Error('Network error');
 
             const data = await response.json();
+            if (activeRequest !== request) return;
             const articles = data.articles || [];
 
             if (replace) {
@@ -290,8 +244,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Update hero article when on first page of a category
-            if (pageToFetch === 1 && data.heroArticle) {
-                updateHeroArticle(data.heroArticle);
+            if (pageToFetch === 1) {
+                const heroCard = document.getElementById('heroArticleCard');
+                if (heroCard) heroCard.style.display = data.heroArticle ? '' : 'none';
+                if (data.heroArticle) updateHeroArticle(data.heroArticle);
             }
 
             if (articles.length > 0) {
@@ -311,6 +267,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Handle UI states
             if (emptyState) {
                 emptyState.style.display = (grid.children.length === 0) ? 'block' : 'none';
+                const message = emptyState.querySelector('p');
+                if (message) message.textContent = currentReadFilter === 'read'
+                    ? 'לא נמצאו כתבות שנצפו התואמות לסינון שנבחר.'
+                    : currentReadFilter === 'unread'
+                        ? 'לא נמצאו כתבות שטרם נצפו התואמות לסינון שנבחר.'
+                        : 'לא נמצאו כתבות התואמות לחיפוש או לקטגוריה שנבחרה.';
             }
 
             if (allLoadedNotice) {
@@ -323,22 +285,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Update read badges for newly loaded cards
             updateReadBadges();
-            if (typeof applyReadFilter === 'function') {
-                applyReadFilter();
-            }
 
         } catch (err) {
+            if (err.name === 'AbortError' || activeRequest !== request) return;
             console.error('Failed to load articles:', err);
-            if (loadMoreBtn && hasMore) {
-                loadMoreBtn.style.display = 'block';
-                loadMoreBtn.textContent = 'שגיאה בטעינה — נסה שוב';
-            }
+            failedRequest = { page: pageToFetch, replace };
         } finally {
+            if (activeRequest !== request) return;
+            activeRequest = null;
             isLoading = false;
             if (loader) loader.style.display = 'none';
-            if (loadMoreBtn && hasMore) {
-                loadMoreBtn.style.display = 'block';
-                loadMoreBtn.textContent = 'הצגת כתבות נוספות';
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = (hasMore || failedRequest) ? 'block' : 'none';
+                loadMoreBtn.textContent = failedRequest
+                    ? 'שגיאה בטעינה — נסה שוב' : 'הצגת כתבות נוספות';
             }
         }
     }
@@ -347,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sentinel && 'IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             const entry = entries[0];
-            if (entry.isIntersecting && hasMore && !isLoading) {
+            if (entry.isIntersecting && hasMore && !isLoading && !failedRequest) {
                 fetchArticles(currentPage + 1, false);
             }
         }, {
@@ -362,7 +322,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fallback: Click on "הצגת כתבות נוספות" button
     if (loadMoreBtn) {
         loadMoreBtn.addEventListener('click', () => {
-            if (hasMore && !isLoading) {
+            if (failedRequest && !isLoading) {
+                fetchArticles(failedRequest.page, failedRequest.replace);
+            } else if (hasMore && !isLoading) {
                 fetchArticles(currentPage + 1, false);
             }
         });
@@ -420,11 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         currentPage = 1;
         hasMore = true;
-        fetchArticles(1, true).then(() => {
-            if (typeof applyReadFilter === 'function') {
-                applyReadFilter();
-            }
-        });
+        fetchArticles(1, true);
     });
 
     // Search input with debounce (300ms)
@@ -501,7 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.history.pushState(null, '', url.pathname + url.search);
 
-            applyReadFilter();
+            fetchArticles(1, true);
         });
     }
 
@@ -542,13 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.history.pushState(null, '', url.pathname + url.search);
 
-            fetchArticles(1, true).then(() => {
-                // **חשוב מאוד:** אחרי שהכתבות החדשות נטענות מהשרת, 
-                // אנחנו מפעילים מחדש את סינון ה"נצפה / טרם נצפה" על הכרטיסיות החדשות שהגיעו!
-                if (typeof applyReadFilter === 'function') {
-                    applyReadFilter();
-                }
-            });
+            fetchArticles(1, true);
         });
     }
 
@@ -565,5 +517,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check for read badges on server-rendered cards
     updateReadBadges();
-    applyReadFilter();
+    if (searchInput) searchInput.value = currentSearch;
+    if (currentSearch || currentReadFilter !== 'all') fetchArticles(1, true);
+    window.addEventListener('storage', e => {
+        if (e.key === READ_STORAGE_KEY || e.key === null) {
+            updateReadBadges();
+            if (currentReadFilter !== 'all') fetchArticles(1, true);
+        }
+    });
+    window.addEventListener('pageshow', e => {
+        if (e.persisted) {
+            updateReadBadges();
+            if (currentReadFilter !== 'all') fetchArticles(1, true);
+        }
+    });
 });
