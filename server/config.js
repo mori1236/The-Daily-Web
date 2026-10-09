@@ -11,10 +11,7 @@ try {
 const errors = [];
 
 function parsePort(value) {
-    if (!value) {
-        errors.push('SERVER_PORT is missing');
-        return;
-    }
+    if (!value) return 3000;
     const port = Number(value);
     if (!Number.isInteger(port) || port < 1 || port > 65535) {
         errors.push(`SERVER_PORT must be an integer between 1 and 65535 (got "${value}")`);
@@ -24,10 +21,7 @@ function parsePort(value) {
 }
 
 function parseMongoUri(value) {
-    if (!value) {
-        errors.push('MONGO_URI is missing');
-        return;
-    }
+    if (!value) return 'mongodb://localhost:27017/the-daily-web';
     if (!/^mongodb(\+srv)?:\/\//.test(value)) {
         errors.push('MONGO_URI must start with mongodb:// or mongodb+srv://');
         return;

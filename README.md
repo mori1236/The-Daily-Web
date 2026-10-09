@@ -20,6 +20,16 @@ Only in addministrator make sure the service is running
 net start MongoDB
 ```
 
+### Environment variables (optional)
+
+All environment variables below are optional. These are the defaults; create a `.env` file in the project root to override them:
+
+```env
+MONGO_URI=mongodb://localhost:27017/the-daily-web
+SERVER_PORT=3000
+SEED_DEMO_DATA=false
+```
+
 #### Demo data
 
 To start with demo data, add this to `.env`:
