@@ -80,3 +80,14 @@ MVC layout:
 
 A UI component shares one name across `views/<name>.ejs`, `public/css/<name>.css` and `public/js/<name>.js`. Each file is optional.
 
+
+### Homepage weather
+
+The Tel Aviv weather card uses `/api/weather`, backed by the
+[Open-Meteo Forecast API](https://open-meteo.com/en/docs). No API key is required.
+It shows current temperature, feels-like temperature, humidity, wind in km/h,
+and the next three four-hour forecast slots in the `Asia/Jerusalem` timezone.
+The server caches results for fifteen minutes and the browser refreshes every fifteen
+minutes. Loading and provider failures show placeholders rather than demo data.
+The server needs outbound HTTPS access to `api.open-meteo.com`.
+

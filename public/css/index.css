@@ -176,6 +176,7 @@
 
 /* ווידג'ט מזג אוויר */
 .weather-card {
+  min-height: 400px;
   width: 280px;
   flex-shrink: 0;
   background: var(--color-surface, #ffffff);
@@ -199,7 +200,6 @@
 
 .weather-more-dots {
   color: var(--color-muted, #7c837e);
-  cursor: pointer;
   letter-spacing: 2px;
 }
 
@@ -211,6 +211,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.weather-card .weather-icon {
+  display: flex;
+  color: #f59e0b;
 }
 
 .weather-temp {
@@ -228,6 +233,7 @@
 }
 
 .weather-forecast {
+  min-height: 94px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -254,6 +260,18 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.weather-source {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--color-muted, #7c837e);
+}
+
+.weather-source a {
+  color: inherit;
 }
 
 /* ==========================================================================

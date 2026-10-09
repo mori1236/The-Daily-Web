@@ -1,41 +1,65 @@
+(() => {
+const widgets = Array.from(document.querySelectorAll('[data-weather-widget]'));
+if (!widgets.length) return;
+
+function setText(widget, selector, text) {
+    const element = widget.querySelector(selector);
+    if (element) element.textContent = text;
+}
+
 async function loadWeather() {
-  const widget = document.getElementById("weatherWidget");
-
-  if (!widget) {
-    return;
-  }
-
-  try {
-    const response = await fetch("/api/weather");
-
-    if (!response.ok) {
-      throw new Error("Failed to load weather data from the server.");
+    widgets.forEach(widget => widget.setAttribute('aria-busy', 'true'));
+    try {
+        const response = await fetch('/api/weather', { signal: AbortSignal.timeout(10000) });
+        if (!response.ok) throw new Error('Weather unavailable');
+        const weather = await response.json();
+        widgets.forEach(widget => {
+            setText(widget, '.weather-temp', Math.round(weather.temperature) + '°');
+            setText(widget, '.weather-feels', 'מרגיש כמו ' + Math.round(weather.feelsLike) + '°');
+            setText(widget, '.weather-humidity', 'לחות ' + Math.round(weather.humidity) + '%');
+            setText(widget, '.weather-wind', 'רוח ' + Math.round(weather.windSpeed) + ' קמ״ש');
+            const description = getWeatherDescription(weather.weatherCode);
+            const icon = widget.querySelector('.weather-icon');
+            icon.innerHTML = getWeatherIconSvg(weather.weatherCode, weather.isDay);
+            icon.setAttribute('title', description);
+            icon.setAttribute('role', 'img');
+            icon.setAttribute('aria-label', description);
+            widget.setAttribute('title', description + ' · עודכן ' + weather.updatedAt.slice(11,16) + ' · Open-Meteo');
+            setText(widget, '.weather-status', 'עודכן ' + weather.updatedAt.slice(11,16));
+            const forecast = widget.querySelector('.weather-forecast');
+            if (forecast) forecast.replaceChildren(...weather.forecast.map(item => {
+                const row = document.createElement('div');
+                row.className = 'forecast-row';
+                const time = document.createElement('span');
+                time.className = 'forecast-time';
+                time.textContent = item.time.slice(11,16) + (item.time.slice(0,10) !== weather.updatedAt.slice(0,10) ? ' מחר' : '');
+                const dot = document.createElement('span');
+                dot.className = 'forecast-dot';
+                dot.textContent = '·';
+                const value = document.createElement('span');
+                value.className = 'forecast-val';
+                value.textContent = Math.round(item.temperature) + '° ' + getWeatherDescription(item.weatherCode);
+                row.append(time, dot, value);
+                return row;
+            }));
+        });
+    } catch {
+        widgets.forEach(widget => {
+            setText(widget, '.weather-temp', '--°');
+            setText(widget, '.weather-feels', 'מרגיש כמו --°');
+            setText(widget, '.weather-humidity', 'לחות --%');
+            setText(widget, '.weather-wind', 'רוח -- קמ״ש');
+            setText(widget, '.weather-status', 'מזג האוויר אינו זמין כרגע');
+            widget.setAttribute('title', 'מזג האוויר אינו זמין כרגע');
+            const icon = widget.querySelector('.weather-icon');
+            icon.replaceChildren();
+            icon.setAttribute('aria-label', 'מזג האוויר אינו זמין כרגע');
+            const forecast = widget.querySelector('.weather-forecast');
+            if (forecast) forecast.replaceChildren();
+        });
+    } finally {
+        widgets.forEach(widget => widget.setAttribute('aria-busy', 'false'));
     }
-
-    const weather = await response.json();
-
-    const temperatureElement =
-      widget.querySelector(".weather-temp");
-
-    const iconElement =
-      widget.querySelector(".weather-icon");
-
-    temperatureElement.textContent =
-      `${Math.round(weather.temperature)}°`;
-
-    iconElement.innerHTML =
-      getWeatherIconSvg(weather.weatherCode);
-
-    iconElement.setAttribute(
-      "title",
-      getWeatherDescription(weather.weatherCode)
-    );
-
-  } catch (error) {
-    console.error("Weather widget error:", error);
-
-    widget.querySelector(".weather-temp").textContent = "--°";
-  }
 }
 
 function getWeatherDescription(code) {
@@ -59,7 +83,7 @@ function getWeatherDescription(code) {
     return "גשם";
   }
 
-  if (code >= 71 && code <= 77) {
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
     return "שלג";
   }
 
@@ -74,7 +98,10 @@ function getWeatherDescription(code) {
   return "מזג אוויר";
 }
 //According to the weather code from the API, selecting icon to be displayed in the header
-function getWeatherIconSvg(code) {
+function getWeatherIconSvg(code, isDay = true) {
+  if ((code === 0 || code === 1) && !isDay) {
+    return '<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>';
+  }
   if (code === 0) {
     //שמש
     return `
@@ -140,7 +167,7 @@ function getWeatherIconSvg(code) {
     `;
   }
 
-  if (code >= 71 && code <= 77) {
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
     // Snow
     return `
       <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -198,4 +225,7 @@ function getWeatherIconSvg(code) {
   `;
 }
 
+
 loadWeather();
+setInterval(loadWeather, 15 * 60 * 1000);
+})();

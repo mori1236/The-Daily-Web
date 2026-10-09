@@ -19,7 +19,7 @@
   </a>
 
   <!-- Weather -->
-  <div class="header-weather" id="weatherWidget">
+  <div class="header-weather" id="headerWeatherWidget" data-weather-widget aria-label="מזג האוויר בתל אביב">
     <span class="weather-icon" title="מזג האוויר"></span>
 
     <span class="weather-temp">
@@ -73,6 +73,6 @@
     <% } else { %>
     <a href="/login" class="site-header-link">התחברות לכתבים/עורכים</a>
     <% } %>
-    <script src="/js/weather.js"></script>
+    <script src="/js/weather.js" defer></script>
   </div>
 </header>

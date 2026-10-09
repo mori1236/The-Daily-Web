@@ -1,8 +1,8 @@
 const express = require('express');
-const authController = require('../controllers/weatherController');
+const weatherController = require('../controllers/weatherController');
 
 const router = express.Router();
 // פניות לקבלת מזג אוויר
-router.get('/api/weather', authController.getWeather);
+router.get('/api/weather', weatherController.getWeather);
 
 module.exports = router;
