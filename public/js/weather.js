@@ -1,50 +1,64 @@
 async function loadWeather() {
-  const widget = document.querySelector(".weather-widget");
+  const widget = document.getElementById("weatherWidget");
 
-  if (!widget) {return;}
+  if (!widget) {
+    return;
+  }
+
   try {
     const response = await fetch("/api/weather");
 
     if (!response.ok) {
-      throw new Error("Failed to load weather");
+      throw new Error("Failed to fetch weather");
     }
 
     const weather = await response.json();
 
-    document.querySelector(".weather-temperature").textContent =
-      `${Math.round(weather.temperature)}°C`;
+    const temperatureElement =
+      widget.querySelector(".weather-temp");
 
-    document.querySelector(".weather-feels-like").textContent =
-      `${Math.round(weather.feelsLike)}°C`;
+    const feelsLikeElement =
+      widget.querySelector(".weather-feels");
 
-    document.querySelector(".weather-humidity").textContent =
-      `${weather.humidity}%`;
+    const humidityElement =
+      widget.querySelector(".weather-humidity");
 
-    document.querySelector(".weather-wind").textContent =
-      `${weather.windSpeed} km/h`;
+    const windElement =
+      widget.querySelector(".weather-wind");
 
-    document.querySelector(".weather-description").textContent =
+    const descriptionElement =
+      widget.querySelector(".weather-description");
+
+    const IconElement =
+      widget.querySelector(".weather-icon");
+
+    temperatureElement.textContent =
+      `${Math.round(weather.temperature)}°`;
+
+    feelsLikeElement.textContent =
+      `מרגיש כמו ${Math.round(weather.feelsLike)}°`;
+
+    humidityElement.textContent =
+      `${weather.humidity}% לחות`;
+
+    windElement.textContent =
+      `${weather.windSpeed} קמ"ש`;
+
+    descriptionElement.textContent =
       getWeatherDescription(weather.weatherCode);
-
-    document.querySelector(".weather-icon").textContent =
+    
+    IconElement.textContent =
       getWeatherIcon(weather.weatherCode);
-
-    const updated = new Date(weather.updatedAt);
-
-    document.querySelector(".weather-updated").textContent =
-      `עודכן: ${updated.toLocaleTimeString("he-IL", {
-        hour: "2-digit",
-        minute: "2-digit"
-      })}`;
-
   } catch (error) {
     console.error("Weather widget error:", error);
 
-    document.querySelector(".weather-description").textContent =
+    const descriptionElement =
+      widget.querySelector(".weather-description");
+
+    descriptionElement.textContent =
       "מזג האוויר אינו זמין כרגע";
   }
 }
-
 function getWeatherDescription(code) {
   if (code === 0) {
     return "בהיר";
