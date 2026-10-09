@@ -11,6 +11,7 @@ const writerApiRoutes = require('./server/API/writer/routes');
 const articleRoutes = require('./server/routes/articles');
 const commentRoutes = require('./server/routes/comments');
 const editorRoutes = require('./server/routes/editor');
+const weatherRoutes = require('./server/routes/weather');
 const editorApiRoutes = require('./server/API/editor/routes');
 const { seedDemoData } = require('./server/seed');
 
@@ -59,6 +60,8 @@ app.use('/api/writer', writerApiRoutes); // JSON: the article list and stats for
 app.use(editorRoutes);
 app.use('/api/editor', editorApiRoutes); // JSON: the article list and the review panel for the editor page
 
+// בקשות מזג אוויר
+app.use(weatherRoutes);
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
