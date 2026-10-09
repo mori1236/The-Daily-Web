@@ -1,5 +1,5 @@
-// 10 דקות של מטמון כדי למנוע בקשות חוזרות מדי
-const CACHE_DURATION = 10 * 60 * 1000;
+// 15 דקות של מטמון כדי למנוע בקשות חוזרות מדי
+const CACHE_DURATION = 15 * 60 * 1000;
 
 let cachedWeather = null;
 let lastFetchTime = 0;
