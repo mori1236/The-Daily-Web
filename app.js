@@ -14,6 +14,7 @@ const editorRoutes = require('./server/routes/editor');
 const weatherRoutes = require('./server/routes/weather');
 const editorApiRoutes = require('./server/API/editor/routes');
 const { seedDemoData } = require('./server/seed');
+const { notFound, errorHandler } = require('./server/middleware/errorHandler');
 
 const app = express();
 const PORT = config.port;
@@ -62,6 +63,8 @@ app.use('/api/editor', editorApiRoutes); // JSON: the article list and the revie
 
 // בקשות מזג אוויר
 app.use(weatherRoutes);
+app.use(notFound);
+app.use(errorHandler);
 // הפעלת השרת האזנה לפורט
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
