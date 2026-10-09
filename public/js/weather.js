@@ -9,9 +9,10 @@ async function loadWeather() {
     const response = await fetch("/api/weather");
 
     if (!response.ok) {
-      throw new Error("Failed to fetch weather");
+      throw new Error("Failed to load weather data from the server.");
     }
 
+    // Parsing weather data from the server response
     const weather = await response.json();
 
     const temperatureElement =
