@@ -1,0 +1,73 @@
+<%- include('partials/header', { title: 'Impact Analytics', styles: ['workspace', 'analytics'], container: 'workspace-page' }) %>
+<%- include('partials/site-header', { area: 'Impact Analytics' }) %>
+<div class="workspace">
+  <%- include('partials/workspace-sidebar', { active: 'analytics' }) %>
+  <main class="workspace-content analytics" id="analytics-main">
+    <header class="analytics-heading">
+      <div>
+        <p class="analytics-eyebrow">ההשפעה של כל עדכון</p>
+        <h1 dir="ltr">ניתוח השפעה</h1>
+        <p>צפיות לאורך זמן — לפני ואחרי פרסום עדכונים לכתבה.</p>
+      </div>
+      <button type="button" class="analytics-button" id="export-report" disabled>↓ ייצוא דוח CSV</button>
+    </header>
+
+    <section class="analytics-picker analytics-panel" aria-label="בחירת כתבה וטווח זמן">
+      <div class="analytics-article-choice">
+        <label for="analytics-article">הכתבה הנבחרת</label>
+        <select id="analytics-article" <%- selected ? '' : 'disabled' %>>
+          <% list.articles.forEach(article => { %>
+          <option value="<%= article.id %>" <%= selected && article.id === selected.id ? 'selected' : '' %>><%= article.title %></option>
+          <% }) %>
+        </select>
+        <p id="article-meta">בחרו כתבה מפורסמת כדי לבדוק את השפעת העדכונים.</p>
+      </div>
+      <div class="analytics-picker-tools">
+        <label class="analytics-search"><span class="visually-hidden">חיפוש כתבה</span>
+          <input type="search" id="analytics-search" placeholder="חיפוש כתבה לפי כותרת" maxlength="100"></label>
+        <span class="analytics-live" id="analytics-live">מתעדכן כל 30 שניות</span>
+        <label><span class="visually-hidden">טווח זמן</span><select id="analytics-range">
+          <option value="24h">24 השעות האחרונות</option><option value="7d">7 הימים האחרונים</option><option value="30d">30 הימים האחרונים</option>
+          <option value="all">מאז הפרסום הראשון</option>
+        </select></label>
+      </div>
+      <p class="analytics-search-status" id="article-search-status" role="status"></p>
+    </section>
+
+    <p id="analytics-status" class="analytics-status" role="status" aria-live="polite"><%= selected ? 'טוען נתוני צפייה…' : 'אין עדיין כתבות מפורסמות. לאחר פרסום כתבה ניתן יהיה לבחור אותה כאן.' %></p>
+    <button type="button" class="analytics-button" id="analytics-retry" hidden>ניסיון נוסף</button>
+
+    <section class="analytics-metrics" aria-label="סיכום נתוני צפייה">
+      <% const metrics = [
+        { id: 'period-views', label: 'צפיות בטווח שנבחר', note: 'בקשות לדף הכתבה', icon: 'eye' },
+        { id: 'total-views', label: 'סך הצפיות בכתבה', note: 'כולל צפיות מלפני תחילת האיסוף', icon: 'newspaper' },
+        { id: 'update-count', label: 'עדכונים שפורסמו', note: 'בטווח הזמן שנבחר', icon: 'file-check' },
+        { id: 'peak-views', label: 'שיא צפיות בדקה', note: 'בטווח הזמן שנבחר', icon: 'chart' }
+      ]; metrics.forEach(metric => { %>
+      <article class="analytics-panel analytics-metric"><div class="analytics-metric-label"><span><%= metric.label %></span><span class="analytics-icon"><%- include('partials/icon', { name: metric.icon }) %></span></div>
+        <strong id="<%= metric.id %>" dir="ltr">—</strong><p><%= metric.note %></p></article>
+      <% }) %>
+    </section>
+
+    <div class="analytics-layout">
+      <section class="analytics-panel analytics-chart-panel" aria-labelledby="views-chart-title">
+        <div class="analytics-chart-heading"><div><h2 id="views-chart-title">צפיות לאורך זמן</h2><p id="chart-resolution">מספר צפיות בכל מקטע זמן</p></div>
+          <div class="analytics-legend"><span class="legend-views">צפיות</span><span class="legend-update">פרסום / עדכון</span></div></div>
+        <div class="analytics-canvas-wrap"><canvas id="views-chart" role="img" aria-label="גרף צפיות לאורך זמן. הנתונים זמינים גם בטבלה שמתחת לגרף."></canvas>
+          <output id="chart-tooltip" class="analytics-tooltip" hidden></output></div>
+        <p id="tracking-note" class="analytics-note">נתוני זמן נאספים מצפיות חדשות; אין שחזור של צפיות ישנות.</p>
+        <section class="analytics-impact" aria-labelledby="impact-title"><div><h3 id="impact-title">לפני ואחרי העדכון</h3><p id="impact-summary">בחרו נקודת עדכון כדי להשוות את קצב הצפיות.</p></div></section>
+        <div class="analytics-comparison"><article><span>לפני העדכון · צפיות לדקה</span><strong id="before-rate" dir="ltr">—</strong><small id="before-window"></small></article>
+          <article><span>אחרי העדכון · צפיות לדקה</span><strong id="after-rate" dir="ltr">—</strong><small id="after-window"></small></article>
+          <article><span>שינוי בקצב הצפיות</span><strong id="change-rate" dir="ltr">—</strong><small>השוואה תיאורית, אינה הוכחת סיבתיות</small></article></div>
+        <p class="analytics-note">ההשוואה משתמשת בעד 60 דקות מלאות מכל צד, מוגבלת לעדכונים הסמוכים ולנתונים שנאספו. דקה שמכילה עדכון באמצעה אינה נכללת בהשוואה.</p>
+        <details class="analytics-data"><summary>הצגת נתוני הגרף בטבלה</summary><div class="analytics-table-wrap"><table><caption class="visually-hidden">נתוני צפייה ונקודות פרסום</caption><thead><tr><th scope="col">תחילת מקטע</th><th scope="col">צפיות</th><th scope="col">אירועי פרסום במקטע</th></tr></thead><tbody id="analytics-table"></tbody></table></div></details>
+      </section>
+      <aside class="analytics-panel analytics-events" aria-labelledby="events-title"><h2 id="events-title">נקודות פרסום</h2><p>בחרו עדכון להצגת ההשוואה</p><ol id="publish-events"><li class="analytics-note">טוען נקודות פרסום…</li></ol>
+        <div class="analytics-method"><h3>מה נספר כצפייה?</h3><p>בקשת GET שהחזירה בהצלחה את דף הכתבה. ביקורים חוזרים נספרים; זה אינו מדד לקוראים ייחודיים או להשלמת קריאה.</p></div></aside>
+    </div>
+    <noscript><p>יש להפעיל JavaScript כדי לטעון את הגרף ולהחליף כתבות וטווחי זמן.</p></noscript>
+  </main>
+</div>
+<script src="/js/analytics.js" defer></script>
+<%- include('partials/footer') %>

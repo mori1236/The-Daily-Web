@@ -4,6 +4,7 @@ const Comment = require('../models/comment');
 const { formatComment } = require('./commentController');
 const { toFeedArticle } = require('../utils/articles.utils');
 const { formatTime } = require('../utils/format');
+const { recordView } = require('../utils/record-view');
 
 /**
  * Controller for public article feed and article details pages.
@@ -160,10 +161,6 @@ const articleController = {
                 return res.status(404).render('error', { statusCode: 404 });
             }
 
-            // Increment view count asynchronously
-            Article.updateOne({ _id: id }, { $inc: { viewCount: 1 } }).exec()
-                .catch(err => console.error('Error updating article view count:', err));
-
             const now = new Date();
             const article = toFeedArticle(articleDoc, now);
 
@@ -182,6 +179,12 @@ const articleController = {
 
             const moreArticles = moreDocs.map(d => toFeedArticle(d, now));
 
+            // Count only successfully served GET pages; HEAD/failed renders are not views.
+            res.once('finish', () => {
+                if (req.method === 'GET' && res.statusCode === 200) {
+                    recordView(articleDoc._id, new Date()).catch(err => console.error('View tracking failed:', err));
+                }
+            });
             res.render('article', {
                 article,
                 comments,
