@@ -55,7 +55,7 @@ function toFeedArticle(article, now = new Date()) {
         id: article._id.toString(),
         title: pub.title || 'כתבה ללא כותרת',
         summary: pub.summary || '',
-        imageUrl: pub.imageUrl || '/img/login-newsroom.jpg',
+        imageUrl: pub.imageUrl?.trim() || '/img/default-article.jpg',
         category,
         categoryLabel,
         writer: writerName,

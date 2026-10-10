@@ -124,10 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="${escapeHtml(article.url)}" class="feed-card-link" aria-label="${escapeHtml(article.title)}">
                     <div class="feed-card-media">
                         <img 
-                            src="${escapeHtml(article.imageUrl)}" 
+                            src="${escapeHtml(article.imageUrl || '/img/default-article.jpg')}"
                             alt="${escapeHtml(article.title)}"
                             loading="lazy"
-                            onerror="this.onerror=null; this.src='/img/login-newsroom.jpg';"
+                            data-article-image
                         />
                     </div>
                     <div class="feed-card-content">
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const img = document.getElementById('heroImg');
         if (img) {
-            img.src = hero.imageUrl || '/img/login-newsroom.jpg';
+            img.src = hero.imageUrl || '/img/default-article.jpg';
             img.alt = hero.title;
         }
     }

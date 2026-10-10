@@ -54,15 +54,13 @@
         </div>
       </header>
 
-      <% if (article.imageUrl) { %>
         <figure class="article-featured-media">
           <img 
-            src="<%= article.imageUrl %>" 
+            src="<%= article.imageUrl || '/img/default-article.jpg' %>"
             alt="<%= article.title %>"
-            onerror="this.onerror=null; this.src='/img/login-newsroom.jpg';"
+            data-article-image
           />
         </figure>
-      <% } %>
 
       <section class="article-body">
         <% 

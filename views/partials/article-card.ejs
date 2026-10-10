@@ -3,10 +3,10 @@
   <a href="<%= article.url %>" class="feed-card-link" aria-label="<%= article.title %>">
     <div class="feed-card-media">
       <img 
-        src="<%= article.imageUrl || '/img/login-newsroom.jpg' %>" 
+        src="<%= article.imageUrl || '/img/default-article.jpg' %>"
         alt="<%= article.title %>" 
         loading="lazy"
-        onerror="this.onerror=null; this.src='/img/login-newsroom.jpg';"
+        data-article-image
       />
     </div>
     

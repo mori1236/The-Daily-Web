@@ -46,9 +46,9 @@
           <div class="hero-image-wrap">
             <img 
               id="heroImg"
-              src="<%= heroArticle.imageUrl %>" 
+              src="<%= heroArticle.imageUrl || '/img/default-article.jpg' %>"
               alt="<%= heroArticle.title %>"
-              onerror="this.onerror=null; this.src='/img/login-newsroom.jpg';"
+              data-article-image
             />
           </div>
         </article>
