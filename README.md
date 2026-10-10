@@ -1,125 +1,148 @@
-# The Daily Web
+# The Daily Web — מערכת חדשות
 
-## Setup
+פרויקט מסכם לפיתוח אתר חדשות בעברית. קוראים יכולים לקרוא כתבות ולהגיב, כתבים יכולים לכתוב ולהגיש כתבות, ועורכים מאשרים את התוכן לפני הפרסום.
 
-### Install
+המערכת בנויה ב־Node.js ו־Express, עם MongoDB ו־Mongoose לשמירת הנתונים, EJS להצגת העמודים ו־JavaScript רגיל בצד הלקוח. העיצוב מותאם גם למובייל.
 
-Node js (see version at [.nvmrc](.nvmrc))
-[MongoDB Community](https://www.mongodb.com/try/download/community-kubernetes-operator)  
+## התקנה והפעלה
 
-**Recommended too**  
+1. מתקינים Node.js בגרסה שמופיעה ב־[.nvmrc](.nvmrc) — `22.22.1` — ו־MongoDB מקומי.
+2. מפעילים את MongoDB. ב־Windows, אם הוא מותקן כשירות, אפשר להריץ בחלון מנהל:
 
-VScode and the recommended extentions at [.vscode/extensions.json](.vscode/extensions.json)  
-And utilize our configured tasks and debugger configs  
+   ```powershell
+   net start MongoDB
+   ```
 
-### Setup Mongo
+3. פותחים מסוף בתיקיית הפרויקט ומתקינים את החבילות:
 
-Only in addministrator make sure the service is running
+   ```sh
+   npm ci
+   ```
 
-```cmd
-net start MongoDB
-```
+4. יוצרים קובץ `.env` בתיקייה הראשית. לדוגמה, להפעלה עם נתוני דמו:
 
-### Environment variables (optional)
+   ```env
+   MONGO_URI=mongodb://localhost:27017/the-daily-web
+   SERVER_PORT=3000
+   SEED_DEMO_DATA=true
+   ```
 
-All environment variables below are optional. These are the defaults; create a `.env` file in the project root to override them:
+5. מפעילים את האתר:
 
-```env
-MONGO_URI=mongodb://localhost:27017/the-daily-web
-SERVER_PORT=3000
-SEED_DEMO_DATA=false
-```
+   ```sh
+   npm start
+   ```
 
-For a deployed site, set `SITE_URL=https://your-domain.example` in `.env`.
-Article canonical URLs, sharing metadata and NewsArticle structured data use this
-origin. Without it, development defaults to `http://localhost:SERVER_PORT`.
+6. נכנסים ל־[http://localhost:3000](http://localhost:3000).
 
-#### Demo data
+לפיתוח עם הפעלה מחדש לאחר שינוי בקוד משתמשים ב־`npm run dev`.
 
-To start with demo data, add this to `.env`:
+אפשר להריץ גם בלי `.env`: כתובת המסד והפורט יהיו כמו בדוגמה, אבל נתוני הדמו לא ייווצרו. לפריסה עם כתובת אתר קבועה מוסיפים `SITE_URL=https://your-domain.example`, לצורך קישורי הכתבות ונתוני SEO. אין להעלות `.env` עם סודות למאגר.
 
-```env
-SEED_DEMO_DATA=true
-```
+## נתוני דמו ומשתמשים
 
-On startup the server adds the demo users below, but only if the database has no users yet. To get a fresh copy, delete the `users` collection and restart the server.
+בהפעלה עם `SEED_DEMO_DATA=true` נוצרות 500 כתבות בקטגוריות ובמצבים שונים, משתמשים, תגובות ונתוני צפייה לדוגמה. בנוסף נוצרות ארבע כתבות שמתחילות ב־`[דמו]`, להדגמת השפעת עדכונים על הצפיות.
 
-| Role   | Email                   | Password |
-|--------|-------------------------|----------|
-| editor | `editor@dailyweb.test`  | `123456` |
-| editor | `editor2@dailyweb.test` | `123456` |
-| writer | `writer@dailyweb.test`  | `123456` |
-| writer | `writer2@dailyweb.test` | `123456` |
-| writer | `writer3@dailyweb.test` | `123456` |
+| תפקיד | דוא״ל | סיסמה |
+| --- | --- | --- |
+| עורך | `editor@dailyweb.test` | `12345678` |
+| עורך | `editor2@dailyweb.test` | `12345678` |
+| כתב | `writer@dailyweb.test` | `12345678` |
+| כתב | `writer2@dailyweb.test` | `12345678` |
+| כתב | `writer3@dailyweb.test` | `12345678` |
 
-The demo data lives in [server/seed.js](server/seed.js).
+אלה חשבונות הדגמה בלבד. המשתמשים, הכתבות והתגובות נוצרים רק אם האוסף המתאים ריק. אם כבר יש משתמשים במסד, חשבונות הדמו לא מתווספים וסיסמאות קיימות לא משתנות. להדגמה נקייה אפשר לבחור שם מסד חדש ב־`MONGO_URI`, בלי למחוק נתונים קיימים.
 
-#### Impact Analytics demo
-
-The seed adds a 24-hour simulated view history to every published article created
-by the original demo seed, preserving its content and actual publication/update
-timestamps. It also creates four articles whose titles start with `[דמו]`. Each has
-20 hours of simulated minute-by-minute views and three published updates, showing
-increasing, decreasing, steady, and mixed traffic in `/editor/analytics`.
-The analytics page presents all articles with the same live refresh status.
-
-To add timelines to existing seed articles and create the four scenarios without deleting collections:
+אפשר להוסיף את תרחישי האנליטיקה למסד קיים באמצעות:
 
 ```sh
 npm run seed:analytics
 ```
 
-Repeated runs preserve the same fixtures and do not duplicate their views or
-overwrite existing articles. With `SEED_DEMO_DATA=true`, startup adds them automatically.
+הפקודה דורשת משתמש כתב ומשתמש עורך במסד. הרצה חוזרת לא משכפלת את נתוני ההדגמה. נתוני הצפייה שנוצרים לצורך ההדגמה הם מדומים.
 
-## Tools
+## מה אפשר לעשות באתר?
 
-Trello board - https://trello.com/b/SOPFGVuz/the-daily-web  
-Figma - https://www.figma.com/design/Zq8RyBnlCEwyv5jJcQvzpX/%25D7%2590%25D7%25AA%25D7%25A8-%25D7%2597%25D7%2593%25D7%25A9%25D7%2595%25D7%25AA  
+### קוראים
 
+- לקרוא כתבות שאושרו לפרסום ולעבור לעמוד הכתבה המלאה.
+- לחפש כתבות, לסנן לפי קטגוריה ולפי נקראו/לא נקראו, ולמיין לפי תאריך או פופולריות.
+- לגלול לקבלת 20 כתבות נוספות בכל פעם, בלי לרענן את העמוד.
+- להוסיף תגובות ולראות אותן מיד. השרת מגביל אורחים לשלוש תגובות בדקה; מגבלות המימוש מפורטות בסקירת הדרישות.
+- לראות מזג אוויר אמיתי לתל אביב, דרך Open-Meteo. בגרסה הנוכחית התחזית קבועה לתל אביב.
 
-## Development
+היסטוריית הקריאה נשמרת בדפדפן ב־`localStorage`, ולא בחשבון המשתמש. כל כניסה לעמוד כתבה נרשמת לצורך ספירת צפיות.
 
-### Claude Code + Trello/Figma (MCP)
+### כתבים
 
-The repo ships a [.mcp.json](.mcp.json) that connects Claude Code to [Composio](https://composio.dev), which gives Claude access to Trello and Figma.
+לאחר התחברות מגיעים ל־`/writer`, ורואים רק את הכתבות של המשתמש המחובר. אפשר ליצור כתבה, לערוך אותה, להגיש לאישור, לראות הערות מהעורך ולהגיש תיקונים.
 
-1. Open Claude Code in the project and approve the `composio` server when asked.
-2. Run `/mcp`, choose `composio` and log in.
-3. Ask Claude to do something in Trello or Figma. The first time, it sends you a link to connect each app; open it and log in.
+השינויים נשלחים לשמירה אוטומטית לאחר 1.5 שניות ללא הקלדה. יש להמתין להודעה **״כל השינויים נשמרו״** לפני סגירת הדפדפן או מעבר למחשב אחר. מגבלות השמירה מפורטות בסקירת הדרישות.
 
-Your connections are private to you. You need access to the Trello board and the Figma file above.
+### עורכים
 
-## 📁 Folder structure
+ב־`/editor` רואים את כלל הכתבות ומסננים לפי מצב. אפשר להשוות תוכן חדש לגרסה שפורסמה, לערוך כתבה שממתינה לאישור, לאשר פרסום, להחזיר לתיקונים עם הערה או למחוק כתבה.
 
-### Feed read-status filtering
+ב־`/editor/analytics` בוחרים כתבה ורואים גרף צפיות לאורך זמן, סימוני פרסום ועדכונים והשוואת קצב צפיות לפני ואחרי עדכון.
 
-The browser keeps read article IDs in `localStorage` under `dailyweb_read_articles`.
-It requests the feed with `POST /api/articles?page=1&limit=20` and a JSON body
-`{ "readStatus": "unread", "readIds": ["<article ObjectId>"] }`.
-Supported statuses are `all`, `read`, and `unread`. MongoDB applies this filter
-before pagination and counting, together with category, search, and sort filters.
-Read history stays in the browser and is sent for each filtered request; it is not
-saved to a user account. The existing GET endpoint remains available for feed clients.
+## תהליך הפרסום
 
-MVC layout:
+כתבה חדשה מתחילה במצב **בהכנה**. הכתב מגיש אותה ל־**ממתינה לאישור עורך**, והעורך יכול להעביר אותה ל־**פורסמה** או ל־**הוחזרה לתיקונים**. לאחר תיקון, הכתב יכול להגיש שוב.
 
-- `app.js` — entry point.
-- `server/models/` — Mongoose schemas and models. One file per model, singular lowercase (`article.js`); schema `articleSchema`, model `Article` (singular PascalCase).
-- `server/controllers/`, `server/routes/` — request logic and routing.
-- `views/` — EJS templates.
-- `public/css/`, `public/js/` — client CSS and Vanilla JS.
+בעריכת כתבה שכבר פורסמה, הקוראים ממשיכים לראות את הגרסה המאושרת הקודמת. השינויים מחליפים אותה רק לאחר אישור נוסף של העורך. נשמרת היסטוריית מועדי הפרסום והעדכונים; אין ארכיון מלא של תוכן כל הגרסאות הישנות.
 
-A UI component shares one name across `views/<name>.ejs`, `public/css/<name>.css` and `public/js/<name>.js`. Each file is optional.
+ההרשאות והמעברים בין המצבים נבדקים בשרת, גם אם שולחים בקשה ישירות ל־API.
 
+## איך הפרויקט בנוי?
 
-### Homepage weather
+| מיקום | תפקיד |
+| --- | --- |
+| `app.js` | הפעלת Express, חיבור למסד וחיבור הנתיבים |
+| `server/config.js` | קריאת הגדרות ובדיקת משתני הסביבה |
+| `server/models/` | מבנה הנתונים: משתמשים, כתבות, תגובות, צפיות וחיבורים |
+| `server/controllers/` | טיפול בבקשות ובפעולות המשתמשים |
+| `server/routes/` ו־`server/API/` | כתובות העמודים ושירותי ה־API |
+| `server/middleware/` | זיהוי משתמש, בדיקות הרשאה והגבלות בקשות |
+| `server/services/` ו־`server/utils/` | מזג אוויר, ספירת צפיות, ניקוי תוכן וכלי עזר |
+| `views/` | תבניות HTML באמצעות EJS |
+| `public/` | עיצוב, תמונות וקוד JavaScript לדפדפן |
+| `server/seed.js` | יצירת נתוני הדמו |
 
-The Tel Aviv weather card uses `/api/weather`, backed by the
-[Open-Meteo Forecast API](https://open-meteo.com/en/docs). No API key is required.
-It shows current temperature, feels-like temperature, humidity, wind in km/h,
-and the next three four-hour forecast slots in the `Asia/Jerusalem` timezone.
-The server caches results for fifteen minutes and the browser refreshes every fifteen
-minutes. Loading and provider failures show placeholders rather than demo data.
-The server needs outbound HTTPS access to `api.open-meteo.com`.
+זו חלוקת MVC: המודלים מנהלים נתונים, הבקרים מטפלים בפעולות, והתבניות מציגות את העמודים.
 
+עמוד הכתבה המלא נשלח מהשרת כ־HTML, כולל התוכן ונתוני SEO (**SSR**). חיפוש, סינון, טעינת כתבות, תגובות ושמירה אוטומטית משתמשים בבקשות `fetch` (**Ajax**), ללא רענון של כל העמוד.
+
+הסיסמאות נשמרות כגיבוב באמצעות Argon2. חיבורי המשתמשים נשמרים ב־MongoDB, ולכן הפעלה מחדש של שרת האתר לא מוחקת אותם, כל עוד העוגייה והחיבור עדיין בתוקף.
+
+מוני הצפייה נשמרים לפי כתבה ודקה ומפוצלים ל־16 מונים, במקום ליצור מסמך נפרד לכל קורא. מזג האוויר נשמר במטמון משותף בתהליך השרת למשך 15 דקות, ובקשות מקבילות משתמשות באותה פנייה לספק. השרת צריך גישה לאינטרנט אל `api.open-meteo.com`; אין צורך במפתח API.
+
+## בדיקות והתאמה לדרישות
+
+להרצת הבדיקות:
+
+```sh
+npm test
+```
+
+ב־PowerShell עם גרסת Node ישנה שלא מרחיבה את תבנית שמות הקבצים, אפשר להריץ במפורש:
+
+```powershell
+node server/utils/sanitize.test.js
+$projectTests = @(Get-ChildItem server/controllers/*.test.js | ForEach-Object { $_.FullName })
+node --test @projectTests
+```
+
+בדיקת שמירת 1,000 צפיות במקביל דורשת MongoDB מקומי. היא יוצרת מסד בדיקה זמני נפרד ומוחקת אותו בסיום:
+
+```powershell
+$env:RUN_ANALYTICS_DB_TEST = 'true'
+node --test server/controllers/analytics-db.test.js
+Remove-Item Env:RUN_ANALYTICS_DB_TEST
+```
+
+פירוט הבדיקה מול מסמך המטלה נמצא ב־[סקירת הדרישות](docs/requirements-review.md). יש עדיין פערים להשלמה, בעיקר CRUD למשתמשים ולנתוני צפיות, שמירה בסגירה מיידית, הגבלת תגובות ורעננות מזג האוויר. אין לראות בהרצת הבדיקות אישור שכל דרישות ההגשה הושלמו.
+
+## קישורי הפרויקט
+
+- [לוח המשימות ב־Trello](https://trello.com/b/SOPFGVuz/the-daily-web)
+- [עיצוב ב־Figma](https://www.figma.com/design/Zq8RyBnlCEwyv5jJcQvzpX/%25D7%2590%25D7%25AA%25D7%25A8-%25D7%2597%25D7%2593%25D7%25A9%25D7%2595%25D7%25AA)
