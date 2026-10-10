@@ -60,6 +60,7 @@ function toFeedArticle(article, now = new Date()) {
         categoryLabel,
         writer: writerName,
         publishedAt,
+        updatedAt: pub.updatedAt || publishedAt,
         publishedAtFormatted: formatRelativeTime(publishedAt, now),
         viewCount: article.viewCount || 0,
         url: `/articles/${article._id}`,

@@ -54,6 +54,14 @@ const config = {
     seedDemoData: parseBoolean('SEED_DEMO_DATA', process.env.SEED_DEMO_DATA),
 };
 
+try {
+    const siteUrl = new URL(process.env.SITE_URL || `http://localhost:${config.port}`);
+    if (!['http:', 'https:'].includes(siteUrl.protocol) || siteUrl.username || siteUrl.password) throw new Error();
+    config.siteUrl = siteUrl.origin;
+} catch {
+    errors.push('SITE_URL must be an absolute http:// or https:// URL');
+}
+
 if (errors.length) {
     throw new Error(`Invalid configuration:\n  - ${errors.join('\n  - ')}`);
 }

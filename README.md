@@ -30,6 +30,10 @@ SERVER_PORT=3000
 SEED_DEMO_DATA=false
 ```
 
+For a deployed site, set `SITE_URL=https://your-domain.example` in `.env`.
+Article canonical URLs, sharing metadata and NewsArticle structured data use this
+origin. Without it, development defaults to `http://localhost:SERVER_PORT`.
+
 #### Demo data
 
 To start with demo data, add this to `.env`:

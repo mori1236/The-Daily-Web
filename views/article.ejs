@@ -1,5 +1,4 @@
-<%- include('partials/header', { title: article.title, styles: ['index', 'article'], container: 'container' }) %>
-<body>
+<%- include('partials/header', { title: article.title, styles: ['index', 'article'], container: 'container', seo }) %>
 
   <%- include('partials/site-header') %>
 
@@ -13,7 +12,8 @@
       <span class="breadcrumb-category"><%= article.categoryLabel %></span>
     </nav>
 
-    <main class="article-single">
+    <main>
+    <article class="article-single">
       <header class="article-header">
         <div class="article-tag-row">
           <span class="article-tag category-<%= article.category %>"><%= article.categoryLabel %></span>
@@ -31,7 +31,8 @@
             <span class="author-avatar" aria-hidden="true">✍</span>
             <div class="author-details">
               <span class="author-name">מאת <%= article.writer %></span>
-              <span class="publish-date"><%= article.publishedAtFormatted %> · עודכן לאחרונה</span>
+              <% const formatDate = value => new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)); %>
+              <span class="publish-date">פורסם <time datetime="<%= seo.published %>"><%= formatDate(article.publishedAt) %></time><% if (seo.modified !== seo.published) { %> · עודכן <time datetime="<%= seo.modified %>"><%= formatDate(article.updatedAt) %></time><% } %></span>
             </div>
           </div>
 
@@ -97,9 +98,9 @@
           </div>
         </section>
       <% } %>
+    </article>
     </main>
   </div>
 
   <script src="/js/article.js"></script>
-</body>
-</html>
+<%- include('partials/footer') %>

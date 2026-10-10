@@ -5,6 +5,7 @@ const { formatComment } = require('./commentController');
 const { toFeedArticle } = require('../utils/articles.utils');
 const { formatTime } = require('../utils/format');
 const { recordView } = require('../utils/record-view');
+const { articleSeo } = require('../utils/article-seo');
 
 /**
  * Controller for public article feed and article details pages.
@@ -189,6 +190,7 @@ const articleController = {
             });
             res.render('article', {
                 article,
+                seo: articleSeo(article),
                 comments,
                 fullContent: articleDoc.published.content || articleDoc.published.summary || '',
                 moreArticles,
