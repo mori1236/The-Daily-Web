@@ -26,6 +26,18 @@
   margin: 0;
 }
 
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.auth-brand-logo {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
 .auth-brand-name {
   font-family: var(--font-brand);
   font-size: 24px;

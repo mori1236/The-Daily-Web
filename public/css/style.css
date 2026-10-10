@@ -66,9 +66,21 @@ body {
 
 .site-brand {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   color: var(--color-ink);
   text-decoration: none;
+}
+
+.site-brand-logo {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.site-brand-copy {
+  display: flex;
+  flex-direction: column;
 }
 
 .site-brand-name {
