@@ -430,8 +430,10 @@
   }
 
   .status-badge {
-    padding: 4px 6px;
-    font-size: 10px;
+    padding: 3px 5px;
+    font-size: 9px;
+    line-height: 14px;
+    white-space: nowrap;
   }
 
   .articles-table th:first-child,
