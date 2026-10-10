@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const number = new Intl.NumberFormat('he-IL', { maximumFractionDigits: 2 });
     const time = new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', hour: '2-digit', minute: '2-digit' });
     const dateTime = new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const shortDate = new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', day: '2-digit', month: '2-digit' });
     let data = null;
     let selectedEvent = -1;
     let activeRequest = null;
@@ -192,7 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
             context.fillText(articleSelect.value ? 'הגרף יופיע לאחר טעינת הנתונים' : 'אין כתבה נבחרת', width / 2, height / 2);
             return;
         }
-        const plot = { left: 48, right: width - 16, top: 44, bottom: height - 44 };
+        const compactDates = width < 500 && data.range !== '24h';
+        const plot = { left: 48, right: width - 16, top: 44, bottom: height - (compactDates ? 52 : 44) };
         const from = Number(new Date(data.from));
         const to = Number(new Date(data.to));
         const maximum = Math.max(1, ...data.points.map(point => point.views));
@@ -212,14 +214,29 @@ document.addEventListener('DOMContentLoaded', () => {
         context.fillStyle = '#555b57';
         context.textAlign = 'left';
         context.fillText('צפיות', 4, 19);
-        const ticks = width < 500 ? 3 : 5;
-        for (let i = 0; i <= ticks; i++) {
-            const at = from + (to - from) * i / ticks;
-            context.textAlign = i === 0 ? 'left' : i === ticks ? 'right' : 'center';
-            const formatter = data.range === '24h' ? time : dateTime;
-            context.fillStyle = '#7c837e';
-            context.fillText(formatter.format(new Date(at)), x(at), height - 18);
+        // Measure the actual labels, including the edge anchors, before choosing
+        // a tick count. Narrow charts use separate short date and time lines.
+        let labels;
+        for (let ticks = 5; ticks >= 1; ticks--) {
+            labels = Array.from({ length: ticks + 1 }, (_, i) => {
+                const at = from + (to - from) * i / ticks;
+                const date = new Date(at);
+                const lines = compactDates ? [shortDate.format(date), time.format(date)]
+                    : [(data.range === '24h' ? time : dateTime).format(date)];
+                const labelWidth = Math.max(...lines.map(line => context.measureText(line).width));
+                const position = x(at);
+                const align = i === 0 ? 'left' : i === ticks ? 'right' : 'center';
+                const left = position - (align === 'right' ? labelWidth : align === 'center' ? labelWidth / 2 : 0);
+                return { lines, position, align, left, right: left + labelWidth };
+            });
+            if (labels.every((label, i) => i === 0 || label.left >= labels[i - 1].right + 12)) break;
         }
+        labels.forEach(label => {
+            context.textAlign = label.align;
+            context.fillStyle = '#7c837e';
+            label.lines.forEach((line, index) => context.fillText(line, label.position,
+                compactDates ? height - 28 + index * 16 : height - 18));
+        });
         const tracked = data.points.filter(point => point.tracked);
         if (tracked.length) {
             context.strokeStyle = '#e53935'; context.lineWidth = 2.5;
