@@ -362,15 +362,86 @@
   .writer-heading {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
 
   .writer-heading h1 {
-    font-size: 30px;
-    line-height: 36px;
+    font-size: 26px;
+    line-height: 32px;
   }
 
   .writer-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .stat-card {
+    min-width: 0;
+    gap: 8px;
+    padding: 10px 6px;
+  }
+
+  .stat-head h2 {
+    min-height: 26px;
+    font-size: 10px;
+    line-height: 13px;
+  }
+
+  .stat-icon,
+  .stat-note,
+  .stat-trend {
+    display: none;
+  }
+
+  .stat-value {
+    font-size: clamp(14px, 4vw, 24px);
+    line-height: 1.2;
+    direction: ltr;
+    white-space: nowrap;
+  }
+
+  .writer-intro {
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .writer-filters {
+    gap: 6px;
+  }
+
+  .filter-chip {
+    height: 32px;
+    padding-inline: 9px;
+    font-size: 10px;
+  }
+
+  .col-status {
+    width: 104px;
+  }
+
+  .col-actions {
+    width: 44px;
+  }
+
+  .article-title {
+    font-size: 14px;
+    line-height: 19px;
+    overflow-wrap: anywhere;
+  }
+
+  .status-badge {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+
+  .articles-table th:first-child,
+  .articles-table td:first-child {
+    padding-inline-start: 10px;
+  }
+
+  .articles-table th:last-child,
+  .articles-table td:last-child {
+    padding-inline-end: 6px;
   }
 
   .writer-search {

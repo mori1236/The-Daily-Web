@@ -367,3 +367,59 @@ logo .sub-text-logo{
   color: #555B57;
   cursor: pointer;
 }
+
+@media (max-width: 800px) {
+  .site-header {
+    padding-inline: 12px;
+  }
+
+  .site-header-context {
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .site-brand {
+    flex-shrink: 0;
+    gap: 6px;
+  }
+
+  .site-brand-logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .site-brand-name {
+    font-size: 15px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+
+  .site-brand-edition {
+    display: none;
+  }
+
+  .site-area {
+    padding-inline-start: 8px;
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .site-header-actions {
+    gap: 8px;
+  }
+
+  .site-header .header-weather {
+    padding-right: 8px;
+    margin-right: 0;
+  }
+
+  .header-weather .weather-location {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .workspace-page .site-area {
+    display: none;
+  }
+}

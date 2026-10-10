@@ -94,6 +94,10 @@ body:has(.workspace-page) {
 /* ---------- מסכים קטנים: התפריט עובר לשורה מעל התוכן ---------- */
 
 @media (max-width: 800px) {
+  .workspace-page {
+    height: 100dvh;
+  }
+
   .workspace {
     flex-direction: column;
   }
@@ -108,6 +112,13 @@ body:has(.workspace-page) {
   }
 
   .workspace-content {
-    padding: 24px 16px;
+    min-height: 0;
+    gap: 18px;
+    padding: 20px 16px;
+  }
+
+  /* Keep the article list's full height inside the scrolling content area. */
+  .workspace-content > * {
+    flex-shrink: 0;
   }
 }
