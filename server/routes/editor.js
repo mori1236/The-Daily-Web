@@ -1,12 +1,16 @@
 const express = require('express');
 const { requireRoleHandler } = require('../middleware/auth');
 const editorController = require('../controllers/editorController');
+const analyticsController = require('../controllers/analyticsController');
 
 const router = express.Router();
 const requireEditor = requireRoleHandler('editor');
 
 // Pages
 router.get('/editor', requireEditor, editorController.showQueue);
+router.get('/editor/analytics', requireEditor, analyticsController.showAnalytics);
+router.get('/api/editor/analytics/articles', requireEditor, analyticsController.getArticles);
+router.get('/api/editor/articles/:id/analytics', requireEditor, analyticsController.getAnalytics);
 router.get('/editor/articles/:id/edit', requireEditor, editorController.showEditor);
 
 // JSON API for the actions on an article (Ajax). The lists are in server/API/editor.

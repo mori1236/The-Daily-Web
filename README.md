@@ -50,6 +50,24 @@ On startup the server adds the demo users below, but only if the database has no
 
 The demo data lives in [server/seed.js](server/seed.js).
 
+#### Impact Analytics demo
+
+The seed adds a 24-hour simulated view history to every published article created
+by the original demo seed, preserving its content and actual publication/update
+timestamps. It also creates four articles whose titles start with `[דמו]`. Each has
+20 hours of simulated minute-by-minute views and three published updates, showing
+increasing, decreasing, steady, and mixed traffic in `/editor/analytics`.
+The analytics page presents all articles with the same live refresh status.
+
+To add timelines to existing seed articles and create the four scenarios without deleting collections:
+
+```sh
+npm run seed:analytics
+```
+
+Repeated runs preserve the same fixtures and do not duplicate their views or
+overwrite existing articles. With `SEED_DEMO_DATA=true`, startup adds them automatically.
+
 ## Tools
 
 Trello board - https://trello.com/b/SOPFGVuz/the-daily-web  

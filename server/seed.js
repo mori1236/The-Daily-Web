@@ -1,9 +1,12 @@
 const User = require('./models/user');
 const Article = require('./models/article');
 const Comment = require('./models/comment');
+const ArticleView = require('./models/article-view');
+const { createHash } = require('node:crypto');
+const { MINUTE, floorMinute } = require('./utils/analytics');
 
 // Demo data for local development. Enabled with SEED_DEMO_DATA=true in .env.
-// Every demo user has the password "123456".
+// Every demo user has the password "12345678".
 const demoPassword = '12345678';
 
 const demoUsers = [
@@ -217,12 +220,142 @@ async function seedComments() {
     }
 }
 
-// Adds each kind of demo data only when its collection is empty,
-// so real data is never overwritten and restarts are safe.
+const analyticsScenarios = [
+    { key: 'growth', title: '[דמו] השקת הרכבת הקלה: עלייה בצפיות אחרי עדכון', category: 'tech', factors: [1, 1.3, 1.8, 2.7] },
+    { key: 'decline', title: '[דמו] שוק ההון: ירידה בצפיות אחרי עדכון', category: 'economy', factors: [1, 1.2, 0.8, 0.4] },
+    { key: 'steady', title: '[דמו] משחק העונה: קצב צפיות יציב', category: 'sports', factors: [1, 1.03, 0.98, 1.02] },
+    { key: 'mixed', title: '[דמו] פסטיבל התרבות: השפעה משתנה של עדכונים', category: 'culture', factors: [1, 1.8, 0.9, 1.6] },
+];
+
+// Pure deterministic fixture generator. No event-level reader data or changes to
+// the global article seed RNG. `until` is fixed on creation, so reruns cannot move
+// approvals or add the same traffic twice.
+function makeAnalyticsViews(article, scenario) {
+    const start = floorMinute(article.viewTrackingStartedAt);
+    const end = floorMinute(article.analyticsDemo.until);
+    const events = (article.publishEvents || []).map(event => Number(new Date(event.at))).sort((a, b) => a - b);
+    const rows = [];
+    for (let minute = start, index = 0; minute < end; minute += MINUTE, index++) {
+        let version = 0;
+        events.forEach((event, i) => { if (event <= minute) version = i; });
+        const wave = scenario.key === 'steady'
+            ? 16 + 0.4 * Math.sin(index / 75) + 0.3 * Math.cos(index / 31)
+            : 16 + 3 * Math.sin(index / 75) + 2 * Math.cos(index / 31);
+        const jitter = ((index * 17 + scenario.key.length * 13) % 11 - 5) * 0.25;
+        const count = Math.max(1, Math.round(wave * scenario.factors[Math.min(version, scenario.factors.length - 1)] + jitter));
+        const stripe = scenario.stripe ?? 0;
+        rows.push({ _id: `${article._id}:${minute}:${stripe}`, article: article._id,
+            minute: new Date(minute), stripe, count });
+    }
+    return rows;
+}
+
+async function persistAnalyticsViews(article, scenario) {
+    if (article.analyticsDemo.seededAt) return false;
+    const views = makeAnalyticsViews(article, scenario);
+    // Insert-only upserts make partial runs recoverable and concurrent seed runs safe.
+    for (let offset = 0; offset < views.length; offset += 500) {
+        await ArticleView.bulkWrite(views.slice(offset, offset + 500).map(row => ({
+            updateOne: { filter: { _id: row._id }, update: { $setOnInsert: row }, upsert: true },
+        })), { ordered: true });
+    }
+    await Article.updateOne({ _id: article._id, 'analyticsDemo.seededAt': { $exists: false } }, {
+        $inc: { viewCount: views.reduce((sum, row) => sum + row.count, 0) },
+        $set: { 'analyticsDemo.seededAt': new Date() },
+    }, { timestamps: false });
+    return true;
+}
+
+// The original seed's live content/image identifies its articles even if the
+// writer changed the working copy. Non-seed articles are left alone.
+async function seedExistingArticleAnalytics() {
+    const articles = await Article.find({
+        published: { $ne: null },
+        $or: [
+            { 'published.content': /זוהי כתבת דוגמה מספר \d+/ },
+            { 'published.imageUrl': /^https:\/\/picsum\.photos\/seed\/daily-web-\d+\/800\/450$/ },
+        ],
+    }).select('published.publishedAt publishEvents viewTrackingStartedAt analyticsDemo').lean();
+    let seeded = 0;
+    for (const original of articles) {
+        if (original.analyticsDemo?.seededAt) continue;
+        const key = `impact-legacy-v1-${original._id}`;
+        if (original.analyticsDemo && original.analyticsDemo.key !== key) continue;
+        const until = floorMinute(Date.now());
+        // Fill the default 24-hour graph without inventing new publication events
+        // or generating tens of millions of rows for the seed's 60-day history.
+        const published = Number(new Date(original.published.publishedAt));
+        const start = Math.max(Math.ceil(published / MINUTE) * MINUTE, until - dayMs);
+        if (!original.analyticsDemo) {
+            await Article.updateOne({ _id: original._id, analyticsDemo: { $exists: false } }, {
+                $set: { analyticsDemo: { key, until: new Date(until) } },
+                $min: { viewTrackingStartedAt: new Date(start) },
+            }, { timestamps: false });
+        }
+        const article = await Article.findById(original._id)
+            .select('published.publishedAt publishEvents viewTrackingStartedAt analyticsDemo').lean();
+        // The fixture interval remains fixed if a seed run is interrupted. Real
+        // counters use stripes 0–15; stripe 16 keeps simulated traffic separate.
+        const fixtureStart = Math.max(Math.ceil(published / MINUTE) * MINUTE,
+            Number(article.analyticsDemo.until) - dayMs);
+        const fixture = { ...article, viewTrackingStartedAt: new Date(fixtureStart) };
+        const scenarioIndex = parseInt(String(article._id).slice(-6), 16) % analyticsScenarios.length;
+        if (await persistAnalyticsViews(fixture, { ...analyticsScenarios[scenarioIndex], stripe: 16 })) seeded++;
+    }
+    if (seeded) console.log(`Seeded view history for ${seeded} existing demo articles`);
+}
+
+// Add timelines both to the original seed articles and the four comparison
+// scenarios. Existing content, publication events and reader counters stay intact.
+async function seedAnalytics() {
+    await seedExistingArticleAnalytics();
+    const [writers, editors] = await Promise.all([
+        User.find({ role: 'writer' }).sort({ email: 1 }),
+        User.find({ role: 'editor' }).sort({ email: 1 }),
+    ]);
+    if (!writers.length || !editors.length) return;
+    for (let index = 0; index < analyticsScenarios.length; index++) {
+        const scenario = analyticsScenarios[index];
+        const key = `impact-analytics-v1-${scenario.key}`;
+        const id = createHash('sha256').update(key).digest('hex').slice(0, 24);
+        let article = await Article.findById(id);
+        if (!article) {
+            const until = floorMinute(Date.now());
+            const firstPublished = new Date(until - 20 * 60 * MINUTE);
+            const approvals = [firstPublished, ...[18, 8, 2].map(hours => new Date(until - hours * 60 * MINUTE))];
+            const content = {
+                title: scenario.title, category: scenario.category,
+                summary: 'כתבת הדגמה עם צפיות מסומלצות וסימוני פרסום עדכונים לצורך בדיקת Impact Analytics.',
+                content: '<p>זוהי כתבת דמו. נתוני הצפייה שלה מסומלצים ונועדו להדגים השוואה לפני ואחרי פרסום עדכונים.</p>',
+                imageUrl: '/img/login-newsroom.jpg',
+            };
+            try {
+                article = await Article.create({
+                    _id: id, ...content, writer: writers[index % writers.length]._id,
+                    editor: editors[index % editors.length]._id, state: 'published',
+                    published: { ...content, publishedAt: firstPublished, updatedAt: approvals[3] },
+                    publishEvents: approvals.map(at => ({ at, editor: editors[index % editors.length]._id })),
+                    viewTrackingStartedAt: firstPublished,
+                    analyticsDemo: { key, until: new Date(until) },
+                    createdAt: firstPublished, updatedAt: approvals[3],
+                });
+            } catch (error) {
+                if (error.code !== 11000) throw error;
+                article = await Article.findById(id);
+            }
+        }
+        if (article.analyticsDemo?.key !== key) throw new Error('Analytics seed ID belongs to a different article');
+        if (await persistAnalyticsViews(article, scenario)) console.log(`Seeded analytics scenario ${scenario.key}`);
+    }
+}
+
+// Ordinary collections are seeded only when empty. Analytics fixtures use their
+// own stable keys, so they can be added without deleting any existing collection.
 async function seedDemoData() {
     await seedUsers();
     await seedArticles();
     await seedComments();
+    await seedAnalytics();
 }
 
-module.exports = { seedDemoData };
+module.exports = { seedDemoData, seedAnalytics, makeAnalyticsViews, analyticsScenarios };
