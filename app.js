@@ -1,3 +1,4 @@
+require('./server/utils/logger'); // שומר הודעות console בקבצים לפי שעה, בנוסף למסוף
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');

@@ -1,4 +1,5 @@
 node_modules/
+logs/
 דרישות פרויקט מסכם - סמסטר קיץ.pdf
 .env
 # Mongo runtime files (the data files in DB/ are committed)
