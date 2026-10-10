@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { ArticleTransitionError } = require('../errors');
+const { hasBodyText } = require('../utils/sanitize');
 
 const CATEGORIES = /** @type {const} */ (['politics', 'economy', 'tech', 'sports', 'culture', 'world']);
 const STATES = /** @type {const} */ (['draft', 'pending', 'published', 'returned']);
@@ -140,7 +141,9 @@ function requireState(article, allowedStates, action) {
  * @param {string} action
  */
 function requireComplete(article, action) {
-    const missing = requiredFieldNames.filter(name => !article[name]);
+    const missing = requiredFieldNames.filter(name => name === 'content'
+        ? !hasBodyText(article.content)
+        : !String(article[name] || '').trim());
     if (missing.length > 0) {
         throw new ArticleTransitionError(`Cannot ${action}: missing ${missing.join(', ')}`, {
             reason: 'invalid-input', action, articleId: article._id, missingFields: missing,

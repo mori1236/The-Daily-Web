@@ -119,7 +119,20 @@ titleInput.addEventListener('input', () => {
 
 summaryInput.addEventListener('input', () => markChanged('summary', summaryInput.value));
 
-bodyBox.addEventListener('input', () => markChanged('content', bodyBox.innerHTML));
+function hasBodyText() {
+    return bodyBox.textContent.replace(/[\s\u200B-\u200F\uFEFF]/g, '').length > 0;
+}
+
+function updateBodyPlaceholder() {
+    // contenteditable can retain empty paragraphs and line breaks after deletion.
+    bodyBox.classList.toggle('is-empty', !hasBodyText());
+}
+
+updateBodyPlaceholder();
+bodyBox.addEventListener('input', () => {
+    updateBodyPlaceholder();
+    markChanged('content', bodyBox.innerHTML);
+});
 
 categorySelect.addEventListener('change', () => markChanged('category', categorySelect.value));
 
@@ -169,6 +182,7 @@ toolbar.addEventListener('click', event => {
     } else {
         document.execCommand(command, false, null);
     }
+    updateBodyPlaceholder();
     markChanged('content', bodyBox.innerHTML);
 });
 
@@ -178,6 +192,15 @@ if (submitButton) {
     // The button only asks for confirmation. The article can't be edited after it is submitted.
     submitButton.addEventListener('click', () => {
         clearError();
+        const missing = [];
+        if (!titleInput.value.trim()) missing.push('title');
+        if (!summaryInput.value.trim()) missing.push('summary');
+        if (!hasBodyText()) missing.push('content');
+        if (!categorySelect.value) missing.push('category');
+        if (missing.length) {
+            showError(`אי אפשר להגיש עדיין. חסר: ${missing.map(name => fieldLabels[name]).join(', ')}`);
+            return;
+        }
         submitDialog.showModal();
     });
 

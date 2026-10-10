@@ -168,6 +168,7 @@
 .editor-title,
 .editor-summary,
 .editor-text {
+  position: relative;
   width: 100%;
   border: none;
   outline: none;
@@ -205,9 +206,14 @@
 }
 
 /* טקסט עזר כשהגוף ריק */
-.editor-text:empty::before {
+.editor-text:empty::before,
+.editor-text.is-empty::before {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
   content: attr(data-placeholder);
   color: var(--color-muted);
+  pointer-events: none;
 }
 
 .editor-text h2,

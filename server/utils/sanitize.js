@@ -44,4 +44,9 @@ function cleanUrl(text) {
     }
 }
 
-module.exports = { MAX_LENGTHS, sanitizeBody, cleanText, cleanUrl };
+function hasBodyText(html) {
+    const text = sanitizeHtml(String(html || ''), { allowedTags: [], allowedAttributes: {} });
+    return text.replace(/&nbsp;/g, '').replace(/[\s\u200B-\u200F\uFEFF]/g, '').length > 0;
+}
+
+module.exports = { MAX_LENGTHS, sanitizeBody, cleanText, cleanUrl, hasBodyText };
