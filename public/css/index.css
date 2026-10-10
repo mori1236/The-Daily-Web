@@ -324,6 +324,13 @@
   gap: 12px;
 }
 
+.feed-sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
 .search-box {
   display: flex;
   align-items: center;
@@ -666,6 +673,15 @@
   }
   .search-box, .sort-box {
     width: 100%;
+  }
+  .feed-sort-controls {
+    max-width: 100%;
+    gap: 8px;
+  }
+  .feed-sort-controls .sort-box {
+    width: auto;
+    min-width: 0;
+    padding-inline: 8px;
   }
   .articles-grid {
     grid-template-columns: 1fr;
