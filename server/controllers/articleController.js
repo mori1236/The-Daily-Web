@@ -163,6 +163,8 @@ const articleController = {
 
             const now = new Date();
             const article = toFeedArticle(articleDoc, now);
+            // Include this page view in the display; persistence happens after a successful response.
+            if (req.method === 'GET') article.viewCount += 1;
 
             // Fetch comments for the article
             const commentDocs = await Comment.find({ article: id }).sort({ createdAt: -1 });
