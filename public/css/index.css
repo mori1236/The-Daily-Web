@@ -198,11 +198,6 @@
   color: var(--color-ink, #111312);
 }
 
-.weather-more-dots {
-  color: var(--color-muted, #7c837e);
-  letter-spacing: 2px;
-}
-
 .weather-current {
   margin: 14px 0 10px 0;
 }
