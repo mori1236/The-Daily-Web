@@ -55,56 +55,8 @@
       <% } %>
 
       <!-- ווידג'ט מזג אוויר (בשמאל בדפי RTL) -->
-      <aside class="weather-card" id="weatherWidget" aria-label="תחזית מזג האוויר">
-        <div class="weather-card-header">
-          <span class="weather-location">תל אביב · היום</span>
-          <span class="weather-more-dots">···</span>
-        </div>
-        
-        <div class="weather-current">
-          <div class="weather-temp-wrap">
-            <span class="weather-temp">27°</span>
-            <span class="weather-icon" title="שמשי">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-              </svg>
-            </span>
-          </div>
-          <div class="weather-feels">מרגיש כמו 29°</div>
-        </div>
+      <%- include('partials/weather') %>
 
-        <div class="weather-forecast">
-          <div class="forecast-row">
-            <span class="forecast-time">12:00</span>
-            <span class="forecast-dot">·</span>
-            <span class="forecast-val">28° בהיר</span>
-          </div>
-          <div class="forecast-row">
-            <span class="forecast-time">16:00</span>
-            <span class="forecast-dot">·</span>
-            <span class="forecast-val">27° מעונן</span>
-          </div>
-          <div class="forecast-row">
-            <span class="forecast-time">20:00</span>
-            <span class="forecast-dot">·</span>
-            <span class="forecast-val">24° נעים</span>
-          </div>
-        </div>
-
-        <div class="weather-footer">
-          <span>לחות 63%</span>
-          <span class="forecast-dot">·</span>
-          <span>רוח 18 קמ"ש</span>
-        </div>
-      </aside>
     </section>
     
     <!-- סרגל סינון קטגוריות, חיפוש ומיון -->

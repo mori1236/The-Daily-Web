@@ -1,0 +1,17 @@
+<% const notFound = locals.statusCode === 404; %>
+<%- include('partials/header', { title: notFound ? 'הדף לא נמצא' : 'אירעה שגיאה', styles: ['forms', 'auth'], container: 'auth-page' }) %>
+
+  <%- include('partials/auth-story') %>
+
+  <main class="auth-main">
+    <section class="auth-card">
+      <div class="auth-card-header">
+        <p><%= locals.statusCode || 500 %></p>
+        <h1><%= notFound ? 'הדף לא נמצא' : 'משהו השתבש' %></h1>
+        <p><%= notFound ? 'הדף שחיפשת אינו זמין. אפשר לחזור לדף הבית ולהמשיך לקרוא.' : 'לא ניתן להציג את הדף כרגע. נסו שוב בעוד כמה רגעים.' %></p>
+      </div>
+      <a href="/" class="btn btn-primary btn-block">חזרה לדף הבית</a>
+    </section>
+  </main>
+
+<%- include('partials/footer') %>

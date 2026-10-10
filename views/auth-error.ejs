@@ -10,11 +10,11 @@
 
     <section class="auth-card">
       <div class="auth-card-header">
-        <h1><%= message %></h1>
+        <h1><%= locals.message || 'אירעה שגיאה' %></h1>
         <p><%= locals.details || 'משהו השתבש מצדנו. נסו שוב בעוד כמה רגעים.' %></p>
       </div>
 
-      <a href="<%= retryUrl %>" class="btn btn-primary btn-block"><%= locals.retryLabel || 'נסו שוב' %></a>
+      <a href="<%= locals.retryUrl || '/' %>" class="btn btn-primary btn-block"><%= locals.retryLabel || (locals.retryUrl ? 'נסו שוב' : 'חזרה לדף הבית') %></a>
     </section>
   </main>
 

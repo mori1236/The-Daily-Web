@@ -13,7 +13,7 @@ const articleController = {
     /**
      * GET / — Renders the home page with initial 20 published articles and hero story.
      */
-    async showFeed(req, res) {
+    async showFeed(req, res, next) {
         try {
             const now = new Date();
             const category = req.query.category;
@@ -55,8 +55,7 @@ const articleController = {
                 currentTime: formatTime(now),
             });
         } catch (err) {
-            console.error('Error rendering feed:', err);
-            res.status(500).send('שגיאת שרת פנימית');
+            next(err);
         }
     },
 
@@ -148,18 +147,18 @@ const articleController = {
     /**
      * GET /articles/:id — Renders the full article page.
      */
-    async showArticle(req, res) {
+    async showArticle(req, res, next) {
         try {
             const { id } = req.params;
             if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-                return res.status(404).render('auth-error', { message: 'הכתבה המבוקשת לא נמצאה' });
+                return res.status(404).render('error', { statusCode: 404 });
             }
 
             const articleDoc = await Article.findOne({ _id: id, published: { $ne: null } })
                 .populate('writer');
 
             if (!articleDoc || !articleDoc.published) {
-                return res.status(404).render('auth-error', { message: 'הכתבה המבוקשת לא נמצאה או שטרם פורסמה' });
+                return res.status(404).render('error', { statusCode: 404 });
             }
 
             const now = new Date();
@@ -194,8 +193,7 @@ const articleController = {
                 currentCategory: article.category, // highlights the article's category in the header nav
             });
         } catch (err) {
-            console.error('Error showing article:', err);
-            res.status(500).send('שגיאת שרת פנימית');
+            next(err);
         }
     },
 };
