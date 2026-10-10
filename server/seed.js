@@ -325,7 +325,7 @@ async function seedAnalytics() {
             const approvals = [firstPublished, ...[18, 8, 2].map(hours => new Date(until - hours * 60 * MINUTE))];
             const content = {
                 title: scenario.title, category: scenario.category,
-                summary: 'כתבת הדגמה עם צפיות מסומלצות וסימוני פרסום עדכונים לצורך בדיקת Impact Analytics.',
+                summary: 'כתבת הדגמה עם צפיות מסומלצות וסימוני פרסום עדכונים לצורך בדיקת ניתוח השפעה.',
                 content: '<p>זוהי כתבת דמו. נתוני הצפייה שלה מסומלצים ונועדו להדגים השוואה לפני ואחרי פרסום עדכונים.</p>',
                 imageUrl: '/img/login-newsroom.jpg',
             };
